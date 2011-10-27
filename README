@@ -1,0 +1,105 @@
+============================ 
+==                        ==
+==       10Layer CMS      ==
+==                        ==
+============================
+
+This is the core of 10Layer's technology. It is designed as a third party plugin for >=CodeIgniter v2.0.3.
+
+Copyright 2011 10Layer Software Development Pty (Ltd). 
+Website: http://10layer.com
+Email: info@10layer.com
+
+10Layer is designed to be a full-featured CMS aimed at the mid- to high-end online news publishing market. We describe it as a "framework" CMS - 90% of the CMS is built, and we expect that 10% will be customised. 
+
+10Layer does not include a front end. The types of sites that would use 10Layer already have front ends, or will build extremely customised front ends to differentiate themselves in the market. That means that if you download 10Layer and expect to have a running website in a few minutes, you will be disappointed. The least amount of time it would take an experienced developer to roll out a simple 10Layer website is a day.
+
+Also note that 10Layer isn't free, as in Free Beer. The Source Code is free - you can download it, look at it, play with it, improve it, send us your improvements and generally have fun with it. If you install it in a commercial environment, however, you'll need to pay us a licensing fee. The rule of thumb is, if you're making money running on 10Layer, you owe us money. 
+
+If you're expecting another Wordpress or Drupal, you'll be disappointed. If you're expecting a fully-featured, kick-ass, multi-user, workflow-enabled, high-end CMS, you've come to the right place.
+
+Please see 10Layer License v1.1.
+
+==========================
+==                      ==
+==   Requirements       ==
+==                      ==
+==========================
+
+It is recommended that 10Layer runs on Debian Squeeze (Debian 6), and has been successfully run on Debian 5 and various flavours of Ubuntu Server. 
+
+==========================
+==                      ==
+==   Installing         ==
+==                      ==
+==========================
+
+There is an install script (install/install.sh) which will install the dependencies.
+
+To install on a clean Debian 6 server (as root):
+apt-get update
+apt-get install git-core
+git clone git@github.com:10layer/10Layer-Library.git
+cd 10Layer-Library/install/
+./install.sh
+
+NOTE: install.sh expects to be run from the install directory!
+
+More detail on installation can be found on the wiki at http://wiki.10layer.com/doku.php?id=install:installing
+
+==========================
+==                      ==
+== Integrating with CI  ==
+==                      ==
+==========================
+
+This package is designed to work with CodeIgniter, downloadable at http://www.codeigniter.com. We usually symbolic link the directories under applications (with the exception of config) from one Git working copy to another, so that we can maintain the core code base separately to the custom code base. The only exception is the config directory, where link just the files rather than the entire directory. 
+
+On a clean CI install, you'll need to edit the application/config/config.php to point to your domain, enable Hooks and add an encryption key, and application/config/database.php to point to your 10Layer database. Also add a .htaccess file to the root to handle url rewriting. 
+
+You'll need to make some directories, and make them writable by the web server. 
+mkdir resources/cache
+mkdir resources/cache/pictures
+mkdir resources/cache/pictures/cdn
+mkdir resources/uploads
+mkdir resources/uploads/files
+mkdir resources/uploads/files/original
+chown -R www-data:www-data resources
+
+Finally, have a look at application/third_party/10layer/config/10layer.php. Any of these variables can be overwritten by making a application/config/10layer.php file. It's advised you at least set up your Rackspace CDN key.
+
+Eg. of application/config/10layer.php
+<?php
+	//Rackspace credentials
+	$config["rackspace_api_key"]="YourKeyHere";
+	$config["rackspace_username"]="YourUsernameHere";
+?>
+
+==========================
+==                      ==
+==     Setting up DB    ==
+==                      ==
+==========================
+
+The Sql for a demo skeleton database is available under database/10layer.sql. Once you've set up your database and 10Layer Sql user, you can install the database with the command: 
+mysql -u[username] -p [database] < 10layer.sql
+
+==========================
+==                      ==
+==   Accessing          ==
+==                      ==
+==========================
+
+If you used the install script, it should have set up a virtual host environment, which will work by resolving against your hostname. You'll find directories linked to host names under /var/www/virtual. If you want to add a virtual host name, simply symbolic link the original directory to the new host name. 
+
+Make sure the server knows its own name by pointing 127.0.0.1 to the hostname in /etc/hosts.
+
+To access the server, you may need to edit your DNS record or /etc/hosts file. Then point your browser at your server and, if everything went really well, you'll see the 10Layer login page.
+
+==========================
+==                      ==
+==   Documentation      ==
+==                      ==
+==========================
+
+See http://wiki.10layer.com

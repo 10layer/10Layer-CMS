@@ -1,0 +1,35 @@
+form input {
+	width: auto;
+	margin-top: 0px;
+}
+
+form input[type="submit"] {
+/*	margin-left: 0px;
+	font-size:0;
+	text-indent: -9999px;
+	margin-bottom: 10px;*/
+}
+
+form div.checked {
+	width: 60px;
+	height: 60px;
+	overflow:hidden;
+	background-image: url("/resources/images/ico_approvedeny2.png");
+	background-repeat: no-repeat;
+	background-position: 0px -60px;
+	text-indent: -1000px;
+}
+
+form div.unchecked {
+	width: 60px;
+	height: 60px;
+	overflow:hidden;
+	background-image: url("/resources/images/ico_approvedeny2.png");
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	text-indent: -1000px;
+}
+
+table tr {
+	background-color: #EFEFEF;
+}

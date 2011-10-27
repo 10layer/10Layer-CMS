@@ -1,0 +1,85 @@
+ul {
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	width: 40%;
+	min-height: 200px;
+	border: 1px #CCC solid;
+}
+
+ul.sortable li {
+	margin: 3px; padding: 3px; height: auto;
+	background-color: #fff;
+	cursor:move;
+	border: 1px #CCC solid;
+	width: 186px;
+	float: left;
+	font-size: 9pt;
+}
+
+.popup {
+	display: none;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100px;
+	height: 50px;
+	background-color: #FFF;
+	border: 1px #CCC solid;
+}
+
+.visible {
+	display: block;
+}
+
+.subsection {
+	width: 200px;
+	background-color: #a8ffac;
+}
+
+#subsections {
+	float: left;
+}
+
+#available_content {
+	float: left;
+	margin-left: 10px;
+	background-color: #ffb0ad;
+	width: 600px;
+	min-height: 20px;
+}
+
+#sectiontabs ul {
+	min-height: 20px;
+	float: left;
+}
+
+.ui-tabs-panel {
+	width: 900px;
+	margin-top: 20px;
+}
+
+#date_slider_container {
+	width: 300px;
+	float: left;
+}
+
+#date_slider.ui-slider-horizontal {
+	height: 0.3em;
+}
+
+#date_slider .ui-slider-handle {
+	width: 0.8em;
+	height: 0.8em;
+}
+
+#btn_submit {
+	float: left;
+	margin-right: 10px;
+}
+
+#search {
+	margin-left: 20px;
+	float: left;
+	padding-top: 5px;
+}

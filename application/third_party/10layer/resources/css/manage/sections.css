@@ -1,0 +1,89 @@
+.section_choice {
+	float: left;
+	margin-right: 2px;
+	padding-right: 2px;
+	border-right: 1px #CCC solid;
+}
+
+#section_main {
+	width: 800px;
+	background-color: #EEE;
+	border: 1px #AAA solid;
+	padding: 10px;
+	float: left;
+	min-height: 500px;
+}
+
+.zone {
+	width: 150px;
+	background-color: #CCC;
+	float: left;
+	margin-right: 10px;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+.zone_config {
+	display: none;
+}
+
+form input {
+	width: 130px;
+	margin-top: 8px;
+}
+
+form label {
+	font-size: 9pt;
+}
+
+input.title {
+	width: 140px;
+	font-size: 10pt;
+}
+
+#section_content_types {
+	margin-left: 10px;
+	float: left;
+	border: 1px #CCC solid;
+}
+
+.content_type {
+	border: 1px #CCC solid;
+	margin: 10px;
+	padding: 2px;
+	height: 40px;
+	width: 120px;
+	text-align: center;
+	cursor:move;
+	background-color: #FFF;
+}
+
+.zone_content_types {
+	border: 1px #FFF dashed;
+	min-height: 100px;
+	margin-top: 0px;
+}
+
+.zone_content_types_header {
+	background-color: #FFF;
+	color: #444;
+	margin-top: 10px;
+	padding: 3px;
+	border-bottom: none;
+}
+
+.actionbar {
+	width: 500px;
+	position: absolute;
+	margin-left: 300px;
+	margin-top: -50px;
+	text-align: right;
+}
+
+.zone_remove {
+	float: right;
+}
+
+#first_zone .zone_remove {
+	display: none;
+}

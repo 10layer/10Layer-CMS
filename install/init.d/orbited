@@ -1,0 +1,21 @@
+#! /bin/sh
+# /etc/init.d/orbited
+#
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting orbited"
+    exec orbited --config=/etc/orbited.cfg &
+    ;;
+  stop)
+    echo "Stopping orbited"
+    killall orbited
+    ;;
+  *)
+    echo "Usage: /etc/init.d/orbited {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0

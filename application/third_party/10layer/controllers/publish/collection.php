@@ -1,0 +1,71 @@
+<?php
+	/**
+	 * Collection class
+	 * 
+	 * @extends CI_Controller
+	 */
+	class Collection extends CI_Controller {
+
+		/**
+		 * __construct function.
+		 * 
+		 * @access public
+		 * @return void
+		 */
+		public function __construct() {
+			parent::__construct();
+			//$this->load->model("model_section");
+			$this->load->model("model_collections");
+			$this->load->model("model_site_sections","sections");
+			$this->load->model("model_zones","zones");
+			//$this->output->enable_profiler(true);
+		}
+	
+		public function _remap() {
+			
+			if ($this->uri->total_segments()==4) {
+				$this->layout();
+				return true;
+			}
+			$urlid=$this->uri->segment(3);
+			$content_type=$this->model_content->get_content_type($urlid);
+			$data["content_type"]=$content_type;
+			$data["menu1_active"]="publish";
+			$data["menu2_active"]="publish/collection/$urlid";
+			
+			$this->load->view('templates/header',$data);
+			$this->load->view("publish/collection");
+			$this->load->view("templates/footer");
+		}
+		
+		protected function layout() {
+			$cturlid=$this->uri->segment(3);
+			$urlid=$this->uri->segment(4);
+			$content_type=$this->model_content->get_content_type($cturlid);
+			$data["content_type"]=$content_type;
+			$data["menu1_active"]="publish";
+			$data["menu2_active"]="publish/collection/$cturlid";
+			$section=$this->sections->getByIdORM($urlid);
+			$sectiondata=$section->getData();
+			$zones=array();
+			if(is_array($sectiondata->zones)) {
+				foreach($sectiondata->zones as $zone) {
+					$zones[]=$this->zones->getByIdORM($zone);
+				}
+			}
+			//$data["layouts"]=$this->model_section->getLayouts($urlid);
+			//$data["subsections"]=$this->model_section->getSubSections($urlid);
+			$data["content"]=array();
+			$data["section_id"]=$section->content_id;
+			$data["section_urlid"]=$section->urlid;
+			$data["zones"]=$zones;
+			$data["section"]=$section;
+			$data["stylesheets"]=array("/tlresources/file/css/publish/section.css");
+			$this->load->view('templates/header',$data);
+			$this->load->view("publish/section",$data);
+			$this->load->view("templates/footer");
+		}
+	}
+
+/* End of file collection.php */
+/* Location: ./system/application/controllers/publish/ */

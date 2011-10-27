@@ -1,0 +1,1 @@
+<input type="file" name="<?= $field->tablename ?>_<?= $field->name ?>" value="<?= $field->value ?>" class="<?= $field->class ?>" />

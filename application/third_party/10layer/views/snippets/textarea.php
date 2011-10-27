@@ -1,0 +1,1 @@
+<textarea name="<?= $field->tablename ?>_<?= $field->name ?>" class="<?= $field->class ?>"><?= trim($field->value) ?></textarea>
