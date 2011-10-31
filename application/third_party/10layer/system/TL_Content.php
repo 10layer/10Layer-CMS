@@ -161,15 +161,15 @@ class TLContent {
 				$drilldown=true;
 			}
 		}
-		if (!$drilldown) {
+		//if (!$drilldown) {
 			$typearr[]="content_content.fieldname=''";
-		}
+		//}
 		$ci->db->where("content_id",$this->content_id);
 		$ci->db->where("(".implode(" OR ",$typearr).")");
-		//$ci->db->limit(100);
+		$ci->db->limit(100);
 		$query=$ci->db->get("content_content");
 		//print $ci->db->last_query()."\n";
-		if ($level>=4) {
+		if ($level>=2) {
 			return true;
 		}
 		foreach($query->result() as $row) {
