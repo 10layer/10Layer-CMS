@@ -25,7 +25,7 @@
 			$zone_id=$this->input->post("zone_id");
 			$zone_name=$this->input->post("zone_name");
 			$dbdata=array();
-			$x=0;
+			$x=1;
 			foreach($content as $content_id) {
 				$dbdata[]=array("content_id"=>$content_id,"rank"=>$x,"zone_urlid"=>$zone_id);
 				$x++;
