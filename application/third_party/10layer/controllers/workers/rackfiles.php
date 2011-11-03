@@ -24,7 +24,8 @@
 		public function upload_test() {
 			$this->cdn->init();
 			//$this->cdn->connectBucket("test");
-			$path="/var/www/test";
+			$path="/var/www/virtual/test";
+			$original_dir=$path;
 			$bucket="test";
 			if (is_dir($path)) {
 				print "Checking $path\n";
@@ -41,7 +42,7 @@
 								$dirs[] = $path;
 							} else {
 								$file = $path;
-								$object_name = ltrim(str_replace($path, '', $file), '/');
+								$object_name = ltrim(str_replace($original_dir, '', $file), '/');
 								print "Uploading $object_name ($file) \n";
 								$this->cdn->uploadFile($file, $bucket, $object_name);
 							}
@@ -65,7 +66,7 @@
 			if (is_dir($path)) {
 				print "Checking $path\n";
 				$dirs = array($path);
-				while (sizeof($dirs)) {
+				while (sizeof($dirs) > 0) {
 					$dir=array_pop($dirs);
 					if ($dh = opendir($dir)) {
 						while ($file = readdir($dh)) {
