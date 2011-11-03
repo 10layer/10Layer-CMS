@@ -31,11 +31,7 @@
  * Alternatively you can pass the credentials on init(), and set the cdn_service on object creation.
  *
  * ===Bugs===
- * There are still some bugs and the Amazon interface is particularly slow. Both Rackspace's and Amazon's PHP libraries are terribly buggy, 
- * which doesn't help matters.
- *
- *	Bug fix for cloudfiles_http.php +- line 230
- *       $url_path = $this->_make_path("CDN")."/?enabled_only=true"; //Change this line
+ * There are still some bugs and the Amazon interface is particularly slow. 
  * 
  * ===Roadmap===
  * I'm using this library in 10Layer, so it'll get whatever features I need. If there's something you want, or you just
@@ -44,7 +40,7 @@
  * @author Jason Norwood-Young jason@10layer.com
  * @company 10Layer http://www.10layer.com
  * @licence MIT License
- * @version 0.1
+ * @version 0.2
  * @date 15 November 2010
  *
  */	
@@ -442,6 +438,7 @@ class RackspaceCDN extends CDNAbstract {
 		if (empty($targetname)) {
 			$targetname=basename($filename);
 		}
+		$targetname=ltrim($targetname, "/");
 		$obj=$this->_bucket->create_object($targetname);
 		$obj->load_from_filename($filename);
 		return $obj->public_uri();
