@@ -439,7 +439,21 @@ class RackspaceCDN extends CDNAbstract {
 			$targetname=basename($filename);
 		}
 		$targetname=ltrim($targetname, "/");
-		$obj=$this->_bucket->create_object($targetname);
+		$tries=0;
+		$success=true;
+		while($tries<=3) { //Try 3 times, then give up
+			try {
+				$obj=$this->_bucket->create_object($targetname);
+				$success=true;
+				break;
+			} catch(Exception $e) {
+				$tries++;
+				trigger_error("CDN upload failed for $targetname on try $tries", E_USER_WARNING);
+			}
+		}
+		if (!$success) {
+			trigger_error("CDN upload failed after $tries times", E_ERROR);
+		}
 		$obj->load_from_filename($filename);
 		return $obj->public_uri();
 	}
