@@ -57,11 +57,22 @@
 		
 		public function upload($date=false) {
 			$this->cdn->init();
+			$bucket="test";
 			if (empty($date)) {
 				$date=date("Ymd");
 			}
 			$rootpath="./resources/uploads/issues/";
 			$path=$rootpath.$date;
+			
+			$files=$this->list_files($path, $rootpath);
+			print_r($files);
+			foreach($files as $file) {
+				set_time_limit(30);
+				print "Uploading $file \n";
+				flush();
+				$this->cdn->uploadFile($rootpath.$file, $bucket, $file);
+			}
+			/*die();
 			$bucket="test";
 			if (is_dir($path)) {
 				print "Checking $path\n";
@@ -89,7 +100,30 @@
 				}
 			} else {
 				print "$path isn't a directory - dying";
+			}*/
+		}
+		
+		
+		protected function list_files($dir, $exclude="") {
+			$result=array();
+			if (is_dir($dir)) {
+				$files=scandir($dir);
+				foreach($files as $file) {
+					if ($file[0]==".") {
+						continue;
+					}
+					if (is_dir($dir."/".$file)) {
+						$tmp=$this->list_files($dir."/".$file, $exclude);
+						foreach($tmp as $f) {
+							$result[]=$f;
+						}
+						continue;
+					} else {
+						$result[]=str_replace($exclude, "", $dir."/".$file);
+					}
+				}
 			}
+			return $result;
 		}
 	}
 
