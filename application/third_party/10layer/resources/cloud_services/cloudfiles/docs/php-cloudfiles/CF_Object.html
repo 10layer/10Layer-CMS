@@ -79,6 +79,7 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Object.html#var$container">$container</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#var$content_length">$content_length</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#var$content_type">$content_type</a></li>
+    <li><a href="../php-cloudfiles/CF_Object.html#var$headers">$headers</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#var$last_modified">$last_modified</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#var$manifest">$manifest</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#var$metadata">$metadata</a></li>
@@ -95,6 +96,7 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Object.html#methodgetETag">getETag</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#methodload_from_filename">load_from_filename</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#methodpublic_ssl_uri">public_ssl_uri</a></li>
+    <li><a href="../php-cloudfiles/CF_Object.html#methodpublic_streaming_uri">public_streaming_uri</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#methodpublic_uri">public_uri</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#methodpurge_from_cdn">purge_from_cdn</a></li>
     <li><a href="../php-cloudfiles/CF_Object.html#methodread">read</a></li>
@@ -125,7 +127,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 1629]<br />
+[line 1883]<br />
 Object operations<br /><br /><p>An Object is analogous to a file on a conventional filesystem. You can  read data from, or write data to your Objects. You can also associate  arbitrary metadata with them.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -136,7 +138,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$container"></a>
 	<p></p>
 	<h4>$container = <span class="value"></span></h4>
-	<p>[line 1631]</p>
+	<p>[line 1885]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -160,7 +162,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$content_length"></a>
 	<p></p>
 	<h4>$content_length = <span class="value"></span></h4>
-	<p>[line 1635]</p>
+	<p>[line 1889]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -184,7 +186,31 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$content_type"></a>
 	<p></p>
 	<h4>$content_type = <span class="value"></span></h4>
-	<p>[line 1634]</p>
+	<p>[line 1888]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$headers"></a>
+	<p></p>
+	<h4>$headers = <span class="value"></span></h4>
+	<p>[line 1891]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -208,7 +234,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$last_modified"></a>
 	<p></p>
 	<h4>$last_modified = <span class="value"></span></h4>
-	<p>[line 1633]</p>
+	<p>[line 1887]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -232,7 +258,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$manifest"></a>
 	<p></p>
 	<h4>$manifest = <span class="value"></span></h4>
-	<p>[line 1637]</p>
+	<p>[line 1892]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -256,7 +282,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$metadata"></a>
 	<p></p>
 	<h4>$metadata = <span class="value"></span></h4>
-	<p>[line 1636]</p>
+	<p>[line 1890]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -280,7 +306,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 1632]</p>
+	<p>[line 1886]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -310,7 +336,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 1647]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 1902]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -361,7 +387,7 @@ $container)</code>
   </div>
   <hr />
 	<a name="methodcompute_md5sum"></a>
-	<h3>method compute_md5sum <span class="smalllinenumber">[line 2235]</span></h3>
+	<h3>method compute_md5sum <span class="smalllinenumber">[line 2522]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -403,7 +429,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodgetETag"></a>
-	<h3>method getETag <span class="smalllinenumber">[line 2216]</span></h3>
+	<h3>method getETag <span class="smalllinenumber">[line 2503]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -428,7 +454,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodload_from_filename"></a>
-	<h3>method load_from_filename <span class="smalllinenumber">[line 2106]</span></h3>
+	<h3>method load_from_filename <span class="smalllinenumber">[line 2393]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -494,7 +520,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="methodpublic_ssl_uri"></a>
-	<h3>method public_ssl_uri <span class="smalllinenumber">[line 1796]</span></h3>
+	<h3>method public_ssl_uri <span class="smalllinenumber">[line 2052]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -524,8 +550,39 @@ $verify = True])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodpublic_streaming_uri"></a>
+	<h3>method public_streaming_uri <span class="smalllinenumber">[line 2077]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string public_streaming_uri(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		String representation of the Object's public Streaming URI<br /><br /><p>A string representing the Object's public Streaming URI assuming that it's  parent Container is CDN-enabled.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication/connection/container&nbsp;code&nbsp;excluded</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;see&nbsp;previous&nbsp;examples</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Print&nbsp;out&nbsp;the&nbsp;Object's&nbsp;CDN&nbsp;Streaming&nbsp;URI&nbsp;(if&nbsp;it&nbsp;has&nbsp;one)&nbsp;in&nbsp;an&nbsp;HTML&nbsp;img-tag</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;print&nbsp;<span class="src-str">&quot;</span><span class="src-str">&lt;img&nbsp;src='<span class="src-var">$pic</span><span class="src-sym">-&gt;</span><span class="src-id">public_streaming_uri</span>()'&nbsp;/&gt;\n</span><span class="src-str">&quot;</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Object's public Streaming URI or NULL</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodpublic_uri"></a>
-	<h3>method public_uri <span class="smalllinenumber">[line 1770]</span></h3>
+	<h3>method public_uri <span class="smalllinenumber">[line 2026]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -556,7 +613,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="methodpurge_from_cdn"></a>
-	<h3>method purge_from_cdn <span class="smalllinenumber">[line 2179]</span></h3>
+	<h3>method purge_from_cdn <span class="smalllinenumber">[line 2466]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -598,7 +655,7 @@ $email = null])</code>
   </div>
   <hr />
 	<a name="methodread"></a>
-	<h3>method read <span class="smalllinenumber">[line 1832]</span></h3>
+	<h3>method read <span class="smalllinenumber">[line 2113]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -647,7 +704,7 @@ $hdrs = array()])</code>
   </div>
   <hr />
 	<a name="methodsave_to_filename"></a>
-	<h3>method save_to_filename <span class="smalllinenumber">[line 2151]</span></h3>
+	<h3>method save_to_filename <span class="smalllinenumber">[line 2438]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -698,7 +755,7 @@ $filename)</code>
   </div>
   <hr />
 	<a name="methodset_etag"></a>
-	<h3>method set_etag <span class="smalllinenumber">[line 2203]</span></h3>
+	<h3>method set_etag <span class="smalllinenumber">[line 2490]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -725,7 +782,7 @@ $etag)</code>
   </div>
   <hr />
 	<a name="methodstream"></a>
-	<h3>method stream <span class="smalllinenumber">[line 1889]</span></h3>
+	<h3>method stream <span class="smalllinenumber">[line 2170]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -798,7 +855,7 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodsync_manifest"></a>
-	<h3>method sync_manifest <span class="smalllinenumber">[line 1976]</span></h3>
+	<h3>method sync_manifest <span class="smalllinenumber">[line 2263]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -839,7 +896,7 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodsync_metadata"></a>
-	<h3>method sync_metadata <span class="smalllinenumber">[line 1934]</span></h3>
+	<h3>method sync_metadata <span class="smalllinenumber">[line 2221]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -860,6 +917,12 @@ $fp)</code>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">&quot;Author&quot;&nbsp;</span>=&gt;&nbsp;<span class="src-str">&quot;EJ&quot;</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">&quot;Subject&quot;&nbsp;</span>=&gt;&nbsp;<span class="src-str">&quot;How&nbsp;to&nbsp;use&nbsp;the&nbsp;PHP&nbsp;tests&quot;</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">&quot;Version&quot;&nbsp;</span>=&gt;&nbsp;<span class="src-str">&quot;1.2.2&quot;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Define&nbsp;additional&nbsp;headers&nbsp;for&nbsp;the&nbsp;object</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$doc</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../php-cloudfiles/CF_Object.html#var$headers">headers</a>&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">&quot;Content-Disposition&quot;&nbsp;</span>=&gt;&nbsp;<span class="src-str">&quot;attachment&quot;</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Push&nbsp;the&nbsp;new&nbsp;metadata&nbsp;up&nbsp;to&nbsp;the&nbsp;storage&nbsp;system</span></div></li>
@@ -884,7 +947,7 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodwrite"></a>
-	<h3>method write <span class="smalllinenumber">[line 2010]</span></h3>
+	<h3>method write <span class="smalllinenumber">[line 2297]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -953,7 +1016,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="method_guess_content_type"></a>
-	<h3>method _guess_content_type <span class="smalllinenumber">[line 1708]</span></h3>
+	<h3>method _guess_content_type <span class="smalllinenumber">[line 1964]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -992,7 +1055,7 @@ $handle)</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 1681]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 1937]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1020,7 +1083,7 @@ $handle)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 25 Mar 2011 04:10:05 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 07 Sep 2011 15:19:57 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

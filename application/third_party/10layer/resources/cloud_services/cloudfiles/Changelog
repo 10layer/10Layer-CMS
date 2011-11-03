@@ -1,3 +1,6 @@
+1.7.10 Conrad Weidenkeller <conrad.weidenkeller@rackspace.com>
+  * Added Streaming URI Functionality
+
 1.7.9 Conrad Weidenkeller <conrad.weidenkeller@rackspace.com>
   * Added Manifest file support for Large Objects
 

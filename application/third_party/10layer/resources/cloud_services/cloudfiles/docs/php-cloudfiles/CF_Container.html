@@ -82,6 +82,7 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_enabled">$cdn_enabled</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_log_retention">$cdn_log_retention</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_ssl_uri">$cdn_ssl_uri</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_streaming_uri">$cdn_streaming_uri</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_ttl">$cdn_ttl</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_uri">$cdn_uri</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cfs_auth">$cfs_auth</a></li>
@@ -98,6 +99,8 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Container.html#method__construct">__construct</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodacl_referrer">acl_referrer</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodacl_user_agent">acl_user_agent</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodcopy_object_from">copy_object_from</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodcopy_object_to">copy_object_to</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_object">create_object</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_paths">create_paths</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methoddelete_object">delete_object</a></li>
@@ -108,6 +111,8 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Container.html#methodlog_retention">log_retention</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodmake_private">make_private</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodmake_public">make_public</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodmove_object_from">move_object_from</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodmove_object_to">move_object_to</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodpurge_from_cdn">purge_from_cdn</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#method__toString">__toString</a></li>
   </ul>
@@ -164,7 +169,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_acl_referrer"></a>
 	<p></p>
 	<h4>$cdn_acl_referrer = <span class="value"></span></h4>
-	<p>[line 931]</p>
+	<p>[line 932]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -188,7 +193,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_acl_user_agent"></a>
 	<p></p>
 	<h4>$cdn_acl_user_agent = <span class="value"></span></h4>
-	<p>[line 930]</p>
+	<p>[line 931]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -236,7 +241,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_log_retention"></a>
 	<p></p>
 	<h4>$cdn_log_retention = <span class="value"></span></h4>
-	<p>[line 929]</p>
+	<p>[line 930]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -260,6 +265,30 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_ssl_uri"></a>
 	<p></p>
 	<h4>$cdn_ssl_uri = <span class="value"></span></h4>
+	<p>[line 927]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdn_streaming_uri"></a>
+	<p></p>
+	<h4>$cdn_streaming_uri = <span class="value"></span></h4>
 	<p>[line 926]</p>
   <br /><br />
 <h4>Tags:</h4>
@@ -284,7 +313,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_ttl"></a>
 	<p></p>
 	<h4>$cdn_ttl = <span class="value"></span></h4>
-	<p>[line 928]</p>
+	<p>[line 929]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -308,7 +337,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_uri"></a>
 	<p></p>
 	<h4>$cdn_uri = <span class="value"></span></h4>
-	<p>[line 927]</p>
+	<p>[line 928]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -434,7 +463,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 945]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 946]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -512,7 +541,7 @@ $cfs_http)</code>
   </div>
   <hr />
 	<a name="methodacl_referrer"></a>
-	<h3>method acl_referrer <span class="smalllinenumber">[line 1165]</span></h3>
+	<h3>method acl_referrer <span class="smalllinenumber">[line 1167]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -565,7 +594,7 @@ $cdn_acl_referrer = &quot;&quot;])</code>
   </div>
   <hr />
 	<a name="methodacl_user_agent"></a>
-	<h3>method acl_user_agent <span class="smalllinenumber">[line 1125]</span></h3>
+	<h3>method acl_user_agent <span class="smalllinenumber">[line 1127]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -617,8 +646,164 @@ $cdn_acl_user_agent = &quot;&quot;])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodcopy_object_from"></a>
+	<h3>method copy_object_from <span class="smalllinenumber">[line 1601]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean copy_object_from(
+obj
+$obj, obj
+$container_source, [string
+$dest_obj_name = NULL], [array
+$metadata = NULL], [array
+$headers = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Copy a remote storage Object from a source Container<br /><br /><p>Given an Object instance or name and a source Container instance or name, copy copies the remote Object  and all associated metadata.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Copy&nbsp;specific&nbsp;object</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodcopy_object_from">copy_object_from</a><span class="src-sym">(</span><span class="src-str">&quot;disco_dancing.jpg&quot;</span><span class="src-sym">,</span><span class="src-str">&quot;container_source&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td><kbd>true</kbd> if successfully copied</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>SyntaxException invalid Object/Container name</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>NoSuchObjectException remote Object does not exist</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$obj</b>&nbsp;&nbsp;</td>
+        <td>name or instance of Object to copy</td>
+      </tr>
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$container_source</b>&nbsp;&nbsp;</td>
+        <td>name or instance of source Container</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dest_obj_name</b>&nbsp;&nbsp;</td>
+        <td>name of target object (optional - uses source name if omitted)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$metadata</b>&nbsp;&nbsp;</td>
+        <td>metadata array for new object (optional)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$headers</b>&nbsp;&nbsp;</td>
+        <td>header fields array for the new object (optional)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodcopy_object_to"></a>
+	<h3>method copy_object_to <span class="smalllinenumber">[line 1527]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean copy_object_to(
+obj
+$obj, obj
+$container_target, [string
+$dest_obj_name = NULL], [array
+$metadata = NULL], [array
+$headers = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Copy a remote storage Object to a target Container<br /><br /><p>Given an Object instance or name and a target Container instance or name, copy copies the remote Object  and all associated metadata.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Copy&nbsp;specific&nbsp;object</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodcopy_object_to">copy_object_to</a><span class="src-sym">(</span><span class="src-str">&quot;disco_dancing.jpg&quot;</span><span class="src-sym">,</span><span class="src-str">&quot;container_target&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td><kbd>true</kbd> if successfully copied</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>SyntaxException invalid Object/Container name</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>NoSuchObjectException remote Object does not exist</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$obj</b>&nbsp;&nbsp;</td>
+        <td>name or instance of Object to copy</td>
+      </tr>
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$container_target</b>&nbsp;&nbsp;</td>
+        <td>name or instance of target Container</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dest_obj_name</b>&nbsp;&nbsp;</td>
+        <td>name of target object (optional - uses source name if omitted)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$metadata</b>&nbsp;&nbsp;</td>
+        <td>metadata array for new object (optional)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$headers</b>&nbsp;&nbsp;</td>
+        <td>header fields array for the new object (optional)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodcreate_object"></a>
-	<h3>method create_object <span class="smalllinenumber">[line 1334]</span></h3>
+	<h3>method create_object <span class="smalllinenumber">[line 1337]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -664,7 +849,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodcreate_paths"></a>
-	<h3>method create_paths <span class="smalllinenumber">[line 1560]</span></h3>
+	<h3>method create_paths <span class="smalllinenumber">[line 1813]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -674,7 +859,7 @@ $path_name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Helper function to create &quot;path&quot; elements for a given Object name<br /><br /><p>Given an Object whos name contains '/' path separators, this function  will create the &quot;directory marker&quot; Objects of one byte with the  Content-Type of &quot;application/folder&quot;.</p><p>It assumes the last element of the full path is the &quot;real&quot; Object  and does NOT create a remote storage Object for that last element.</p><br /><br /><br />
+		Helper function to create &quot;path&quot; elements for a given Object name<br /><br /><p>Given an Object whos name contains '/' path separators, this function  will create the &quot;directory marker&quot; Objects of one byte with the  Content-Type of &quot;application/directory&quot;.</p><p>It assumes the last element of the full path is the &quot;real&quot; Object  and does NOT create a remote storage Object for that last element.</p><br /><br /><br />
 
 	
         <h4>Parameters:</h4>
@@ -691,13 +876,14 @@ $path_name)</code>
   </div>
   <hr />
 	<a name="methoddelete_object"></a>
-	<h3>method delete_object <span class="smalllinenumber">[line 1520]</span></h3>
+	<h3>method delete_object <span class="smalllinenumber">[line 1753]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>boolean delete_object(
 obj
-$obj)</code>
+$obj, [obj
+$container = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -739,13 +925,18 @@ $obj)</code>
         <td><b>$obj</b>&nbsp;&nbsp;</td>
         <td>name or instance of Object to delete</td>
       </tr>
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$container</b>&nbsp;&nbsp;</td>
+        <td>name or instance of Container in which the object resides (optional)</td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_object"></a>
-	<h3>method get_object <span class="smalllinenumber">[line 1363]</span></h3>
+	<h3>method get_object <span class="smalllinenumber">[line 1366]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -792,7 +983,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodget_objects"></a>
-	<h3>method get_objects <span class="smalllinenumber">[line 1471]</span></h3>
+	<h3>method get_objects <span class="smalllinenumber">[line 1474]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -877,7 +1068,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodis_public"></a>
-	<h3>method is_public <span class="smalllinenumber">[line 1306]</span></h3>
+	<h3>method is_public <span class="smalllinenumber">[line 1309]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -911,7 +1102,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodlist_objects"></a>
-	<h3>method list_objects <span class="smalllinenumber">[line 1412]</span></h3>
+	<h3>method list_objects <span class="smalllinenumber">[line 1415]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -996,7 +1187,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodlog_retention"></a>
-	<h3>method log_retention <span class="smalllinenumber">[line 1211]</span></h3>
+	<h3>method log_retention <span class="smalllinenumber">[line 1213]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1049,7 +1240,7 @@ $cdn_log_retention = False])</code>
   </div>
   <hr />
 	<a name="methodmake_private"></a>
-	<h3>method make_private <span class="smalllinenumber">[line 1261]</span></h3>
+	<h3>method make_private <span class="smalllinenumber">[line 1263]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1093,7 +1284,7 @@ $cdn_log_retention = False])</code>
   </div>
   <hr />
 	<a name="methodmake_public"></a>
-	<h3>method make_public <span class="smalllinenumber">[line 1030]</span></h3>
+	<h3>method make_public <span class="smalllinenumber">[line 1032]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1146,8 +1337,164 @@ $ttl = 86400])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodmove_object_from"></a>
+	<h3>method move_object_from <span class="smalllinenumber">[line 1716]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean move_object_from(
+obj
+$obj, obj
+$container_source, [string
+$dest_obj_name = NULL], [array
+$metadata = NULL], [array
+$headers = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Move a remote storage Object from a source Container<br /><br /><p>Given an Object instance or name and a source Container instance or name, move copies the remote Object  and all associated metadata and deletes the source Object afterwards</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Move&nbsp;specific&nbsp;object</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodmove_object_from">move_object_from</a><span class="src-sym">(</span><span class="src-str">&quot;disco_dancing.jpg&quot;</span><span class="src-sym">,</span><span class="src-str">&quot;container_target&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td><kbd>true</kbd> if successfully moved</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>SyntaxException invalid Object/Container name</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>NoSuchObjectException remote Object does not exist</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$obj</b>&nbsp;&nbsp;</td>
+        <td>name or instance of Object to move</td>
+      </tr>
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$container_source</b>&nbsp;&nbsp;</td>
+        <td>name or instance of target Container</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dest_obj_name</b>&nbsp;&nbsp;</td>
+        <td>name of target object (optional - uses source name if omitted)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$metadata</b>&nbsp;&nbsp;</td>
+        <td>metadata array for new object (optional)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$headers</b>&nbsp;&nbsp;</td>
+        <td>header fields array for the new object (optional)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodmove_object_to"></a>
+	<h3>method move_object_to <span class="smalllinenumber">[line 1676]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean move_object_to(
+obj
+$obj, obj
+$container_target, [string
+$dest_obj_name = NULL], [array
+$metadata = NULL], [array
+$headers = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Move a remote storage Object to a target Container<br /><br /><p>Given an Object instance or name and a target Container instance or name, move copies the remote Object  and all associated metadata and deletes the source Object afterwards</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Move&nbsp;specific&nbsp;object</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodmove_object_to">move_object_to</a><span class="src-sym">(</span><span class="src-str">&quot;disco_dancing.jpg&quot;</span><span class="src-sym">,</span><span class="src-str">&quot;container_target&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td><kbd>true</kbd> if successfully moved</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>SyntaxException invalid Object/Container name</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>NoSuchObjectException remote Object does not exist</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$obj</b>&nbsp;&nbsp;</td>
+        <td>name or instance of Object to move</td>
+      </tr>
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$container_target</b>&nbsp;&nbsp;</td>
+        <td>name or instance of target Container</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dest_obj_name</b>&nbsp;&nbsp;</td>
+        <td>name of target object (optional - uses source name if omitted)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$metadata</b>&nbsp;&nbsp;</td>
+        <td>metadata array for new object (optional)</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$headers</b>&nbsp;&nbsp;</td>
+        <td>header fields array for the new object (optional)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodpurge_from_cdn"></a>
-	<h3>method purge_from_cdn <span class="smalllinenumber">[line 1091]</span></h3>
+	<h3>method purge_from_cdn <span class="smalllinenumber">[line 1093]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1189,7 +1536,7 @@ $email = null])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 980]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 982]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1217,7 +1564,7 @@ $email = null])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 25 Mar 2011 04:10:05 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 07 Sep 2011 15:19:57 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

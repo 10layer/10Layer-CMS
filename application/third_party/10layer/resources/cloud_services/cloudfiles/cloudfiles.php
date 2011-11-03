@@ -923,6 +923,7 @@ class CF_Container
     public $bytes_used;
 
     public $cdn_enabled;
+    public $cdn_streaming_uri;
     public $cdn_ssl_uri;
     public $cdn_uri;
     public $cdn_ttl;
@@ -961,6 +962,7 @@ class CF_Container
         $this->cdn_enabled = NULL;
         $this->cdn_uri = NULL;
         $this->cdn_ssl_uri = NULL;
+        $this->cdn_streaming_uri = NULL;
         $this->cdn_ttl = NULL;
         $this->cdn_log_retention = NULL;
         $this->cdn_acl_user_agent = NULL;
@@ -1276,6 +1278,7 @@ class CF_Container
         $this->cdn_ttl = NULL;
         $this->cdn_uri = NULL;
         $this->cdn_ssl_uri = NULL;
+        $this->cdn_streaming_uri - NULL;
         $this->cdn_log_retention = NULL;
         $this->cdn_acl_user_agent = NULL;
         $this->cdn_acl_referrer = NULL;
@@ -1513,14 +1516,15 @@ class CF_Container
      *
      * @param obj $obj name or instance of Object to copy
      * @param obj $container_target name or instance of target Container
-		 * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
-		 * @param array $metadata metadata array for new object (optional)
-		 * @return boolean <kbd>true</kbd> if successfully copied
+     * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
+     * @param array $metadata metadata array for new object (optional)
+     * @param array $headers header fields array for the new object (optional)
+     * @return boolean <kbd>true</kbd> if successfully copied
      * @throws SyntaxException invalid Object/Container name
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function copy_object_to($obj,$container_target,$dest_obj_name=NULL,$metadata=NULL)
+    function copy_object_to($obj,$container_target,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
     {
         $obj_name = NULL;
         if (is_object($obj)) {
@@ -1552,7 +1556,7 @@ class CF_Container
             throw new SyntaxException("Container name target not set.");
         }
 
-        $status = $this->cfs_http->copy_object($obj_name,$dest_obj_name,$this->name,$container_name_target,$metadata);
+        $status = $this->cfs_http->copy_object($obj_name,$dest_obj_name,$this->name,$container_name_target,$metadata,$headers);
         if ($status == 404) {
             $m = "Specified object '".$this->name."/".$obj_name;
             $m.= "' did not exist as source to copy from or '".$container_name_target."' did not exist as target to copy to.";
@@ -1586,14 +1590,15 @@ class CF_Container
      *
      * @param obj $obj name or instance of Object to copy
      * @param obj $container_source name or instance of source Container
-		 * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
-		 * @param array $metadata metadata array for new object (optional)
+     * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
+     * @param array $metadata metadata array for new object (optional)
+     * @param array $headers header fields array for the new object (optional)
      * @return boolean <kbd>true</kbd> if successfully copied
      * @throws SyntaxException invalid Object/Container name
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function copy_object_from($obj,$container_source,$dest_obj_name=NULL,$metadata=NULL)
+    function copy_object_from($obj,$container_source,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
     {
         $obj_name = NULL;
         if (is_object($obj)) {
@@ -1625,7 +1630,7 @@ class CF_Container
             throw new SyntaxException("Container name source not set.");
         }
 
-        $status = $this->cfs_http->copy_object($obj_name,$dest_obj_name,$container_name_source,$this->name,$metadata);
+        $status = $this->cfs_http->copy_object($obj_name,$dest_obj_name,$container_name_source,$this->name,$metadata,$headers);
         if ($status == 404) {
             $m = "Specified object '".$container_name_source."/".$obj_name;
             $m.= "' did not exist as source to copy from or '".$this->name."/".$obj_name."' did not exist as target to copy to.";
@@ -1660,18 +1665,19 @@ class CF_Container
      *
      * @param obj $obj name or instance of Object to move
      * @param obj $container_target name or instance of target Container
-		 * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
-		 * @param array $metadata metadata array for new object (optional)
+     * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
+     * @param array $metadata metadata array for new object (optional)
+     * @param array $headers header fields array for the new object (optional)
      * @return boolean <kbd>true</kbd> if successfully moved
      * @throws SyntaxException invalid Object/Container name
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function move_object_to($obj,$container_target,$dest_obj_name=NULL,$metadata=NULL)
+    function move_object_to($obj,$container_target,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
     {
     	$retVal = false;
 
-        if(self::copy_object_to($obj,$container_target,$dest_obj_name,$metadata)) {
+        if(self::copy_object_to($obj,$container_target,$dest_obj_name,$metadata,$headers)) {
         	$retVal = self::delete_object($obj,$this->name);
         }
 
@@ -1699,18 +1705,19 @@ class CF_Container
      *
      * @param obj $obj name or instance of Object to move
      * @param obj $container_source name or instance of target Container
-		 * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
-		 * @param array $metadata metadata array for new object (optional)
+     * @param string $dest_obj_name name of target object (optional - uses source name if omitted)
+     * @param array $metadata metadata array for new object (optional)
+     * @param array $headers header fields array for the new object (optional)
      * @return boolean <kbd>true</kbd> if successfully moved
      * @throws SyntaxException invalid Object/Container name
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function move_object_from($obj,$container_source,$dest_obj_name=NULL,$metadata=NULL)
+    function move_object_from($obj,$container_source,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
     {
     	$retVal = false;
 
-        if(self::copy_object_from($obj,$container_source,$dest_obj_name,$metadata)) {
+        if(self::copy_object_from($obj,$container_source,$dest_obj_name,$metadata,$headers)) {
         	$retVal = self::delete_object($obj,$container_source);
         } 	
 
@@ -1829,7 +1836,7 @@ class CF_Container
      */
     private function _cdn_initialize()
     {
-        list($status, $reason, $cdn_enabled, $cdn_ssl_uri, $cdn_uri, $cdn_ttl,
+        list($status, $reason, $cdn_enabled, $cdn_ssl_uri, $cdn_streaming_uri, $cdn_uri, $cdn_ttl,
              $cdn_log_retention, $cdn_acl_user_agent, $cdn_acl_referrer) =
             $this->cfs_http->head_cdn_container($this->name);
         #if ($status == 401 && $this->_re_auth()) {
@@ -1840,6 +1847,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_enabled = $cdn_enabled;
+        $this->cdn_streaming_uri = $cdn_streaming_uri;
         $this->cdn_ssl_uri = $cdn_ssl_uri;
         $this->cdn_uri = $cdn_uri;
         $this->cdn_ttl = $cdn_ttl;
@@ -1880,6 +1888,7 @@ class CF_Object
     public $content_type;
     public $content_length;
     public $metadata;
+    public $headers;
     public $manifest;
     private $etag;
 
@@ -1909,6 +1918,7 @@ class CF_Object
         $this->content_type = NULL;
         $this->content_length = 0;
         $this->metadata = array();
+        $this->headers = array();
         $this->manifest = NULL;
         if ($dohead) {
             if (!$this->_initialize() && $force_exists) {
@@ -2046,6 +2056,31 @@ class CF_Object
         }
         return NULL;
     }
+    /**
+     * String representation of the Object's public Streaming URI
+     *
+     * A string representing the Object's public Streaming URI assuming that it's
+     * parent Container is CDN-enabled.
+     *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * # Print out the Object's CDN Streaming URI (if it has one) in an HTML img-tag
+     * #
+     * print "<img src='$pic->public_streaming_uri()' />\n";
+     * </code>
+     *
+     * @return string Object's public Streaming URI or NULL
+     */
+    function public_streaming_uri()
+    {
+        if ($this->container->cdn_enabled) {
+            return $this->container->cdn_streaming_uri . "/" . $this->name;
+        }
+        return NULL;
+    }
 
     /**
      * Read the remote Object's data
@@ -2169,6 +2204,12 @@ class CF_Object
      *     "Version" => "1.2.2"
      * );
      *
+     * # Define additional headers for the object
+     * #
+     * $doc->headers = array(
+     *     "Content-Disposition" => "attachment",
+     * );
+     *
      * # Push the new metadata up to the storage system
      * #
      * $doc->sync_metadata();
@@ -2179,7 +2220,7 @@ class CF_Object
      */
     function sync_metadata()
     {
-        if (!empty($this->metadata) || $this->manifest) {
+        if (!empty($this->metadata) || !empty($this->headers) || $this->manifest) {
             $status = $this->container->cfs_http->update_object($this);
             #if ($status == 401 && $this->_re_auth()) {
             #    return $this->sync_metadata();
@@ -2503,7 +2544,7 @@ class CF_Object
     private function _initialize()
     {
         list($status, $reason, $etag, $last_modified, $content_type,
-            $content_length, $metadata, $manifest) =
+            $content_length, $metadata, $manifest, $headers) =
                 $this->container->cfs_http->head_object($this);
         #if ($status == 401 && $this->_re_auth()) {
         #    return $this->_initialize();
@@ -2520,6 +2561,7 @@ class CF_Object
         $this->content_type = $content_type;
         $this->content_length = $content_length;
         $this->metadata = $metadata;
+        $this->headers = $headers;
         $this->manifest = $manifest;
         return True;
     }

@@ -29,16 +29,22 @@
  */
 require_once("cloudfiles_exceptions.php");
 
-define("PHP_CF_VERSION", "1.7.9");
+define("PHP_CF_VERSION", "1.7.10");
 define("USER_AGENT", sprintf("PHP-CloudFiles/%s", PHP_CF_VERSION));
+define("MAX_HEADER_NAME_LEN", 128);
+define("MAX_HEADER_VALUE_LEN", 256);
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
 define("CONTAINER_OBJ_COUNT", "X-Container-Object-Count");
 define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
-define("METADATA_HEADER", "X-Object-Meta-");
 define("MANIFEST_HEADER", "X-Object-Manifest");
+define("METADATA_HEADER_PREFIX", "X-Object-Meta-");
+define("CONTENT_HEADER_PREFIX", "Content-");
+define("ACCESS_CONTROL_HEADER_PREFIX", "Access-Control-");
+define("ORIGIN_HEADER", "Origin");
 define("CDN_URI", "X-CDN-URI");
 define("CDN_SSL_URI", "X-CDN-SSL-URI");
+define("CDN_STREAMING_URI", "X-CDN-Streaming-URI");
 define("CDN_ENABLED", "X-CDN-Enabled");
 define("CDN_LOG_RETENTION", "X-Log-Retention");
 define("CDN_ACL_USER_AGENT", "X-User-Agent-ACL");
@@ -54,6 +60,11 @@ define("AUTH_KEY_HEADER_LEGACY", "X-Storage-Pass");
 define("AUTH_TOKEN_LEGACY", "X-Storage-Token");
 define("CDN_EMAIL", "X-Purge-Email");
 define("DESTINATION", "Destination");
+define("ETAG_HEADER", "ETag");
+define("LAST_MODIFIED_HEADER", "Last-Modified");
+define("CONTENT_TYPE_HEADER", "Content-Type");
+define("CONTENT_LENGTH_HEADER", "Content-Length");
+define("USER_AGENT_HEADER", "User-Agent");
 
 /**
  * HTTP/cURL wrapper for Cloud Files
@@ -97,11 +108,13 @@ class CF_Http
     private $_obj_content_type;
     private $_obj_content_length;
     private $_obj_metadata;
+    private $_obj_headers;
     private $_obj_manifest;
     private $_obj_write_resource;
     private $_obj_write_string;
     private $_cdn_enabled;
     private $_cdn_ssl_uri;
+    private $_cdn_streaming_uri;
     private $_cdn_uri;
     private $_cdn_ttl;
     private $_cdn_log_retention;
@@ -153,8 +166,10 @@ class CF_Http
         $this->_obj_content_length = NULL;
         $this->_obj_metadata = array();
         $this->_obj_manifest = NULL;
+        $this->_obj_headers = NULL;
         $this->_cdn_enabled = NULL;
         $this->_cdn_ssl_uri = NULL;
+        $this->_cdn_streaming_uri = NULL;
         $this->_cdn_uri = NULL;
         $this->_cdn_ttl = NULL;
         $this->_cdn_log_retention = NULL;
@@ -251,7 +266,7 @@ class CF_Http
         }
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            array(0,$this->error_str,array());
+            return array(0,$this->error_str,array());
         }
         if ($return_code == 401) {
             return array($return_code,"Unauthorized",array());
@@ -395,17 +410,18 @@ class CF_Http
 
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            return array(0,$this->error_str,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+            return array(0,$this->error_str,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 401) {
-            return array($return_code,"Unauthorized",NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+            return array($return_code,"Unauthorized",NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 404) {
-            return array($return_code,"Account not found.",NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+            return array($return_code,"Account not found.",NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 204) {
             return array($return_code,$this->response_reason,
                 $this->_cdn_enabled, $this->_cdn_ssl_uri,
+                $this->_cdn_streaming_uri,
                 $this->_cdn_uri, $this->_cdn_ttl,
                 $this->_cdn_log_retention,
                 $this->_cdn_acl_user_agent,
@@ -413,7 +429,7 @@ class CF_Http
                 );
         }
         return array($return_code,$this->response_reason,
-                     NULL,NULL,NULL,
+                     NULL,NULL,NULL,NULL,
                      $this->_cdn_log_retention,
                      $this->_cdn_acl_user_agent,
                      $this->_cdn_acl_referrer,
@@ -514,7 +530,7 @@ class CF_Http
 
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            array(0,$this->error_str,0,0);
+            return array(0,$this->error_str,0,0);
         }
         if ($return_code == 404) {
             return array($return_code,"Account not found.",0,0);
@@ -559,16 +575,19 @@ class CF_Http
         $url_path = $this->_make_path("STORAGE", $container_name);
         $return_code = $this->_send_request("DEL_POST",$url_path,array(),"DELETE");
 
-        if (!$return_code) {
-            $this->error_str .= ": Failed to obtain valid HTTP response.";
-        }
-        if ($return_code == 409) {
+        switch ($return_code) {
+        case 204:
+            break;
+        case 0:
+            $this->error_str .= ": Failed to obtain valid HTTP response.";;
+            break;
+        case 409:
             $this->error_str = "Container must be empty prior to removing it.";
-        }
-        if ($return_code == 404) {
+            break;
+        case 404:
             $this->error_str = "Specified container did not exist to delete.";
-        }
-        if ($return_code != 204) {
+            break;
+        default:
             $this->error_str = "Unexpected HTTP return code: $return_code.";
         }
         return $return_code;
@@ -704,7 +723,7 @@ class CF_Http
 
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            array(0,$this->error_str,0,0);
+            return array(0,$this->error_str,0,0);
         }
         if ($return_code == 404) {
             return array($return_code,"Container not found.",0,0);
@@ -799,7 +818,7 @@ class CF_Http
         $conn_type = "PUT_OBJ";
         $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
 
-        $hdrs = $this->_metadata_headers($obj);
+        $hdrs = $this->_headers($obj);
 
         $etag = $obj->getETag();
         if (isset($etag)) {
@@ -855,25 +874,29 @@ class CF_Http
                 "Method argument is not a valid CF_Object.");
         }
 
-        if (!is_array($obj->metadata) && !$obj->manifest) {
-
-            $this->error_str = "Metadata array is empty.";
+        # TODO: The is_array check isn't in sync with the error message
+        if (!$obj->manifest && !(is_array($obj->metadata) || is_array($obj->headers))) {
+            $this->error_str = "Metadata and headers arrays are empty.";
             return 0;
         }
 
         $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
 
-        $hdrs = $this->_metadata_headers($obj);
+        $hdrs = $this->_headers($obj);
         $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
-        if (!$return_code) {
+        switch ($return_code) {
+        case 202:
+            break;
+        case 0:
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            return 0;
-        }
-        if ($return_code == 404) {
+            $return_code = 0;
+            break;
+        case 404:
             $this->error_str = "Account, Container, or Object not found.";
-        }
-        if ($return_code != 202) {
+            break;
+        default:
             $this->error_str = "Unexpected HTTP return code: $return_code";
+            break;
         }
         return $return_code;
     }
@@ -895,12 +918,12 @@ class CF_Http
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array(0, $this->error_str." ".$this->response_reason,
-                NULL, NULL, NULL, NULL, array(), NULL);
+                NULL, NULL, NULL, NULL, array(), NULL, array());
         }
 
         if ($return_code == 404) {
             return array($return_code, $this->response_reason,
-                NULL, NULL, NULL, NULL, array(), NULL);
+                NULL, NULL, NULL, NULL, array(), NULL, array());
         }
         if ($return_code == 204 || $return_code == 200) {
             return array($return_code,$this->response_reason,
@@ -909,16 +932,17 @@ class CF_Http
                 $this->_obj_content_type,
                 $this->_obj_content_length,
                 $this->_obj_metadata,
-                $this->_obj_manifest);
+                $this->_obj_manifest,
+                $this->_obj_headers);
         }
         $this->error_str = "Unexpected HTTP return code: $return_code";
         return array($return_code, $this->error_str." ".$this->response_reason,
-                NULL, NULL, NULL, NULL, array(), NULL);
+                NULL, NULL, NULL, NULL, array(), NULL, array());
     }
 
     # COPY /v1/Account/Container/Object
     #
-    function copy_object($src_obj_name, $dest_obj_name, $container_name_source, $container_name_target, $metadata=NULL)
+    function copy_object($src_obj_name, $dest_obj_name, $container_name_source, $container_name_target, $metadata=NULL, $headers=NULL)
     {
         if (!$src_obj_name) {
             $this->error_str = "Object name not set.";
@@ -945,28 +969,28 @@ class CF_Http
             return 0;
         }
 
-    	$conn_type = "COPY";
+        $conn_type = "COPY";
 
-        $url_path = $this->_make_path("STORAGE", $container_name_source, $src_obj_name);
-        $destination = $container_name_target."/".$dest_obj_name;
+        $url_path = $this->_make_path("STORAGE", $container_name_source, rawurlencode($src_obj_name));
+        $destination = rawurlencode($container_name_target."/".$dest_obj_name);
 
-        $hdrs = array(DESTINATION => $destination);
+        $hdrs = self::_process_headers($metadata, $headers);
+        $hdrs[DESTINATION] = $destination;
 
-        if($metadata)
-			self::_process_metadata($hdrs,$metadata);
-		
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs,"COPY");
-        if (!$return_code) {
+        switch ($return_code) {
+        case 201:
+            break;
+        case 0:
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            return 0;
-        }
-        if ($return_code == 404) {
+            $return_code = 0;
+            break;
+        case 404:
             $this->error_str = "Specified container/object did not exist.";
-        }
-        if ($return_code != 201) {
+            break;
+        default:
             $this->error_str = "Unexpected HTTP return code: $return_code.";
         }
-
         return $return_code;
     }
 
@@ -991,14 +1015,17 @@ class CF_Http
 
         $url_path = $this->_make_path("STORAGE", $container_name,$object_name);
         $return_code = $this->_send_request("DEL_POST",$url_path,NULL,"DELETE");
-        if (!$return_code) {
+        switch ($return_code) {
+        case 204:
+            break;
+        case 0:
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            return 0;
-        }
-        if ($return_code == 404) {
+            $return_code = 0;
+            break;
+        case 404:
             $this->error_str = "Specified container did not exist to delete.";
-        }
-        if ($return_code != 204) {
+            break;
+        default:
             $this->error_str = "Unexpected HTTP return code: $return_code.";
         }
         return $return_code;
@@ -1057,112 +1084,85 @@ class CF_Http
 
     private function _header_cb($ch, $header)
     {
-        preg_match("/^HTTP\/1\.[01] (\d{3}) (.*)/", $header, $matches);
-        if (isset($matches[1])) {
-            $this->response_status = $matches[1];
+        $header_len = strlen($header);
+
+        if (preg_match("/^(HTTP\/1\.[01]) (\d{3}) (.*)/", $header, $matches)) {
+            $this->response_status = $matches[2];
+            $this->response_reason = $matches[3];
+            return $header_len;
         }
-        if (isset($matches[2])) {
-            $this->response_reason = $matches[2];
-        }
-        if (stripos($header, CDN_ENABLED) === 0) {
-            $val = trim(substr($header, strlen(CDN_ENABLED)+1));
-            if (strtolower($val) == "true") {
-                $this->_cdn_enabled = True;
-            } elseif (strtolower($val) == "false") {
-                $this->_cdn_enabled = False;
-            } else {
-                $this->_cdn_enabled = NULL;
+
+        if (strpos($header, ":") === False)
+            return $header_len;
+        list($name, $value) = explode(":", $header, 2);
+        $value = trim($value);
+
+        switch (strtolower($name)) {
+        case strtolower(CDN_ENABLED):
+            $this->_cdn_enabled = strtolower($value) == "true";
+            break;
+        case strtolower(CDN_URI):
+            $this->_cdn_uri = $value;
+            break;
+        case strtolower(CDN_SSL_URI):
+            $this->_cdn_ssl_uri = $value;
+            break;
+        case strtolower(CDN_STREAMING_URI):
+            $this->_cdn_streaming_uri = $value;
+            break;
+        case strtolower(CDN_TTL):
+            $this->_cdn_ttl = $value;
+            break;
+        case strtolower(MANIFEST_HEADER):
+            $this->_obj_manifest = $value;
+            break;
+        case strtolower(CDN_LOG_RETENTION):
+            $this->_cdn_log_retention = strtolower($value) == "true";
+            break;
+        case strtolower(CDN_ACL_USER_AGENT):
+            $this->_cdn_acl_user_agent = $value;
+            break;
+        case strtolower(CDN_ACL_REFERRER):
+            $this->_cdn_acl_referrer = $value;
+            break;
+        case strtolower(ACCOUNT_CONTAINER_COUNT):
+            $this->_account_container_count = (float)$value+0;
+            break;
+        case strtolower(ACCOUNT_BYTES_USED):
+            $this->_account_bytes_used = (float)$value+0;
+            break;
+        case strtolower(CONTAINER_OBJ_COUNT):
+            $this->_container_object_count = (float)$value+0;
+            break;
+        case strtolower(CONTAINER_BYTES_USED):
+            $this->_container_bytes_used = (float)$value+0;
+            break;
+        case strtolower(ETAG_HEADER):
+            $this->_obj_etag = $value;
+            break;
+        case strtolower(LAST_MODIFIED_HEADER):
+            $this->_obj_last_modified = $value;
+            break;
+        case strtolower(CONTENT_TYPE_HEADER):
+            $this->_obj_content_type = $value;
+            break;
+        case strtolower(CONTENT_LENGTH_HEADER):
+            $this->_obj_content_length = (float)$value+0;
+            break;
+        case strtolower(ORIGIN_HEADER):
+            $this->_obj_headers[ORIGIN_HEADER] = $value;
+            break;
+        default:
+            if (strncasecmp($name, METADATA_HEADER_PREFIX, strlen(METADATA_HEADER_PREFIX)) == 0) {
+                $name = substr($name, strlen(METADATA_HEADER_PREFIX));
+                $this->_obj_metadata[$name] = $value;
             }
-            return strlen($header);
+            elseif ((strncasecmp($name, CONTENT_HEADER_PREFIX, strlen(CONTENT_HEADER_PREFIX)) == 0) ||
+                    (strncasecmp($name, ACCESS_CONTROL_HEADER_PREFIX, strlen(ACCESS_CONTROL_HEADER_PREFIX)) == 0)) {
+                $this->_obj_headers[$name] = $value;
+            }
         }
-        if (stripos($header, CDN_URI) === 0) {
-            $this->_cdn_uri = trim(substr($header, strlen(CDN_URI)+1));
-            return strlen($header);
-        }
-        if (stripos($header, CDN_SSL_URI) === 0) {
-            $this->_cdn_ssl_uri = trim(substr($header, strlen(CDN_SSL_URI)+1));
-            return strlen($header);
-        }
-        if (stripos($header, CDN_TTL) === 0) {
-            $this->_cdn_ttl = trim(substr($header, strlen(CDN_TTL)+1))+0;
-            return strlen($header);
-        }
-        if (stripos($header, MANIFEST_HEADER) === 0) {
-            $this->_obj_manifest = trim(substr($header, strlen(MANIFEST_HEADER)+1));
-            return strlen($header);
-        }
-        if (stripos($header, CDN_LOG_RETENTION) === 0) {
-            $this->_cdn_log_retention =
-                trim(substr($header, strlen(CDN_LOG_RETENTION)+1)) == "True" ? True : False;
-            return strlen($header);
-        }
-
-        if (stripos($header, CDN_ACL_USER_AGENT) === 0) {
-            $this->_cdn_acl_user_agent =
-                trim(substr($header, strlen(CDN_ACL_USER_AGENT)+1));
-            return strlen($header);
-        }
-
-        if (stripos($header, CDN_ACL_REFERRER) === 0) {
-            $this->_cdn_acl_referrer =
-                trim(substr($header, strlen(CDN_ACL_REFERRER)+1));
-            return strlen($header);
-        }
-        
-        if (stripos($header, ACCOUNT_CONTAINER_COUNT) === 0) {
-            $this->_account_container_count = (float) trim(substr($header,
-                    strlen(ACCOUNT_CONTAINER_COUNT)+1))+0;
-            return strlen($header);
-        }
-        if (stripos($header, ACCOUNT_BYTES_USED) === 0) {
-            $this->_account_bytes_used = (float) trim(substr($header,
-                    strlen(ACCOUNT_BYTES_USED)+1))+0;
-            return strlen($header);
-        }
-        if (stripos($header, CONTAINER_OBJ_COUNT) === 0) {
-            $this->_container_object_count = (float) trim(substr($header,
-                    strlen(CONTAINER_OBJ_COUNT)+1))+0;
-            return strlen($header);
-        }
-        if (stripos($header, CONTAINER_BYTES_USED) === 0) {
-            $this->_container_bytes_used = (float) trim(substr($header,
-                    strlen(CONTAINER_BYTES_USED)+1))+0;
-            return strlen($header);
-        }
-        if (stripos($header, METADATA_HEADER) === 0) {
-            # $header => X-Object-Meta-Foo: bar baz
-            $temp = substr($header, strlen(METADATA_HEADER));
-            # $temp => Foo: bar baz
-            $parts = explode(":", $temp);
-            # $parts[0] => Foo
-            $val = substr(strstr($temp, ":"), 1);
-            # $val => bar baz
-            $this->_obj_metadata[$parts[0]] = trim($val);
-            return strlen($header);
-        }
-        if (stripos($header, "ETag:") === 0) {
-            # $header => ETag: abc123def456...
-            $val = substr(strstr($header, ":"), 1);
-            # $val => abc123def456...
-            $this->_obj_etag = trim($val);
-            return strlen($header);
-        }
-        if (stripos($header, "Last-Modified:") === 0) {
-            $val = substr(strstr($header, ":"), 1);
-            $this->_obj_last_modified = trim($val);
-            return strlen($header);
-        }
-        if (stripos($header, "Content-Type:") === 0) {
-            $val = substr(strstr($header, ":"), 1);
-            $this->_obj_content_type = trim($val);
-            return strlen($header);
-        }
-        if (stripos($header, "Content-Length:") === 0) {
-            $val = substr(strstr($header, ":"), 1);
-            $this->_obj_content_length = (float) trim($val)+0;
-            return strlen($header);
-        }
-        return strlen($header);
+        return $header_len;
     }
 
     private function _read_cb($ch, $fd, $length)
@@ -1229,28 +1229,23 @@ class CF_Http
         if (is_array($hdrs)) {
             foreach ($hdrs as $h => $v) {
                 if (is_int($h)) {
-                    $parts = explode(":", $v);
-                    $header = $parts[0];
-                    $value = trim(substr(strstr($v, ":"), 1));
-                } else {
-                    $header = $h;
-                    $value = trim($v);
+                    list($h, $v) = explode(":", $v, 2);
                 }
 
-                if (stripos($header, AUTH_TOKEN) === 0) {
+                if (strncasecmp($h, AUTH_TOKEN, strlen(AUTH_TOKEN)) === 0) {
                     $has_stoken = True;
                 }
-                if (stripos($header, "user-agent") === 0) {
+                if (strncasecmp($h, USER_AGENT_HEADER, strlen(USER_AGENT_HEADER)) === 0) {
                     $has_uagent = True;
                 }
-                $new_headers[] = $header . ": " . $value;
+                $new_headers[] = $h . ": " . trim($v);
             }
         }
         if (!$has_stoken) {
             $new_headers[] = AUTH_TOKEN . ": " . $this->auth_token;
         }
         if (!$has_uagent) {
-            $new_headers[] = "User-Agent: " . USER_AGENT;
+            $new_headers[] = USER_AGENT_HEADER . ": " . USER_AGENT;
         }
         return $new_headers;
     }
@@ -1323,7 +1318,9 @@ class CF_Http
         $this->_obj_content_length = NULL;
         $this->_obj_metadata = array();
         $this->_obj_manifest = NULL;
+        $this->_obj_headers = NULL;
         $this->_obj_write_string = "";
+        $this->_cdn_streaming_uri = NULL;
         $this->_cdn_enabled = NULL;
         $this->_cdn_ssl_uri = NULL;
         $this->_cdn_uri = NULL;
@@ -1355,38 +1352,67 @@ class CF_Http
         return implode("/",$path);
     }
 
-    private function _metadata_headers(&$obj)
+    private function _headers(&$obj)
     {
-        $hdrs = array();
+        $hdrs = self::_process_headers($obj->metadata, $obj->headers);
         if ($obj->manifest)
             $hdrs[MANIFEST_HEADER] = $obj->manifest;
-
-        self::_process_metadata($hdrs,$obj->metadata);
 
         return $hdrs;
     }
 
-    private function _process_metadata(&$hdrs,$metadata)
+    private function _process_headers($metadata=null, $headers=null)
     {
-    	if(is_array($metadata))
-    	{
-	        foreach ($metadata as $k => $v) {
-	            if (strpos($k,":") !== False) {
-	                throw new SyntaxException(
-	                    "Metadata keys cannot contain a ':' character.");
-	            }
-	            $k = trim($k);
-	            $key = sprintf("%s%s", METADATA_HEADER, $k);
-	            if (!array_key_exists($key, $hdrs)) {
-	                if (strlen($k) > 128 || strlen($v) > 256) {
-	                    $this->error_str = "Metadata key or value exceeds ";
-	                    $this->error_str .= "maximum length: ($k: $v)";
-	                    return 0;
-	                }
-	                $hdrs[] = sprintf("%s%s: %s", METADATA_HEADER, $k, trim($v));
-	            }
-	        }
-    	}
+        $rules = array(
+            array(
+                'prefix' => METADATA_HEADER_PREFIX,
+            ),
+            array(
+                'prefix' => '',
+                'filter' => array( # key order is important, first match decides
+                    CONTENT_TYPE_HEADER          => false,
+                    CONTENT_LENGTH_HEADER        => false,
+                    CONTENT_HEADER_PREFIX        => true,
+                    ACCESS_CONTROL_HEADER_PREFIX => true,
+                    ORIGIN_HEADER                => true,
+                ),
+            ),
+        );
+
+        $hdrs = array();
+        $argc = func_num_args();
+        $argv = func_get_args();
+        for ($argi = 0; $argi < $argc; $argi++) {
+            if(!is_array($argv[$argi])) continue;
+
+            $rule = $rules[$argi];
+            foreach ($argv[$argi] as $k => $v) {
+                $k = trim($k);
+                $v = trim($v);
+                if (strpos($k, ":") !== False) throw new SyntaxException(
+                    "Header names cannot contain a ':' character.");
+
+                if (array_key_exists('filter', $rule)) {
+                    $result = null;
+                    foreach ($rule['filter'] as $p => $f) {
+                        if (strncasecmp($k, $p, strlen($p)) == 0) {
+                            $result = $f;
+                            break;
+                        }
+                    }
+                    if (!$result) throw new SyntaxException(sprintf(
+                        "Header name %s is not allowed", $k));
+                }
+
+                $k = $rule['prefix'] . $k;
+                if (strlen($k) > MAX_HEADER_NAME_LEN || strlen($v) > MAX_HEADER_VALUE_LEN)
+                    throw new SyntaxException(sprintf(
+                        "Header %s exceeds maximum length: %d/%d",
+                            $k, strlen($k), strlen($v)));
+
+                $hdrs[$k] = $v;
+            }
+        }
 
         return $hdrs;
     }
