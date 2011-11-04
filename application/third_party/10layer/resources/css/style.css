@@ -124,7 +124,7 @@ a {
 }
 
 #logo {
-	position: absolute;
+	position: fixed;
 	margin-left: 900px;
 	margin-top: -6px;
 }
@@ -802,3 +802,30 @@ ul.ui-tabs-nav {
 	text-align: left;
 	border-bottom: 2px #666 solid;
 	background-color: #DDD;
+}
+
+/*----Loader----*/
+
+/*#canvasloader-container {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	
+}
+
+#canvasloader-container #backdrop {
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	opacity: 0.6;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+}*/
+
+#canvasloader-container {
+	position: fixed;
+	top: 40px;
+	margin-left: 915px;
+	
+}

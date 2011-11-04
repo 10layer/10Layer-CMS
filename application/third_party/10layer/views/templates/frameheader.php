@@ -19,6 +19,7 @@
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery.tools.min.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery-ui-1.8.14.custom/development-bundle/ui/jquery-ui-1.8.14.custom.js"></script>
+	<script type="text/javascript" src="/tlresources/file/js/heartcode-canvasloader-min-0.9.js"></script>
 
 	
 	<script type="text/javascript" src="/tlresources/file/js/default.js"></script>
@@ -62,6 +63,8 @@
 </head> 
 <body>
 	<div id="container">
+		<div id="canvasloader-container" class="wrapper"></div>
+		<script type="text/javascript" src="/tlresources/file/js/loader.js"></script>
 		<?php
 			if (!empty($msg)) {
 		?>

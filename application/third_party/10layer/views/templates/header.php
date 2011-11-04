@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="/tlresources/file/css/style.css" type="text/css" media="screen, projection" charset="utf-8" />
 	<link rel="stylesheet" href="/tlresources/file/jquery/jquery-ui-1.8.14.custom/css/smoothness/jquery-ui-1.8.14.custom.css" type="text/css" media="screen, projection" charset="utf-8" />
 	
+	
 	<?php print $this->autoloader->stylesheet(); ?>
 	
 	<?php
@@ -28,6 +29,8 @@
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery.tools.min.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery-ui-1.8.14.custom/development-bundle/ui/jquery-ui-1.8.14.custom.js"></script>
+
+	<script type="text/javascript" src="/tlresources/file/js/heartcode-canvasloader-min-0.9.js"></script>
 	
 	
 	<script type="text/javascript" src="/tlresources/file/js/default.js"></script>
@@ -136,6 +139,9 @@
 	</div>
 	
 	<div id="wrapper" class="shadow whitegradient">
+		<div id="canvasloader-container" class="wrapper">
+		</div>
+		<script type="text/javascript" src="/tlresources/file/js/loader.js"></script>
 		<div id="cookiecrumbs">
 			
 			<?= cookiecrumb() ?>
