@@ -22,8 +22,8 @@
 
 	
 	<script type="text/javascript" src="/tlresources/file/js/default.js"></script>
-	<script type="text/javascript" src="/tlresources/file/js/orbited.js"></script>
-	<script type="text/javascript" src="/tlresources/file/js/stomp.js"></script>
+	<script type="text/javascript" src="http://<?= $this->config->item("comet_server") ?>:<?= $this->config->item("comet_port") ?>/static/Orbited.js"></script>
+	<script type="text/javascript" src="http://<?= $this->config->item("comet_server") ?>:<?= $this->config->item("comet_port") ?>/static/protocols/stomp/stomp.js"></script>
 	<script>  
 		document.domain = document.domain; 
 	</script>
