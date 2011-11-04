@@ -14,6 +14,14 @@
 			$("#dyncontent").html('<h1>Caught error</h1>'+xhr.responseText+'<a href="'+settings.url+'" target="_blank">Open error page</a>'); 
 		});
 		
+		$("#dyncontent").ajaxComplete(function() {
+			cl.hide();
+		});
+		
+		$("#dyncontent").ajaxStart(function() {
+			cl.show();
+		});
+		
 		$("#dyncontent").load("<?= base_url()."create/fullview/$type" ?>", function() {
 			initCKEditor();
 			

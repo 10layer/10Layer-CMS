@@ -13,6 +13,14 @@
 			$("#dyncontent").html(xhr.responseText); 
 		});
 		
+		$("#dyncontent").ajaxComplete(function() {
+			cl.hide();
+		});
+		
+		$("#dyncontent").ajaxStart(function() {
+			cl.show();
+		});
+		
 		$("#dyncontent").load("<?= base_url()."edit/fullview/$type/$urlid" ?>", function() { 
 			initCKEditor();
 			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"}); 

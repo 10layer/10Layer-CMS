@@ -4,6 +4,14 @@
 			$("#dyncontent").html(xhr.responseText); 
 		});
 		
+		$("#dyncontent").ajaxComplete(function() {
+			cl.hide();
+		});
+		
+		$("#dyncontent").ajaxStart(function() {
+			cl.show();
+		});
+		
 		$("#dyncontent").load("<?= base_url()."list/simple/{$content_type->urlid}/1" ?>", function() { 
 			 
 		});
