@@ -11,7 +11,8 @@ class Home extends CI_Controller {
 		if (!empty($contenttype)) {
 			redirect("edit/".$contenttype);
 		} else {
-			redirect("edit/article");
+			$types=$this->model_content->get_content_types(true);
+			redirect("create/".$types[0]->urlid);
 		}
 	}
 }
