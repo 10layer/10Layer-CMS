@@ -57,7 +57,7 @@
 		
 		public function upload($date=false) {
 			$this->cdn->init();
-			$bucket="test";
+			$bucket="imaverick";
 			if (empty($date)) {
 				$date=date("Ymd");
 			}
@@ -65,12 +65,11 @@
 			$path=$rootpath.$date;
 			
 			$files=$this->list_files($path, $rootpath);
-			print_r($files);
 			foreach($files as $file) {
 				set_time_limit(30);
 				print "Uploading $file \n";
 				flush();
-				$this->cdn->uploadFile($rootpath.$file, $bucket, $file);
+				$this->cdn->uploadFile($rootpath.$file, $bucket, "issues/".$file);
 			}
 			/*die();
 			$bucket="test";
