@@ -444,6 +444,7 @@ class RackspaceCDN extends CDNAbstract {
 		while($tries<=3) { //Try 3 times, then give up
 			try {
 				$obj=$this->_bucket->create_object($targetname);
+				$obj->load_from_filename($filename);
 				$success=true;
 				break;
 			} catch(Exception $e) {
@@ -454,7 +455,6 @@ class RackspaceCDN extends CDNAbstract {
 		if (!$success) {
 			trigger_error("CDN upload failed after $tries times", E_ERROR);
 		}
-		$obj->load_from_filename($filename);
 		return $obj->public_uri();
 	}
 	
