@@ -5,7 +5,9 @@
 	<script>
 		$(function() {
 			$("#<?= $field->contenttype ?>_embed").load("<?= base_url()."create/embed/".$field->contenttype ?>", function() {
-				initCKEditor();
+				if ($(".richedit").length) {
+					initCKEditor();
+				}
 				$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
 				
 			});
@@ -18,7 +20,6 @@
 	<script>
 		$(function() {
 			$("#<?= $field->contenttype ?>_embed").load("<?= base_url()."create/embed/".$field->contenttype ?>", function() {
-				initCKEditor();
 				$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
 			});
 		});

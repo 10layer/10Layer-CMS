@@ -127,6 +127,7 @@ a {
 	position: fixed;
 	margin-left: 900px;
 	margin-top: -6px;
+	z-index: 1000;
 }
 
 #wrapper {

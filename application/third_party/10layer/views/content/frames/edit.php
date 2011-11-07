@@ -21,9 +21,11 @@
 			cl.show();
 		});
 		
-		$("#dyncontent").load("<?= base_url()."edit/fullview/$type/$urlid" ?>", function() { 
-			initCKEditor();
-			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"}); 
+		$("#dyncontent").load("<?= base_url()."edit/fullview/$type/$urlid" ?>", function() {
+			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
+			if ($(".richedit").length) {
+				initCKEditor();
+			}
 		});
 		
 		$("#dyncontent").delegate(".pagination > a","click",function() {

@@ -23,7 +23,9 @@
 		});
 		
 		$("#dyncontent").load("<?= base_url()."create/fullview/$type" ?>", function() {
-			initCKEditor();
+			if ($(".richedit").length) {
+				initCKEditor();
+			}
 			
 			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
 		});
