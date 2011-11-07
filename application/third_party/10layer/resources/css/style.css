@@ -828,5 +828,6 @@ ul.ui-tabs-nav {
 	position: fixed;
 	top: 40px;
 	margin-left: 915px;
+	z-index: 1001;
 	
 }
