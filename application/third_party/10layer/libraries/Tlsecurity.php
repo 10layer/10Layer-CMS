@@ -133,6 +133,10 @@
 			if ($url=="/home" || empty($url)) {
 				return true;
 			}
+			//User accounts
+			if ($url=="manage/users/my_account") {
+				return true;
+			}
 			//Exact match
 			$permission=$this->ci->model_user->checkUrlPermission($this->ci->session->userdata("id"), $url);
 			if ($permission) {

@@ -56,11 +56,17 @@
 		}
 		
 		public function get_menus() {
+			if (!isset($this->data->menus)) {
+				return false;
+			}
 			return $this->data->menus;
 		}
 		
 		public function get_last_menu() {
 			$menus=$this->get_menus();
+			if (empty($menus)) {
+				return false;
+			}
 			$latest=0;
 			$item=false;
 			foreach($menus as $key=>$menu) {
@@ -86,6 +92,10 @@
 		
 		protected function get_data() {
 			$data=$this->ci->mongo_db->where(array("userid"=>$this->userid))->get("userprefs");
+			if (empty($data)) {
+				$this->data=false;
+				return false;
+			}
 			$this->data=$data[0];
 		}
 	}
