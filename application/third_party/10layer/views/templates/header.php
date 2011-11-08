@@ -60,18 +60,40 @@
 				}
 			});
 			if ($("#menu2_container").width() > 768) {
-				$("#menu2").scrollable({});
+				//$("#menu2").scrollable({});
 				$("#menu2_scrollr").show();
-				$("#menu2_scrolll").show();
-				$("#menu2_scrolll").button({
+				
+				//$("#menu2_scrolll").show();
+				/*$("#menu2_scrolll").button({
 					icons: { primary:"ui-icon-triangle-1-w" },
 					text: false
-				});
+				});*/
 				$("#menu2_scrollr").button({
-					icons: { primary:"ui-icon-triangle-1-e" },
+					icons: { primary:"ui-icon-triangle-1-s" },
 					text: false
 				});
-				
+				var showMenu=false;
+				$("#menu2_scrollr").click(function() {
+					if (showMenu) {
+						$("#menu2").animate({height:40}, 300, 
+							function() {
+								showMenu=false;
+								$("#menu2_scrollr").button({
+								icons: { primary:"ui-icon-triangle-1-s" },
+							});
+						});
+						
+					} else {
+						$("#menu2").animate({height:80}, 300, 
+						function() { 
+							showMenu=true;
+							$("#menu2_scrollr").button({
+								icons: { primary:"ui-icon-triangle-1-n" },
+							});
+							
+						});
+					}
+				});
 			} else {
 				
 			}

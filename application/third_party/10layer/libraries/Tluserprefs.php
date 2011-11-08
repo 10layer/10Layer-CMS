@@ -59,6 +59,31 @@
 			return $this->data->menus;
 		}
 		
+		public function get_last_menu() {
+			$menus=$this->get_menus();
+			$latest=0;
+			$item=false;
+			foreach($menus as $key=>$menu) {
+				if (isset($menu["last_click"]) && $menu["last_click"]>$latest) {
+					$item=$key;
+					$latest=$menu["last_click"];
+				}
+			}
+			return $item;
+		}
+		
+		public function get_menus_order() {
+			$menus=$this->get_menus();
+			$sortnames=array();
+			$sortvals=array();
+			foreach($menus as $key=>$menu) {
+				$sortnames[]=$key;
+				$sortvals[]=$menu;
+			}
+			array_multisort($sortvals, SORT_DESC, $sortnames);
+			return $sortnames;
+		}
+		
 		protected function get_data() {
 			$data=$this->ci->mongo_db->where(array("userid"=>$this->userid))->get("userprefs");
 			$this->data=$data[0];

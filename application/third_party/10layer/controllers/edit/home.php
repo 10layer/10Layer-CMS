@@ -7,7 +7,8 @@ class Home extends CI_Controller {
 	}
 	
 	function index() {
-		$contenttype=$this->session->userdata("contenttype");
+		$this->load->library("tluserprefs");
+		$contenttype=$this->tluserprefs->get_last_menu();
 		if (!empty($contenttype)) {
 			redirect("edit/".$contenttype);
 		} else {

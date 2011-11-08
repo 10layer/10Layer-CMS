@@ -4,11 +4,12 @@ class Home extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
-		$this->output->enable_profiler($this->config->item("profile"));		
+		$this->output->enable_profiler($this->config->item("profile"));
 	}
 	
 	function index() {
-		$contenttype=$this->session->userdata("contenttype");
+		$this->load->library("tluserprefs");
+		$contenttype=$this->tluserprefs->get_last_menu();
 		if (!empty($contenttype)) {
 			redirect("create/".$contenttype);
 		} else {

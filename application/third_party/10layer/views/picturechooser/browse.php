@@ -13,7 +13,13 @@
 	//console.log(window.top.opener.CKEDITOR);
 	$(function() {
 		
+		$("#picselect").ajaxComplete(function() {
+			cl.hide();
+		});
 		
+		$("#picselect").ajaxStart(function() {
+			cl.show();
+		});
 		
 		$("#picselect").load("/list/picture/0",function() {
 			search();
