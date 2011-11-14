@@ -9,8 +9,10 @@
 				$content_type=$ct;
 			}
 		}
+		if (isset($content_type->urlid)) {
 	?>
 	<div class="menuitem"><?= anchor("create/".$content_type->urlid,$content_type->name) ?></div>
 	<?php
+		}
 	}
 ?>
