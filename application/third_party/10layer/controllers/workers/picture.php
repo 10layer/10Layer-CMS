@@ -159,6 +159,20 @@
 		}
 		
 		protected function header($file=false) {
+			//Snippet from http://php.net/manual/en/function.getallheaders.php for nginx compatibility
+			if (!function_exists('apache_request_headers')) { 
+				function apache_request_headers() { 
+					foreach($_SERVER as $key=>$value) { 
+						if (substr($key,0,5)=="HTTP_") { 
+							$key=str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5))))); 
+							$out[$key]=$value; 
+						} else { 
+							$out[$key]=$value; 
+						}
+					}
+					return $out; 
+				} 
+			}
 			if (!empty($file)) {
 				$lastmod=filemtime($file);
 				$filesize=filesize($file);
@@ -167,19 +181,18 @@
 				$filesize=strlen($this->_im);
 			}
 			$cachemins=$this->_cachetime*60;
-			$headers = apache_request_headers(); 
+			$headers = apache_request_headers();
 			if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $lastmod)) {
-				header('Last-Modified: '.gmdate('D, d M Y H:i:s', $lastmod).' GMT', true, 304);
-				return false;
+			    header('Last-Modified: '.gmdate('D, d M Y H:i:s', $lastmod).' GMT', true, 304);
+			    return false;
 			} else {
-				header("Content-Type: image/jpeg");
-				header("Pragma: public");
-				//header("Cache-Control: max-age=".$cachemins);
-				header("Cache-Control: private");
-				header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$cachemins) . ' GMT');
-				header('Last-Modified: '.gmdate('D, d M Y H:i:s',$lastmod) . ' GMT',true,200);
-				header('Content-Length: '.$filesize);
-				return true;
+			    header("Content-Type: image/jpeg");
+			    header("Pragma: public");
+			    header("Cache-Control: private");
+			    header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$cachemins) . ' GMT');
+			    header('Last-Modified: '.gmdate('D, d M Y H:i:s',$lastmod) . ' GMT',true,200);
+			    header('Content-Length: '.$filesize);
+			    return true;
 			}
 		}
 		
