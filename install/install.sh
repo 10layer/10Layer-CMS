@@ -78,7 +78,7 @@ chown www-data:www-data /var/www/virtual
 apache2ctl restart
 
 echo "=== Installing magic development stuff ==="
-apt-get -y install python-setuptools build-essential python-dev mercurial-common git-core curl
+apt-get -y install python-setuptools build-essential python-dev mercurial-common git-core curl python-stompy
 easy_install pdfminer
 
 echo "=== Installing Orbited server ==="
