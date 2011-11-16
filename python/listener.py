@@ -40,9 +40,21 @@ def create(message):
 		syslog.syslog(syslog.LOG_INFO,  "Response: %s" % response)
 	except IOError:
 		syslog.syslog(syslog.LOG_ERR,  'Error opening %s' % urlStr)
+
+def publish(message):
+	syslog.syslog(syslog.LOG_INFO,  "Caught message Publish %s" % (message))
+	urlStr="%s/workers/eventapi/publish/%s" % (server, message)
+	try:
+		fh = urllib2.urlopen(urlStr)
+		response = fh.read()
+		fh.close()
+		syslog.syslog(syslog.LOG_INFO,  "Response: %s" % response)
+	except IOError:
+		syslog.syslog(syslog.LOG_ERR,  'Error opening %s' % urlStr)
 	
 listener=TenLayerListener()
 listener.add_callback({"callback":delete, "func":"delete"})
 listener.add_callback({"callback":edit, "func":"edit"})
 listener.add_callback({"callback":create, "func":"create"})
+listener.add_callback({"callback":publish, "func":"publish"})
 listener.listen()
