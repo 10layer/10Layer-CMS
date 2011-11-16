@@ -1,6 +1,8 @@
 <?php
 	/**
-	 *  class
+	 * Worker class
+	 *
+	 * Does all the heavy lifting for the Publish feature
 	 * 
 	 * @extends CI_Controller
 	 */
@@ -31,6 +33,8 @@
 				$x++;
 			}
 			$this->model_section->setContent($zone_id,$dbdata);
+			//$this->checkCallback("onAfterUpdate", $zone_id);
+			$this->messaging->post_action("publish",$zone_id);
 			//$subsection=$this->model_section->getSubSection($subsection_id);
 			print "Updated ".$zone_name;
 		}
@@ -44,6 +48,7 @@
 			$data["section_id"]=$section->content_id;
 			$this->load->view("publish/subsection",$data);
 		}
+		
 	}
 
 /* End of file worker.php */
