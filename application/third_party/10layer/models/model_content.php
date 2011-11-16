@@ -644,6 +644,42 @@
 			}
 			return $this->db->get("content_types")->row();
 		}
+		
+		/**
+		 * getParents function.
+		 * 
+		 * Looks for any objects that 'own' an object. You can limit it by certain
+		 * types by setting the second variable. Will take numeric ID or urlid. Returns an
+		 * array of content_ids
+		 *
+		 * @access public
+		 * @param $id ID or urlid
+		 * @return array
+		 */
+		public function getParents($id, $contenttype=false) {
+			if (is_numeric($id)) {
+				$item=$this->db->get_where("content",array("id"=>$id))->row();
+			} else {
+				$item=$this->db->get_where("content",array("urlid"=>$id))->row();
+			}
+			if (empty($item->urlid)) {
+				print "Error finding $id";
+				return false;
+			}
+			$content_id=$item->id;
+			if (!empty($contenttype)) {
+				$ct=$this->get_content_type($contenttype);
+				$this->db->join("content","content.id=content_content.content_id");
+				$this->db->where("content.content_type_id",$ct->id);
+			}
+			$this->db->where("content_link_id",$content_id);
+			$query=$this->db->get("content_content");
+			$result=array();
+			foreach($query->result() as $parent) {
+				$result[]=array("content_id"=>$parent->content_id, "urlid"=>$parent->urlid);
+			}
+			return $result;
+		}
 	}
 
 
