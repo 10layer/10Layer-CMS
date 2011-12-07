@@ -20,6 +20,14 @@
 		public function getAll() {
 			return $this->db->get_where("content_types",array("collection"=>true))->result();
 		}
+		
+		public function get($id) {
+			if (is_numeric($id)) {
+				return $this->db->get_where("content_types",array("collection"=>true, "id"=>$id))->row();
+			} else {
+				return $this->db->get_where("content_types",array("collection"=>true, "urlid"=>$id))->row();
+			}
+		}
 	}
 
 /* End of file model_collections.php */

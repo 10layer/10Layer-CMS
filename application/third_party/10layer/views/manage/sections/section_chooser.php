@@ -6,7 +6,7 @@
 		//print_r($sectionobj);
 		//if (empty($sectionobj->parent_section)) {
 ?>
-			<div class="section_choice"><?= anchor("manage/sections/section/".$section->urlid, $section->title) ?></div>
+			<div class="section_choice"><?= anchor("manage/collections/section/".$collectionurlid."/".$section->urlid, $section->title) ?></div>
 <?php
 		//}
 	}
