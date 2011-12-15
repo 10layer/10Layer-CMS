@@ -58,6 +58,11 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 							if ($dir[0]!="/") {
 								$dir="/".$dir;
 							}
+							while (strpos($dir,"{")!==false) {
+								$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
+								$replace=eval("return $part;");
+								$dir=str_replace("{".$part."}", $replace, $dir);
+							}
 							if (!is_dir(".".$dir)) {
 								mkdir(".".$dir, 0755, true);
 							}
@@ -334,6 +339,11 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 								$dir=$field->directory;
 								if ($dir[0]!="/") {
 									$dir="/".$dir;
+								}
+								while (strpos($dir,"{")!==false) {
+									$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
+									$replace=eval("return $part;");
+									$dir=str_replace("{".$part."}", $replace, $dir);
 								}
 								if (!is_dir(".".$dir)) {
 									mkdir(".".$dir, 0755, true);
