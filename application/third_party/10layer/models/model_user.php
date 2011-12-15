@@ -63,6 +63,23 @@
 			return false;
 		}
 		
+		/**
+		 * updateOtp function.
+		 * 
+		 * @access public
+		 * @param String $email
+		 * @return String OTP key
+		 */
+		public function updateOtp($email) {
+			$result=$this->db->get_where("tl_users",array("email"=>$email));
+			if ($result->num_rows()==0) {
+				return false;
+			}
+			$key=genkey("email");
+			$this->db->where("id", $result->row()->id)->update("tl_users", array("otp"=>$key));
+			return $key;
+		}
+		
 		public function checklogin() {
 			$id=$this->session->userdata("id");
 			if (!empty($id)) {
