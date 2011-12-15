@@ -1020,6 +1020,18 @@ class TLField {
 	public $readonly=false;
 	
 	/**
+	 * directory
+	 * 
+	 * Override the default directory for saving content
+	 *
+	 * (default value: false)
+	 * 
+	 * @var string
+	 * @access public
+	 */
+	public $directory=false;
+	
+	/**
 	 * contenttypes
 	 * 
 	 * An array of content types (primarily for searching when contenttype is 'mixed'

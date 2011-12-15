@@ -53,6 +53,18 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 					if ($field->type=="file") {
 					//Process file uploads
 						$dir="/resources/uploads/files/original/".date("Y")."/".date("m")."/".date("d")."/";
+						if (!empty($field->directory)) {
+							$dir=$field->directory;
+							if ($dir[0]!="/") {
+								$dir="/".$dir;
+							}
+							if (!is_dir(".".$dir)) {
+								mkdir(".".$dir, 0755, true);
+							}
+							if (!is_dir(".".$dir)) {
+								show_error("Unable to create directory $dir");
+							}
+						}
 						$basedir=".".$dir;
 						if (!file_exists($basedir)) {
 							if (!mkdir($basedir, 0755, true)) {
@@ -315,11 +327,23 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				} else {
 					if ($field->type=="file") {
 					//Process file uploads
-						
 						if (!$returndata["error"] && (!empty($_FILES[$field->tablename."_".$field->name]["name"]))) {
 							$dir="/resources/uploads/files/original/".date("Y")."/".date("m")."/".date("d")."/";
 							$cachedir="/resources/uploads/pictures/cache/";
+							if (!empty($field->directory)) {
+								$dir=$field->directory;
+								if ($dir[0]!="/") {
+									$dir="/".$dir;
+								}
+								if (!is_dir(".".$dir)) {
+									mkdir(".".$dir, 0755, true);
+								}
+								if (!is_dir(".".$dir)) {
+									show_error("Unable to create directory $dir");
+								}
+							}
 							$basedir=".".$dir;
+							
 							if (!file_exists($basedir)) {
 								if (!mkdir($basedir, 0755, true)) {
 									$returndata["error"]=true;
