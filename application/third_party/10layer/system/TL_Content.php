@@ -307,6 +307,9 @@ class TLContent {
 		if (empty($field["contenttype"])) {
 			$field["contenttype"]=$this->content_type->urlid;
 		}
+		if ($field["contenttype"]!=$this->content_type->urlid) {
+			$field["external"]=true;
+		}
 		$this->fields[$field["name"]]=new TLField($field);
 		return $this;
 	}
@@ -841,6 +844,18 @@ class TLField {
 	 * @access public
 	 */
 	public $tablename=false;
+	
+	/**
+	 * external
+	 * 
+	 * Is this an external table field?
+	 *
+	 * (default value: false)
+	 * 
+	 * @var bool
+	 * @access public
+	 */
+	public $external=false;
 	
 	/**
 	 * label
