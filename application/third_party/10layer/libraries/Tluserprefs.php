@@ -42,7 +42,10 @@
 				$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs",array("menus"=>$data));
 				$this->get_data();
 			}
-			$data=$this->data->menus;
+			$data=false;
+			if (isset($this->data->menus)) {
+				$data=$this->data->menus;
+			}
 			if (!empty($data[$menuitem]["click_count"])) {
 				$data[$menuitem]["click_count"]++;
 				$data[$menuitem]["last_click"]=time();
@@ -57,7 +60,7 @@
 		
 		public function get_menus() {
 			if (!isset($this->data->menus)) {
-				return false;
+				return array();
 			}
 			return $this->data->menus;
 		}

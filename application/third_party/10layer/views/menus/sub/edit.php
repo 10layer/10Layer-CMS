@@ -2,6 +2,12 @@
 	$content_types=$this->model_content->get_content_types();
 	$this->load->library("tluserprefs");
 	$usermenus=$this->tluserprefs->get_menus_order();
+	if (empty($usermenus)) {
+		$usermenus=array();
+		foreach($content_types as $ct) {
+			$usermenus[]=$ct->urlid;
+		}
+	}
 	foreach($usermenus as $usermenu) {
 		$content_type=false;
 		foreach($content_types as $ct) {
