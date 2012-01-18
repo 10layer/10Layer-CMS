@@ -17,10 +17,12 @@ class Home extends CI_Controller {
 	
 	public function index() {
 		$this->load->model("model_collections");
-		$data["collections"]=$this->model_collections->getAll();
-		$data["menu1_active"]="publish";
+		$collections=$this->model_collections->getAll();
+
+		redirect("publish/collection/".$collections[0]->urlid);
+		/*$data["menu1_active"]="publish";
 		$this->load->view('templates/header',$data);
-		$this->load->view("templates/footer");
+		$this->load->view("templates/footer");*/
 	}
 }
 

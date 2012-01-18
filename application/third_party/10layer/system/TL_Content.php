@@ -103,6 +103,8 @@ class TLContent {
 		$query=$ci->db->get("content");
 		if (empty($query->row()->urlid)) {
 			show_error("Failed to find content id $id");
+			//Rather throw this error
+			//throw new Exception("Failed to find content id $id");
 		}
 		$this->urlid=$query->row()->urlid;
 		$this->content_id=$query->row()->id;

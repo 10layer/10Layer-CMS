@@ -7,17 +7,12 @@
 			<?php
 				if (is_array($published_articles)) {
 					foreach($published_articles as $item) {
-						
-						//if ($item->zone_urlid==$zone->urlid) {
-							//print_r($item);
-							//die();
 			?>		
-					<li class="sectionrow" id="content=<?= $item->content_id ?>" urlid="<?= $item->content_id ?>">
-						<img style="float: left; margin-right: 5px" src="/workers/picture/display/<?= $item->content_id ?>/cropThumbnailImage/50/40" /><?= $item->getData()->title ?> <?= anchor("edit/".$item->content_type->urlid."/".$item->content_id, "Edit", "target='_blank'") ?>
+					<li class="sectionrow" id="content=<?= $item->id ?>" urlid="<?= $item->urlid ?>">
+						<img style="float: left; margin-right: 5px" src="/workers/picture/display/<?= $item->urlid ?>/cropThumbnailImage/50/40" /><?= $item->title ?> <?= anchor("edit/".$item->content_type_urlid."/".$item->urlid, "Edit", "target='_blank'") ?>
 					</li>
 			<?php
 						}
-					//}
 				}
 			?>
 				<br style="clear:both" />

@@ -90,12 +90,21 @@
 			$published_articles=array();
 			$published_ids=array();
 			foreach($published_list as $article) {
-				$published_ids[]=$article->content_id;
-				$published_articles[]=new TLContent($article->content_id);
+				//We need to make sure the ID exists
+				if (isset($article->content_id)) {
+					$query=$this->db->select("content.*, content_types.urlid AS content_type_urlid")->join("content_types","content_types.id=content.content_type_id")->where("content.id", $article->content_id)->get("content");
+					if ($query->num_rows()==1) {
+						$published_ids[]=$article->content_id;
+						//print $article->content_id;
+						try {
+							$published_articles[]=$query->row();
+						} catch(exception $e) {
+							
+						}
+					}
+				}
 			}
-			
 			$contenttypes=explode(",",$zone->content_types);
-			
 			if (is_array($contenttypes)) {
 				foreach($contenttypes as $ct) {
 					$query=$this->db->get_where("content_types",array("urlid"=>$ct));

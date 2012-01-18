@@ -40,7 +40,12 @@
 		}
 		
 		public function subsection($section_urlid, $zone_urlid, $startdate=false, $enddate=false, $searchstr="") {
+			if ($zone_urlid=="undefined") {
+				print "This zone is undefined.";
+				return true;
+			}
 			$section=$this->sections->getByIdORM($section_urlid);
+			
 			$data["zone"]=$this->zones->getByIdORM($zone_urlid)->getData();
 			$articles=$this->model_section->getContentInQueue(array("queued_for_publishing", "published"),$zone_urlid,$startdate,$enddate, $searchstr);
 			$data["content"]=$articles["unpublished"];
