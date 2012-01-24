@@ -10,7 +10,7 @@ class Home extends CI_Controller {
 	function index() {
 		$data["menu1_active"]="home";
 		$this->load->view('templates/header',$data);
-		$this->load->view('home/logo',$data);
+		$this->load->view('home/custom',$data);
 		$this->load->view("templates/footer");
 	}
 }

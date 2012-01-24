@@ -30,6 +30,10 @@
 			return $query->result();
 		}
 		
+		public function getAll() {
+			return $this->db->get("tl_workflows")->result();
+		}
+		
 		public function getContentInQueue_deprecated($urlid, $subsection=false, $startdate=false, $enddate=false, $limit=50, $start=0) {
 		//This is now managed in model_section - Deprecated
 			$ctids=array();

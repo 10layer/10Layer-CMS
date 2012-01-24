@@ -57,6 +57,16 @@
 				}
 			}
 		}
+		
+		public function togglelive($content_type, $urlid) {
+			$contentobj=$this->model_content->getByIdORM($urlid, $content_type);
+			//print_r($contentobj->fields);
+			//die();
+			$contentobj->fields["live"]->value=!$contentobj->fields["live"]->value;
+			$contentobj->update();
+			print json_encode(array("live"=>$contentobj->fields["live"]->value));
+			return true;
+		}
 	}
 
 /* End of file change.php */

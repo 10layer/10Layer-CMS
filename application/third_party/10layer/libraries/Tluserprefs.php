@@ -101,4 +101,52 @@
 			}
 			$this->data=$data[0];
 		}
+		
+		public function set_queue($queueid,$data) {
+			//print_r($data);
+			if (isset($this->data->queues)) {
+				$queues=$this->data->queues;
+			} else {
+				$this->user_setup();
+				$queues=array();
+			}
+			if (isset($this->data->queues[$queueid])) {
+				//print_r($this->data->queues[$queueid]);
+				
+				$queues[$queueid]=array_replace_recursive((array) $queues[$queueid], (array) $data);
+				//print_r($queues[$queueid]);
+			} else {
+				$queues[$queueid]=(array) $data;
+			}
+			//$thisqueue=$queues[$queue];
+			//print_r($queues);
+			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
+		}
+		
+		public function set_queue_name($queueid, $name) {
+			if (isset($this->data->queues)) {
+				$queues=$this->data->queues;
+			} else {
+				$this->user_setup();
+				$queues=array();
+			}
+			$queues[$queueid]["name"]=$name;
+			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
+		}
+		
+		public function get_queue($queue) {
+			if (isset($this->data->queues[$queue])) {
+				return $this->data->queues[$queue];
+			} else {
+				return array();
+			}
+		}
+		
+		public function get_queues() {
+			if (isset($this->data->queues)) {
+				return $this->data->queues;
+			} else {
+				return array();
+			}
+		}
 	}
