@@ -13,7 +13,7 @@ class Home extends CI_Controller {
 			redirect("edit/".$contenttype);
 		} else {
 			$types=$this->model_content->get_content_types(true);
-			redirect("create/".$types[0]->urlid);
+			redirect("edit/".$types[0]->urlid);
 		}
 	}
 }
