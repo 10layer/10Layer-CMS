@@ -42,6 +42,7 @@
 			$this->load->model($contenttype->model, "content");
 			$obj=$this->content->getByIdORM($urlid, $contenttype_urlid);
 			$this->data["data"]=$obj->getFull();
+			$this->data["data"]->content_type=$contenttype_urlid;
 			$this->returndata();
 		}
 		
