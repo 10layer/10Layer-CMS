@@ -33,8 +33,10 @@ ul.sortable li {
 }
 
 .subsection {
-	width: 200px;
+	width: 220px;
 	background-color: #a8ffac;
+	height: 500px;
+	overflow: auto;
 }
 
 #subsections {
@@ -45,8 +47,10 @@ ul.sortable li {
 	float: left;
 	margin-left: 10px;
 	background-color: #ffb0ad;
-	width: 600px;
+	width: 620px;
 	min-height: 20px;
+	height: 500px;
+	overflow: auto;
 }
 
 #sectiontabs ul {
