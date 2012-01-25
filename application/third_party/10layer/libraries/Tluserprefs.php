@@ -117,6 +117,7 @@
 				//print_r($queues[$queueid]);
 			} else {
 				$queues[$queueid]=(array) $data;
+				$queues[$queueid]["id"]=$queueid;
 			}
 			//$thisqueue=$queues[$queue];
 			//print_r($queues);
@@ -131,12 +132,13 @@
 				$queues=array();
 			}
 			$queues[$queueid]["name"]=$name;
+			$queues[$queueid]["id"]=$queueid;
 			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
 		}
 		
-		public function get_queue($queue) {
-			if (isset($this->data->queues[$queue])) {
-				return $this->data->queues[$queue];
+		public function get_queue($queueid) {
+			if (isset($this->data->queues[$queueid])) {
+				return $this->data->queues[$queueid];
 			} else {
 				return array();
 			}
@@ -148,5 +150,11 @@
 			} else {
 				return array();
 			}
+		}
+		
+		public function delete_queue($queueid) {
+			$queues=$this->data->queues;
+			unset($queues[$queueid]);
+			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
 		}
 	}

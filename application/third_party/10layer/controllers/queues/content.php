@@ -60,11 +60,15 @@
 			print json_encode($query->result());
 		}
 		
-		public function queues() {
+		public function queues($queueid=false) {
 			$json=$this->input->post("model", true);
+			$method=$this->input->post("_method");
+			if ($method=="DELETE") {
+				$this->tluserprefs->delete_queue($queueid);
+			}
 			if (!empty($json)) {
 				$data=json_decode($json);
-				$this->tluserprefs->set_queue_name($data->order, $data->name);
+				$this->tluserprefs->set_queue_name($data->id, $data->name);
 			}
 			$queues=$this->tluserprefs->get_queues();
 			print json_encode(array_values($queues));

@@ -14,13 +14,15 @@
 		queueModel=Backbone.Model.extend({
 			defaults: function() {
 				queuecount++;
+				id=Math.round(new Date().getTime()/1000);
 				return {
 					name: "Queue "+queuecount,
 					order: queuecount,
+					id: id,
 				}
 			},
 			url: function() {
-				return "/queues/content/queues/"+this.get("order");
+				return "/queues/content/queues/"+this.get("id");
 			},
 		});
 		
@@ -34,10 +36,10 @@
 			className: "queue",
 			template: _.template($("#queue-template").html()),
 			firstrun: true,
-			queueid: 0,
+			queueid: function() { return this.model.get("id") },
 			render: function() {
+				this.queueid=this.model.get("id");
 				var root=this;
-				this.queueid=root.model.get("order");
 				$(this.el).html(this.template(this.model.toJSON()));
 				this.nameinput=this.$(".queuename-edit");
 				this.nameinput.bind('blur', _.bind(this.saveName, this));
@@ -54,6 +56,36 @@
     	    		}
 		        );
 		        
+		        this.$(".options_close").button({
+		        	icons: {
+        				primary: "ui-icon-close",
+		        	},
+        			text: false,
+		        })
+		        .click(
+		        	function() {
+		        		$( "#dialog_confirm_queue_delete" ).dialog({
+		        			resizable: false,
+							height:140,
+							modal: true,
+							buttons: {
+								"Delete": function() {
+									root.model.destroy({success: function() {
+		        						$(root.el).hide();
+		    			    			queuecount--;
+					        		}});
+									$( this ).dialog( "close" );
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+								}
+							}
+						});
+		        		
+		        		
+		        	}	
+		        );
+		        
 		        this.content=new contentCollection;
 		        this.content.queueid=this.queueid;
 		        this.content.bind("reset", this.contentRender, this);
@@ -65,7 +97,7 @@
 				this.contenttypes.fetch({success: function() {
 					root.contenttypes.each(function(model) {
 						model.content=this.content;
-						model.set({ "queueid": root.model.get("order")}); 
+						model.set({ "queueid": root.model.get("id")}); 
 					});
 				}});
 				this.contenttypes.bind("saved", function(e) { this.content.fetch() }, this);
@@ -75,7 +107,7 @@
 				this.workflows.bind("reset", this.workflowsSetup, this);
 				this.workflows.fetch({success: function() {
 					root.workflows.each(function(model) {
-						model.set({ "queueid": root.model.get("order")}); 
+						model.set({ "queueid": root.model.get("id")}); 
 					});
 				}});
 				this.workflows.bind("saved", function(e) { this.content.fetch() }, this);
@@ -103,21 +135,20 @@
 			
 			contentRender: function(content) {
 				var root=this;
-				//console.log("contentRender");
-				$("#queue_"+root.queueid).children(" .queue-content").empty();
+				$(this.el).find(".queue-content").empty();
 				content.each(function(ct) {
 					var view=new ContentItemView({model: ct});
-					this.$("#queue_"+root.queueid+" .queue-content").append(view.render().el);
+					$(root.el).find(".queue-content").append(view.render().el);
 				});
 			},
 			
 			contenttypesSetup: function(contenttypes) {
-				root=this;
+				var root=this;
 				//console.log("contenttypesSetup");
 				//this.$("#queue_"+root.queueid+" .contenttypes").append("<div><span class='checkhelp select-all'>All</span> | <span class='checkhelp select-none'>None</span></div>");
 				contenttypes.each(function(ct) {
 					var view=new contenttypeView({model: ct});
-					this.$("#queue_"+root.queueid+" .contenttypes").append(view.render().el);
+					$(root.el).find(".contenttypes").append(view.render().el);
 				});
 				if (!this.firstrun) {
 					this.content.fetch();
@@ -126,10 +157,10 @@
 			},
 			
 			workflowsSetup: function(wfs) {
-				root=this;
+				var root=this;
 				wfs.each(function(ct) {
 					var view=new contenttypeView({model: ct});
-					this.$("#queue_"+root.queueid+" .workflows").append(view.render().el);
+					$(root.el).find(".workflows").append(view.render().el);
 				});
 			},
 			
@@ -440,6 +471,7 @@
 	<div id="queue_<%= order %>">
 		<div class="options_icons">
 			<div class="queue-name"><input class="queuename-edit" name="queuename" value="<%= name %>" /></div>
+			<div class="options_close">Delete queue</div>
 			<div class="options_dropdown">
 			</div>
 		</div>
@@ -465,6 +497,8 @@
 		width: 300px;
 		float: left;
 		margin-right: 10px;
+		margin-bottom: 10px;
+		
 	}
 	
 	#homepage .options {
@@ -484,6 +518,8 @@
 		background: #FFF;
 		border: 1px #CCC solid;
 		padding: 5px;
+		height: 500px;
+		overflow: auto;
 	}
 	
 	#homepage .queue-content li {
@@ -513,7 +549,7 @@
 		padding: 10px;
 	}
 	
-	#homepage .options_dropdown {
+	#homepage .options_dropdown, #homepage .options_close {
 		float: right;
 		width: 20px;
 		height: 20px;
@@ -561,7 +597,7 @@
 			}
 		});
 		
-		$(".options_dropdown").button({
+		/*$(".options_dropdown").button({
             icons: {
                 primary: "ui-icon-triangle-1-s"
             },
@@ -571,7 +607,21 @@
         	function() { 
         		$(".options").toggle();
         	}
-        );
+        );*/
+        
+        /*$(".options_close").button({
+			icons: {
+				primary: "ui-icon-close",
+			},
+			text: false,
+		})
+		.click(
+			function() {
+				$.getJSON("/queues/content/removequeue/"+root.queueid, function() {
+					$(this).parent().parent().parent().hide();
+				});
+			}	
+		);*/
         
         /*$(".options").position({
         	my: "left bottom",
@@ -625,6 +675,9 @@
 <div id="homepage">
 	<div id="dialog_first_queue" style="display: none">
 		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>You don't have any queues. Create one now?</p>
+	<div id="dialog_confirm_queue_delete" style="display: none">
+		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Delete this queue?</p>
+	</div>
 	</div>
 	<div id="topbuttons">
 		<div class="addqueue">Add a queue</div>
