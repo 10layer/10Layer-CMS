@@ -18,6 +18,12 @@
 		 */
 		public function __construct() {
 			parent::__construct();
+			$cachefilename=$this->_cachefilename();
+			if (is_file($cachefilename)) {
+				$this->header($cachefilename);
+				print file_get_contents($cachefilename);
+				return true;
+			}
 			$urlid=$this->uri->segment(4);
 			$content_type=$this->model_content->checkContentType($urlid);
 			$this->load->model($content_type->model, "content");
