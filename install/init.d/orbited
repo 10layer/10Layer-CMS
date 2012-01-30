@@ -1,6 +1,15 @@
 #! /bin/sh
 # /etc/init.d/orbited
-#
+### BEGIN INIT INFO
+# Provides:          orbited
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start or stop Orbited
+# Description:       Start or stop Orbited comet server
+### END INIT INFO
+
 
 # Carry out specific functions when asked to by the system
 case "$1" in

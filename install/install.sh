@@ -67,7 +67,7 @@ EOSQL
 fi
 
 echo "=== Installing Apache2, PHP5 and some useful stuff ==="
-apt-get -y install php5 apache2 php5-mysql php5-imagick php5-dev memcached php5-memcached php5-curl imagemagick pdftk
+apt-get -y install php5 apache2 php5-mysql php5-imagick php5-dev memcached php5-memcached php5-curl imagemagick pdftk postfix
 
 echo "=== Setting up Apache2 for virtual hosts ==="
 
