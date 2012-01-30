@@ -3,8 +3,13 @@
 from tenlayer_listener import TenLayerListener
 import urllib2
 import syslog
+import ConfigParser
 
-server="http://local.cms.mg.co.za"
+Config = ConfigParser.ConfigParser()
+Config.read("/etc/10layer/listener")
+
+server=Config.get("main", "server")
+
 syslog.openlog("10LayerListener")
 syslog.syslog('Listener started')
 
