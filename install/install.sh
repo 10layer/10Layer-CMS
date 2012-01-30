@@ -50,6 +50,7 @@ fi
 
 echo "=== Starting Dependency Installation ==="
 
+echo "deb http://packages.dotdeb.org stable all" > /etc/apt/sources.list.d/dotdeb.org
 apt-get update
 apt-get upgrade -y
 
@@ -78,7 +79,9 @@ chown www-data:www-data /var/www/virtual
 apache2ctl restart
 
 echo "=== Installing magic development stuff ==="
-apt-get -y install python-setuptools build-essential python-dev mercurial-common git-core curl python-stompy
+apt-get -y install python-setuptools build-essential python-dev mercurial-common git-core curl
+#python-stompy is not available on Lenny so we run it separately
+apt-get install python-stompy
 easy_install pdfminer
 
 echo "=== Installing Orbited server ==="
