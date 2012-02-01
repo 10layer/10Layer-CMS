@@ -546,6 +546,10 @@ form textarea {
 	height: 100px;
 }
 
+form .bigtext {
+	height: 500px;
+}
+
 form textarea[name=body] {
 	height: 500px;
 }
