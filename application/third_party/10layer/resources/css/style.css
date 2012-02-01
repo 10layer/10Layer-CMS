@@ -558,6 +558,11 @@ form br {
 	clear: both;
 }
 
+form .hint {
+	margin-left: 110px;
+	margin-bottom: 5px;
+}
+
 form input[type="submit"] {
 /*	border: none;
 	background: url("/resources/images/btn_submit.png") no-repeat 0 0;
