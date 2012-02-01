@@ -45,6 +45,20 @@
 			?>
 		</select><br />
 		
+		<label>Account Status</label>
+		<select name="status"> 
+			<?php
+				foreach($statuses as $status) {
+					$selected="";
+					if ($user->status_id==$status->id) {
+						$selected="selected='selected'";
+					}
+			?>
+			<option value="<?=$status->id ?>" <?= $selected ?>><?= $status->name ?></option>
+			<?php
+				}
+			?>
+		</select>
 		<input type="submit" id="submit" name="submit" value="Update user" class="button" /><br />
 	</form>
 </div>

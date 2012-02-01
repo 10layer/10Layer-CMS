@@ -37,6 +37,12 @@
 			?>
 		</select><br />
 		
+		<label>Password</label>
+		<input name="password" type="password" value="" /><br />
+		<label>Confirm Password</label>
+		<input name="password_confirm" type="password" value="" /><br />
+		<div class="hint"><b>Hint:</b> To let the user select a password, leave the password field blank</div>
+		
 		<input type="submit" id="submit" name="submit" value="Add user" class="button" /><br />
 	</form>
 </div>

@@ -29,8 +29,12 @@ class Users extends CI_Controller {
 			$returndata["error"]=false;
 			$name=$this->input->post("name");
 			$email=$this->input->post("email");
+			$roles=$this->input->post("roles");
+			$permissions=$this->input->post("permissions");
 			$this->validation->validate("name","Name",$name,"required|minlen=4|alpha_dash_space");
 			$this->validation->validate("email","Email",$email,"required|valid_email");
+			$this->validation->validate("roles","Role",$roles,"required");
+			$this->validation->validate("permissions","Permission",$permissions,"required");
 			if (!$this->validation->passed) {
 				$returndata["error"]=true;
 				$returndata["info"]=$this->validation->failed_messages;
@@ -40,9 +44,8 @@ class Users extends CI_Controller {
 				$key=genkey($this->input->post("email"));
 				$data=array(
 					"name"=>$name,
-					"email"=>$email
-					//"status_id"=>2,
-					//"otp"=>$key
+					"email"=>$email,
+					"status_id"=>$this->input->post("status"),
 				);
 				$this->model_user->update($this->input->post("id"),$data);
 				$this->model_user->updateUserRoles($this->input->post("id"),$this->input->post("roles"));
@@ -59,6 +62,7 @@ class Users extends CI_Controller {
 		$data["user"]=$this->model_user->get_by_urlid($urlid);
 		$data["permissions"]=$this->model_user->getUserPermissionTypes();
 		$data["roles"]=$this->model_user->getUserRoleTypes();
+		$data["statuses"]=$this->model_user->get_statuses();
 		$this->load->view('templates/header',$data);
 		$this->load->view("/manage/user_edit");
 		$this->load->view("templates/footer");
@@ -71,9 +75,20 @@ class Users extends CI_Controller {
 			$returndata["error"]=false;
 			$name=$this->input->post("name");
 			$email=$this->input->post("email");
+			$roles=$this->input->post("roles");
+			$permissions=$this->input->post("permissions");
+			$password=$this->input->post("password");
+			$password_confirm=$this->input->post("password_confirm");
 			$urlid=smarturl($email);
 			$this->validation->validate("name","Name",$name,"required|minlen=4|alpha_dash_space");
 			$this->validation->validate("email","Email",$email,"required|valid_email");
+			$this->validation->validate("email","Email",$email, array("database_nodupe"=>"email IN tl_users"));
+			$this->validation->validate("roles","Role",$roles,"required");
+			$this->validation->validate("permissions","Permission",$permissions,"required");
+			if (!empty($password)) {
+				$this->validation->validate("password","Password",$password,"match=$password_confirm");
+				$this->validation->validate("password","Password",$password,"minlen=6|password_strength=2");
+			}
 			if (!$this->validation->passed) {
 				$returndata["error"]=true;
 				$returndata["info"]=$this->validation->failed_messages;
@@ -88,6 +103,9 @@ class Users extends CI_Controller {
 					"otp"=>$key,
 					"urlid"=>$urlid
 				);
+				if (!empty($password)) {
+					$data["password"]=$password;
+				}
 				$uid=$this->model_user->insert($data);
 				$this->model_user->updateUserRoles($uid,$this->input->post("roles"));
 				$this->model_user->updateUserPermissions($uid,$this->input->post("permissions"));
