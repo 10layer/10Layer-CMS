@@ -609,6 +609,121 @@
 			return $result->result();
 		}
 		
+		
+		
+		/**
+		 * deep_suggest function.
+		 * 
+		 * Looks for suggestions based on title. Useful for autocomplete functionality, similar to the above function with the exception that it disregards the 		 * search ter as the starting word.
+		 *
+		 * @access public
+		 * @param mixed $content_type
+		 * @param mixed $s
+		 * @param mixed $limit
+		 * @return void
+		 */
+		public function deep_suggest($content_type, $s, $limit) {
+			$this->setContentType($content_type);
+			$this->db->select("id, urlid, title AS value");
+			$this->db->from("content");
+			$this->db->like("title",$s);
+			$this->db->limit($limit);
+			$this->db->where("content_type_id",$this->content_type->id);
+			$result=$this->db->get();
+			return $result->result();
+		}
+		
+		/**
+		 * deep_suggest_all function.
+		 *
+		 * Looks for suggestions regardless of content type, similar to the above function with the exception that it disregards the 		 * search ter as 		 * the starting word
+		 * 
+		 * @access public
+		 * @param mixed $s
+		 * @param mixed $limit
+		 * @return result
+		 */
+		public function deep_suggest_all($s, $limit) {
+			//$this->setContentType($content_type);
+			$this->db->select("content.id, content.urlid");
+			$this->db->select("CONCAT(content_types.name,': ',content.title) AS value",false);
+			$this->db->from("content");
+			$this->db->join("content_types","content_types.id=content.content_type_id");
+			$this->db->like("content.title",$s);
+			$this->db->order_by("content.start_date DESC");
+			$this->db->limit($limit);
+			//$this->db->where("content_type_id",$this->content_type->id);
+			$result=$this->db->get();
+			return $result->result();
+		}
+		
+		public function deep_suggest_broad($types, $s, $limit) {
+			$cids=array();
+			foreach($types as $type) {
+				$query=$this->db->get_where("content_types",array("urlid"=>$type));
+				if ($query->num_rows()>0) {
+					$cids[]="content_type_id=".$query->row()->id;
+				}
+			}
+			$this->db->select("content.id, content.urlid");
+			$this->db->select("CONCAT(content_types.name,': ',content.title) AS value",false);
+			$this->db->from("content");
+			$this->db->join("content_types","content_types.id=content.content_type_id");
+			$this->db->like("content.title",$s);
+			$this->db->order_by("content.start_date DESC");
+			$this->db->limit($limit);
+			$this->db->where("(".implode(" OR ",$cids).")",false, false);
+			$result=$this->db->get();
+			return $result->result();
+		}
+		
+		
+		/**
+		 * smart_search function.
+		 *
+		 * Looks for suggestions regardless from articles.
+		 * 
+		 * @access public
+		 * @param mixed $s
+		 * @param mixed $limit
+		 * @return result
+		 */
+		
+		function smart_search($content_type, $s, $limit){
+			
+			
+			//check if title matches the search term, if not use the fullbody text
+			
+			$sql = "select content.id, content.urlid, content.title as value from content where title = '%s' order by title asc limit $limit";
+			$query = $this->db->query($sql);
+			if($query->num_rows > 0)
+			{
+				$query->result();
+			}
+			else
+			{
+				if(strlen($s) > 2)
+				{
+				$sql = "SELECT content.id, content.urlid, content.title as value, articles.blurb, articles.body, match (articles.body, articles.blurb) against 					   ('$s') AS rank FROM `content` join articles on content.id = articles.content_id where match (articles.body, articles.blurb) against 						   ('$s') ORDER BY rank DESC limit 20";
+
+				}
+				else
+				{
+					$sql = "select content.id, content.urlid, content.title as value from content where title like '%$s%' order by title asc limit $limit";
+				}
+						
+				$query = $this->db->query($sql);
+				return $query->result();
+			}		
+		
+		
+		}
+
+		
+		
+		
+		
+		
 		/**
 		 * get_content_types function.
 		 * 

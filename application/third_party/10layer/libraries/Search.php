@@ -49,5 +49,23 @@
 				return $ci->model_content->suggest($type,$searchstr,$limit);
 			}
 		}
+		
+		public function deep_suggest($type,$searchstr,$limit) {
+			$ci=&get_instance();
+			if (is_array($type)) {
+				return $ci->model_content->deep_suggest_broad($type,$searchstr,$limit);
+			} elseif ($type=="all") {
+				return $ci->model_content->deep_suggest_all($searchstr,$limit);
+			} else {
+				return $ci->model_content->deep_suggest($type,$searchstr,$limit);
+			}
+		}
+		
+		
+		function smart_search($type,$searchstr,$limit)
+		{
+			$ci=&get_instance();
+			return $ci->model_content->smart_search($type,$searchstr,$limit);
+		}
 	}
 ?>
