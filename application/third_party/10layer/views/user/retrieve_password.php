@@ -52,7 +52,7 @@
 
 <div id="retrieve" class="boxed wide centered">
 	<div class="title">Retrieve Password</div>
-	Enter the email you use to sign in with to have your password emailed to you
+	Enter the email you use to sign in with to have a one-time login emailed to you
 	<form id="retrieveform" method="post">
 		<input type="hidden" name="dologin" value="1" />
 		<label>Email</label>

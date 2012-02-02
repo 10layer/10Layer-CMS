@@ -44,7 +44,7 @@
 		<input type="text" name="email" class="required" value="" /><br />
 		<label>Password</label>
 		<input type="password" name="password" class="required" value="" /><br />
-		<input type="submit" id="submit" name="submit" value="" class="inactive" />
+		<input class="button" type="submit" value="Login" />
 	</form>
 	<br clear="both" />
 </div>

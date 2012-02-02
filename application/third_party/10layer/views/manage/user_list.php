@@ -1,4 +1,3 @@
-
 	<div id="users-box" class="boxed wide">
 		<div id="users-list" class="list">
 			<div class="title-link">Users</div>
@@ -44,7 +43,9 @@
 				?>
 				</table>
 			</div>
-			<?= anchor("/manage/users/add","Add User","class='button'") ?>
+			<div class="button" style="height: 30px">
+				<?= anchor("/manage/users/add","Add User") ?>
+			</div>
 		</div>
 	</div>
 </div>

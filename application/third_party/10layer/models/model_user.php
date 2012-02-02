@@ -126,6 +126,9 @@
 		}
 		
 		public function insert($data) {
+			if (!empty($data["password"])) {
+				$data["password"]=crypt($data["password"], substr($data["email"],0,4));
+			}
 			$this->db->insert("tl_users",$data);
 			return $this->db->insert_id();
 		}
@@ -295,6 +298,11 @@
 			//$this->db->join("tl_roles","tl_roles_users_link.role_id=tl_roles.id","left");
 			$result=$this->db->get();
 			return $result->result();
+		}
+		
+		public function get_statuses() {
+			$query=$this->db->get("tl_user_status");
+			return $query->result();
 		}
 		
 		public function get_status($status_id) {

@@ -108,7 +108,7 @@
 		 * @return bool
 		 */
 		public function database_nodupe($value,$var) {
-			$dbdata=explode(" in ",$var);
+			$dbdata=explode(" in ",strtolower($var));
 			$result=$this->ci->db->get_where($dbdata[1],array($dbdata[0]=>$value));
 			return ($result->num_rows()==0);
 		}
@@ -268,6 +268,10 @@
 		public function valid_url($url,$var=false) {
 			return (preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url));
 		}
+		
+		public function match($str,$var=false) {
+			return $str==$var;
+		}
 
 		
 		/**
@@ -333,6 +337,8 @@
 				case "valid_url": $s="$name is not a valid url";
 					break;
 				case "database_nodupe": $s="$name already exists";
+					break;
+				case "match": $s="$name does not match";
 					break;
 				default: $s="There is an unknown problem with $name";
 				
