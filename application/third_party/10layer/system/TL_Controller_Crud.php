@@ -726,6 +726,9 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		} elseif($this->uri->segment(2)=="simple") { //A simple list
 			$this->simple();
 			return true;
+		} elseif($this->uri->segment(3)=="deepsearch") { //A simple list
+			$this->deepsearch();
+			return true;
 		}
 		
 		$this->paginate();
@@ -841,6 +844,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		//$data["action"]=$this->uri->segment(3);
 		$data["contenttype"]="{$this->_contenttypeurlid}";
 		$this->load->view("content/default/simplelist",$data);
+	}
+	
+	public function deepsearch() {
+		$this->load->library("search");
+		$s=$this->input->get("term");
+		$type=$this->uri->segment(2);
+		$limit=20;
+		print json_encode($this->search->smart_search($type,$s,$limit));
 	}
 
 }
