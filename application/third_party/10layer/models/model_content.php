@@ -511,6 +511,7 @@
 			$matches=array();
 			$likes=array();
 			$fields=$contentobj->getFields();
+			$this->db->select("*, title AS value");
 			foreach($fields as $field) {
 				if (isset($field->libraries["search"])) {
 					if ($field->libraries["search"]=="fulltext") {
@@ -525,7 +526,7 @@
 			}
 			if (!empty($matches)) {
 				$this->db->select("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).") AS score",false, false);
-				$this->db->order_by("score","ASC");
+				$this->db->order_by("score","DESC");
 				foreach($this->order_by as $ob) {
 					$this->db->order_by($ob);
 				}
@@ -690,39 +691,20 @@
 		 */
 		
 		function smart_search($content_type, $s, $limit){
-			
-			
+			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
-			
-			$sql = "select content.id, content.urlid, content.title as value from content where title = '%s' order by title asc limit $limit";
-			$query = $this->db->query($sql);
-			if($query->num_rows > 0)
-			{
-				$query->result();
-			}
-			else
-			{
-				if(strlen($s) > 2)
-				{
-				$sql = "SELECT content.id, content.urlid, content.title as value, articles.blurb, articles.body, match (articles.body, articles.blurb) against 					   ('$s') AS rank FROM `content` join articles on content.id = articles.content_id where match (articles.body, articles.blurb) against 						   ('$s') ORDER BY rank DESC limit 20";
-
-				}
-				else
-				{
-					$sql = "select content.id, content.urlid, content.title as value from content where title like '%$s%' order by title asc limit $limit";
-				}
-						
-				$query = $this->db->query($sql);
+			$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
+			if($query->num_rows > 0) {
 				return $query->result();
-			}		
-		
-		
+			} else {
+				if(strlen($s) > 2) {
+					$result=$this->search($content_type, $s, $limit);
+				} else {
+					$result=$this->suggest($content_type, $s, $limit);
+				}
+				return $result;
+			}
 		}
-
-		
-		
-		
-		
 		
 		/**
 		 * get_content_types function.
