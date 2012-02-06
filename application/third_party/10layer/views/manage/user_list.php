@@ -47,5 +47,6 @@
 				<?= anchor("/manage/users/add","Add User") ?>
 			</div>
 		</div>
+		<br clear="both" />
 	</div>
 </div>
