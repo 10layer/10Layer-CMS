@@ -95,6 +95,13 @@ $(function() {
 		$(this).remove();
 		return false;
 	});
+	
+	$(".datetimepicker").each(function() {
+		$(this).datetimepicker({
+			dateFormat:"yy-mm-dd",
+			timeFormat:"hh:mm",
+		});
+	});
 });
 
 function checkreqs() {
