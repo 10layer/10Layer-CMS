@@ -158,7 +158,11 @@ class TLContent {
 		$drilldown=false;
 		foreach($this->fields as $field) {
 			if ($field->type!="drilldown") {
-				$typearr[$field->contenttype]="content_content.fieldname=".$ci->db->escape($field->name);
+				if ($field->link) {
+					$typearr[]="content_content.fieldname=".$ci->db->escape($field->name);
+				} else {
+					$typearr[$field->contenttype]="content_content.fieldname=".$ci->db->escape($field->name);
+				}
 			} else {
 				$drilldown=true;
 			}
@@ -170,8 +174,7 @@ class TLContent {
 		$ci->db->where("(".implode(" OR ",$typearr).")");
 		$ci->db->limit(100);
 		$query=$ci->db->get("content_content");
-		//print $ci->db->last_query()."\n";
-		if ($level>=2) {
+		if ($level>=1) {
 			return true;
 		}
 		foreach($query->result() as $row) {
