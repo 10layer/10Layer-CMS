@@ -620,7 +620,43 @@ form input.inactive[type="submit"] {
 	width: 300px;
 	margin-left: 110px;
 	margin-top: 10px;
+	clear:both;	
 }
+
+
+.deepsearch_selected_item, .deepsearch_item{
+	border-radius: 5px 5px 5px 5px;
+	cursor: pointer;
+	margin-top: 5px;
+	padding: 5px;
+}
+
+.deepsearch_item{
+	background: none repeat scroll 0 0 #FA9696;
+    border: 1px solid #F75A5A;
+}
+
+
+.deepsearch_selected_item{
+	background: none repeat scroll 0 0 #B8FAB6;
+	border: 1px solid #67C665;
+}
+
+
+
+.deepsearch_selected_item:hover, .deepsearch_item:hover{
+	cursor: pointer;
+}
+
+.deepsearch_selected_item:hover{
+	background: none repeat scroll 0 0 #FA9696;
+}
+
+.deepsearch_item:hover{
+	background: none repeat scroll 0 0 #B8FAB6;
+}
+
+
 
 /*-----Forms that are embedded in other forms----*/
 

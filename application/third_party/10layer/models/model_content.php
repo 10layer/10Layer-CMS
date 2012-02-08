@@ -304,11 +304,20 @@
 		 * @return object
 		 */
 		public function getAll($limit=false, $start=false) {
+			
+			$selecteds=$this->input->get("selected");		
+			if(!empty($selecteds))
+			{
+				
+				//$selecteds = $this->input->get("selected",TRUE);
+				//print_r($selecteds);
+				$this->db->where_not_in("content.id",$selecteds);
+			}
 			$this->limit($limit, $start);
 			$this->_prepGetAllQuery();
 			$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
-			//print $this->db->last_query();
+			
 			return $query->result();
 		}
 		
@@ -502,6 +511,9 @@
 		 * @return object
 		 */
 		public function search($content_type, $searchstr,$limit,$start=0) {
+		
+			
+			
 			$tables=array("content");
 			$this->setContentType($content_type);
 			$this->setPlatform($this->platforms->id());
@@ -530,17 +542,21 @@
 				foreach($this->order_by as $ob) {
 					$this->db->order_by($ob);
 				}
-				$this->db->or_where("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).")",false, false);
+				//$this->db->or_where("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).")",false, false);
 			} 
 			foreach($likes as $like) {
 				$this->db->or_where($like." LIKE '%".$searchstr."%'");
 			}
 			
+			
+				
+
 			foreach($tables as $table) {
 				if ($table!="content") {
 					$this->db->join($table, "content.id=$table.content_id");
 				}
 			}
+			
 			return $this->getAll($limit,$start);
 		}
 		
@@ -691,9 +707,27 @@
 		 */
 		
 		function smart_search($content_type, $s, $limit){
+		
+			
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
-			$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
+			$query = "";
+			if($this->input->get("selected", TRUE) != null)
+			{
+				
+				$selecteds = $this->input->get("selected");
+				$this->db->where_not_in("id",$this->db->escape($selecteds) );
+				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
+				
+				
+				
+			}else{
+				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("contents");
+				
+
+			}
+			
+			
 			if($query->num_rows > 0) {
 				return $query->result();
 			} else {
@@ -704,6 +738,8 @@
 				}
 				return $result;
 			}
+			
+			
 		}
 		
 		/**
