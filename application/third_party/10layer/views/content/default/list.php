@@ -9,16 +9,45 @@
 				print $search;
 			}
 		?>" />
+		
+		<span id="loading_icon" style="display:none;">
+			<img src="/tlresources/file/images/loader.gif" />
+		</span>
+		
+		
+		
 		<span id="searchResultsCount"><?php
-			if (isset($total_rows)) {
-				print number_format($total_rows,0,".","&nbsp;")." result";
-				if ($total_rows!=1) {
-					print "s";
+			$message = "" ;
+			
+			if (!empty($search)) {
+				if(sizeof($content) < 99 && isset($total_rows))
+				{
+					$message = sizeof($content)." result";
+					if (sizeof($content) > 0 && sizeof($content) != 1 ) {
+					$message .= "s";
+					}
 				}
-			}
+				else
+				{
+					if (isset($total_rows)) {
+						$message = $total_rows." results";
+			
+					}
+					else{
+						$message = sizeof($content)." result";
+						if (sizeof($content) > 0 && sizeof($content) != 1 ) {
+						$message .= "s";
+					}	
+				 }
+
+				}			} 
+			
+				
+			
+			echo $message;
 		?></span>
 	</div>
-	<?= $this->pagination->create_links(); ?>
+	<?php  if(sizeof($content) > 99) { echo $this->pagination->create_links(); } ?>
 	<table>
 		<tr> 
 			<th></th>
@@ -47,7 +76,9 @@
 		<td class="content-workflow-<?= $major_version ?>"><a href="<?= base_url()."edit/$contenttype/".$item->urlid ?>"><?php
 			if (!empty($item->title)) {
 				 print $item->title;
-			} else {
+			} elseif(!empty($item->value)) {
+				print $item->value;
+			}else{
 				print $item->urlid;
 			}
 		?></a></td>
@@ -70,6 +101,6 @@
 		}
 	?>
 	</table>
-	<?= $this->pagination->create_links(); ?>
+	<?php if(sizeof($content) > 99) { echo $this->pagination->create_links(); } ?>
 </div>
 <br clear="both" />

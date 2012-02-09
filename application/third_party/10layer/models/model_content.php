@@ -547,10 +547,7 @@
 			foreach($likes as $like) {
 				$this->db->or_where($like." LIKE '%".$searchstr."%'");
 			}
-			
-			
-				
-
+		
 			foreach($tables as $table) {
 				if ($table!="content") {
 					$this->db->join($table, "content.id=$table.content_id");
@@ -714,22 +711,21 @@
 			$query = "";
 			if($this->input->get("selected", TRUE) != null)
 			{
-				
 				$selecteds = $this->input->get("selected");
 				$this->db->where_not_in("id",$this->db->escape($selecteds) );
 				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
-				
-				
-				
+	
 			}else{
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("contents");
+				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
 				
-
 			}
+			
+			
 			
 			
 			if($query->num_rows > 0) {
 				return $query->result();
+				echo $this->db->last_query(); die();
 			} else {
 				if(strlen($s) > 2) {
 					$result=$this->search($content_type, $s, $limit);

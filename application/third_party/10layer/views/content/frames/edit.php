@@ -8,6 +8,8 @@
 	ckeditor();
 ?>
 <script language="javascript">
+	
+
 	$(function() {
 		$(document).ajaxError(function(e, xhr, settings, exception) { 
 			$("#dyncontent").html(xhr.responseText); 
@@ -36,7 +38,7 @@
 		
 		function search() {
 			var s=$("#listSearch").val();
-
+			$("#loading_icon").show();
 			$("#dyncontent").load("/edit/fullview/<?= $type ?>/search/"+escape(s));
 		}
 		
