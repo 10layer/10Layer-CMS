@@ -32,7 +32,7 @@
 	
 		public function dosearch($type,$searchstr,$limit=100,$start=0) {
 			$ci=&get_instance();
-			$this->count=$ci->model_content->searchCount($type,$searchstr);
+			$this->count=$ci->model_content->smart_count($type,$searchstr);
 			//print $ci->db->last_query();
 			$this->result=$ci->model_content->smart_search($type,$searchstr,$limit,$start);
 			//print $ci->db->last_query();
