@@ -333,6 +333,58 @@ input.button {
 	cursor: pointer;
 }
 
+.tree_item {
+	width:98%;
+	padding:5px;
+	margin: 5px;
+	text-decoration: none !important;
+}
+
+.tree_item:hover {
+	background-color: #ccc;
+}
+
+.parents {
+	font-size: 15px;
+}
+
+.parents:hover {
+	background-color: #fff;
+}
+
+
+.children {
+	font-size: 13px;
+}
+
+
+ul.tree{
+	list-style: none;
+}
+
+.inline_edit {
+   background: #ff0000;
+   padding: 1px 3px;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   border-radius: 3px;
+   color: white;
+   font-size: 10px;
+   text-decoration: none;
+   vertical-align: middle;
+   text-decoration: none;
+   float:right;
+   }
+.inline_edit:hover {
+   border-top-color: #28597a;
+   background: #28597a;
+   color: #ccc;
+   }
+.inline_edit:active {
+   border-top-color: #1b435e;
+   background: #1b435e;
+   }
+
 /*---- Sidebar ----*/
 
 .pinned {
