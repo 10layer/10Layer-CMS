@@ -15,9 +15,10 @@
 		 */
 		public function __construct() {
 			parent::__construct();
+			$this->load->model("model_site_sections");
 		}
 		
-		public function getAll() {
+		/*public function getAll() {
 			$this->db->order_by("order","ASC");
 			$result=$this->db->get("sections");
 			return $result->result();
@@ -39,12 +40,45 @@
 				$result=$this->db->get_where("subsections",array("urlid"=>$urlid));
 			}
 			return $result->row();
+		}*/
+		
+		/**
+		 * get_sectionmap function.
+		 * 
+		 * Returns a named array of all the sections
+		 *
+		 * @access public
+		 * @param int $content_type_id
+		 * @return void
+		 */
+		public function get_sectionmap($content_type_id) {
+			$result=array();
+			$query=$this->db->select("content.urlid, content.title, content.id AS content_id")->from("content")->join("content_content","content_content.content_id=content.id")->join("content AS content2","content_content.content_link_id=content2.id")->where("content.content_type_id",$content_type_id)->where("content2.content_type_id",$content_type_id)->group_by("content.urlid")->order_by("content.title")->get();
+			$parents=$query->result();
+			foreach($parents as $parent) {
+				$children=$this->get_subsections($parent->content_id, $content_type_id);
+				$result[$parent->urlid]=$parent;
+				foreach($children as $child) {
+					$result[$parent->urlid]->children[]=$child;
+				}
+			}
+
 		}
 		
-		public function getSubSections($urlid) {
-			$section=$this->get($urlid);
-			$result=$this->db->get_where("subsections",array("section_id"=>$section->id));
-			return $result->result();
+		/**
+		 * get_subsections function.
+		 * 
+		 * Given a primary section, returns all data about its subsections
+		 *
+		 * @access public
+		 * @param int $id
+		 * @param int $content_type_id
+		 * @return void
+		 */
+		public function get_subsections($id, $content_type_id) {
+			$section=$this->db->get_where("content",array("id"=>$id))->row();
+			$query=$this->db->select("content.title, content.urlid, content.id AS content_id")->from("content")->join("content_content","content.id=content_content.content_link_id")->where("content_content.content_id",$section->id)->where("content.content_type_id",$content_type_id)->get();
+			return $query->result();
 		}
 		
 		public function getLayouts($urlid) {
