@@ -362,6 +362,10 @@ ul.tree{
 	list-style: none;
 }
 
+li.children a{
+	text-decoration: none;
+}
+
 .inline_edit {
    background: #ff0000;
    padding: 1px 3px;
