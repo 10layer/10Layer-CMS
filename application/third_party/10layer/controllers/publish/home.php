@@ -19,7 +19,7 @@ class Home extends CI_Controller {
 		$this->load->model("model_collections");
 		$collections=$this->model_collections->getAll();
 
-		redirect("publish/collection/".$collections[0]->urlid);
+		redirect("publish/collection/".$collections[1]->urlid);
 		/*$data["menu1_active"]="publish";
 		$this->load->view('templates/header',$data);
 		$this->load->view("templates/footer");*/
