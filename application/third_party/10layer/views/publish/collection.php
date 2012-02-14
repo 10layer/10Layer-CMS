@@ -39,8 +39,15 @@
 			$(this).data('timer', wait);
 		});
 		
-		$("#dyncontent").delegate(".fireaction","click",function() {
-			var urlid=$(this).attr("urlid");
+		
+		$(".fireaction").live("click", function(){
+			var urlid=$(this).children(":first").attr("urlid");
+			location.href="/publish/collection/<?= $content_type->urlid ?>/"+urlid;
+		});
+		
+		
+		$("#dyncontent").delegate(".parents","click",function() {
+			var urlid=$(this).children(":first").attr("urlid");
 			location.href="/publish/collection/<?= $content_type->urlid ?>/"+urlid;
 		});
 		
