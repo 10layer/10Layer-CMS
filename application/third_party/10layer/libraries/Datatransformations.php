@@ -62,5 +62,9 @@ class Datatransformations {
 		}
 		return $urlid;
 	}
+	
+	public function str_replace(&$sender, $value, $search, $replace) {
+		return str_replace($search, $replace, $value);
+	}
 }
 ?>
