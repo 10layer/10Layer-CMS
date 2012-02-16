@@ -51,7 +51,6 @@
 	    	    })
 		        .click(
         			function() {
-        				//console.log($(this).parent());
         				$(this).parent().next(".options").toggle();
     	    		}
 		        );
@@ -81,9 +80,7 @@
 								}
 							}
 						});
-		        		
-		        		
-		        	}	
+		        	}
 		        );
 		        
 		        this.content=new contentCollection;
@@ -118,6 +115,15 @@
 			events: {
 				"click .queue-name": "editName",
 				"keypress .queuename-edit":"updateNameOnEnter",
+				"save_update":"saveUpdate",
+			},
+			
+			saveUpdate: function(e) {
+				var cts=this.contenttypes.toJSON();
+				var root=this;
+				$.post("queues/content/update/"+this.queueid, { contenttypes: JSON.stringify(cts) }, function(data) {
+					root.content.fetch();
+				});
 			},
 			
 			editName: function(e) {
@@ -144,8 +150,6 @@
 			
 			contenttypesSetup: function(contenttypes) {
 				var root=this;
-				//console.log("contenttypesSetup");
-				//this.$("#queue_"+root.queueid+" .contenttypes").append("<div><span class='checkhelp select-all'>All</span> | <span class='checkhelp select-none'>None</span></div>");
 				contenttypes.each(function(ct) {
 					var view=new contenttypeView({model: ct});
 					$(root.el).find(".contenttypes").append(view.render().el);
@@ -273,12 +277,10 @@
 				this.save({checked: !this.get("checked")}, { success: function() { root.trigger("saved") } } );
 			},
 			check: function() {
-				var root=this;
-				this.save({checked: true});
+				this.set({ checked: true });
 			},
 			uncheck: function() {
-				var root=this;
-				this.save({checked: false});
+				this.set({ checked: false });
 			},
 		});
 		
@@ -348,7 +350,6 @@
 				return this;
 			},
 			toggleSelect: function(e) {
-				//console.log("toggleSelect");
 				this.model.toggle();
 			},
 		});
@@ -363,14 +364,6 @@
 				queues.bind("reset", this.init, this);
 				queues.fetch();
 				queues.bind("edited", this.edited, this);
-				//content.bind('reset',   this.render, this);
-				//content.bind("all", function(eventName) { console.log("Content: "+eventName)});
-				//contenttypes.bind("reset", this.contenttypesSetup, this);
-				//workflows.bind("reset", this.workflowsSetup, this);
-				//contenttypes.fetch();
-				//workflows.fetch();
-				//content.fetch();
-				//contenttypes.bind("all", function(eventName) { console.log("Contenttype: "+eventName)});
 			},
 			
 			events: {
@@ -382,9 +375,7 @@
 				if (queues.length==0) { //No queues, make some
 					this.newQueue();
 				} else { //Queues exist, draw them
-					//console.log(queues);
 					queues.each(function(model) {
-						//console.log(model);
 						root.drawQueue(model);
 					});
 				}
@@ -404,38 +395,9 @@
 			},
 			
 			edited: function() {
-				console.log("Caught edit");
-			}
-			
-			/*drawContentItem: function(content) {
-				var view=new ContentItemView({model: content});
-				this.$("#content").append(view.render().el);
+				//console.log("Caught edit");
 			},
 			
-			render: function() {
-				//console.log("Render");
-				$("#content").empty();
-				content.each(this.drawContentItem);
-			},
-			
-			refresh: function() {
-				console.log("Refetching content");
-				content.fetch();
-			},
-			
-			contenttypesSetup: function(contenttypes) {
-				contenttypes.each(function(ct) {
-					var view=new contenttypeView({model: ct});
-					this.$("#contenttypes").append(view.render().el);
-				});
-			},
-			
-			workflowsSetup: function(wfs) {
-				wfs.each(function(ct) {
-					var view=new contenttypeView({model: ct});
-					this.$("#workflows").append(view.render().el);
-				});
-			},*/
 		});
 		
 		window.App = new QueuesView;
@@ -472,14 +434,16 @@
 		<div class="options_icons">
 			<div class="queue-name"><input class="queuename-edit" name="queuename" value="<%= name %>" /></div>
 			<div class="options_close">Delete queue</div>
-			<div class="options_dropdown">
-			</div>
+			<div class="options_dropdown">Filter queue</div>
 		</div>
 		<div class="options">
 			<div class="option">
 				<div class="option_header">Content Types</div>
 			</div>
-			<div class="option_popout contenttypes"></div>
+			
+			<div class="option_popout contenttypes">
+			<div class="allnone"><span class="select-all">All</span> | <span class="select-none">None</span></div>
+			</div>
 			
 			<div class="option">
 				<div class="option_header">Workflow</div>
@@ -586,6 +550,11 @@
 		height: 12px;
 	}
 	
+	#homepage .allnone span {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+	
 	
 </style>
 
@@ -596,39 +565,6 @@
 				primary: "ui-icon-circle-plus",
 			}
 		});
-		
-		/*$(".options_dropdown").button({
-            icons: {
-                primary: "ui-icon-triangle-1-s"
-            },
-            text: false
-        })
-        .click(
-        	function() { 
-        		$(".options").toggle();
-        	}
-        );*/
-        
-        /*$(".options_close").button({
-			icons: {
-				primary: "ui-icon-close",
-			},
-			text: false,
-		})
-		.click(
-			function() {
-				$.getJSON("/queues/content/removequeue/"+root.queueid, function() {
-					$(this).parent().parent().parent().hide();
-				});
-			}	
-		);*/
-        
-        /*$(".options").position({
-        	my: "left bottom",
-			at: "left top",
-			offset: "0 100",
-			of: $(".options_dropdown"),
-		});*/
 		
 		$(".option").live("click",
 			function() {
@@ -641,19 +577,20 @@
 		}
 		
 		$(".select-all").live("click",function() {
-			console.log($(this).parent().parent());
 			$(this).parent().parent().find("input:checkbox").each(function() { 
 				$(this).trigger("check");
+				$(this).attr("checked", true);
 			});
+			$(this).trigger("save_update");
 			
 		});
 		
 		$(".select-none").live("click",function() {
-			console.log($(this).parent().parent());
 			$(this).parent().parent().find("input:checkbox").each(function() { 
+				$(this).trigger("uncheck");
 				$(this).attr("checked", false);
 			});
-			$(this).parent().parent().next().trigger("contentchange");
+			$(this).trigger("save_update");
 		});
 		
 	});

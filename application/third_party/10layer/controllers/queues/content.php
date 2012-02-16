@@ -126,6 +126,16 @@
 			print json_encode($returndata);
 		}
 		
+		public function update($queueid) {
+			$contenttypes=$this->input->post("contenttypes");
+			if (!empty($contenttypes)) {
+				$cts=json_decode($contenttypes);
+				foreach($cts as $ct) {
+					$this->tluserprefs->set_queue($queueid, array("contenttypes"=>array($ct->urlid=>$ct)));
+				}
+			}
+		}
+		
 		/*public function _remap() {
 			$vals=$this->uri->uri_to_assoc();
 			if (sizeof($vals)==0) {
