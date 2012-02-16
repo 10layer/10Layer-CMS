@@ -103,7 +103,6 @@
 		}
 		
 		public function set_queue($queueid,$data) {
-			//print_r($data);
 			if (isset($this->data->queues)) {
 				$queues=$this->data->queues;
 			} else {
@@ -111,17 +110,13 @@
 				$queues=array();
 			}
 			if (isset($this->data->queues[$queueid])) {
-				//print_r($this->data->queues[$queueid]);
-				
 				$queues[$queueid]=array_replace_recursive((array) $queues[$queueid], (array) $data);
-				//print_r($queues[$queueid]);
 			} else {
 				$queues[$queueid]=(array) $data;
 				$queues[$queueid]["id"]=$queueid;
 			}
-			//$thisqueue=$queues[$queue];
-			//print_r($queues);
 			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
+			$this->get_data();
 		}
 		
 		public function set_queue_name($queueid, $name) {
