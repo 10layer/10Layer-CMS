@@ -870,9 +870,13 @@
 			$this->setContentType($content_type);
 			$content_type_id = $this->content_type->id;
 			$result=array();
-			$query=$this->db->select("content.urlid, content.title, content.id AS content_id")->from("content")->join("content_content","content_content.content_id=content.id")->join("content AS content2","content_content.content_link_id=content2.id")->where("content.content_type_id",$content_type_id)->where("content2.content_type_id",$content_type_id)->group_by("content.urlid")->order_by("content.title")->get();
-						
+			$query=$this->db->select("content.urlid, content.title, content.id AS content_id")->from("content")->join("content_content","content_content.content_id=content.id")->join("content AS content2","content_content.content_link_id=content2.id")->where("content.content_type_id",$content_type_id)->where("content2.content_type_id",$content_type_id)->group_by("content.id")->get();
 			$parents=$query->result();
+			$keys=array();
+			foreach($parents as $parent) {
+				$keys[]=$parent->title;
+			}
+			array_multisort($keys, $parents);
 			foreach($parents as $parent) {
 				$children=$this->get_subsections($parent->content_id, $content_type_id);
 				$result[$parent->urlid]=$parent;
@@ -897,7 +901,7 @@
 		 */
 		public function get_subsections($id, $content_type_id) {
 			$section=$this->db->get_where("content",array("id"=>$id))->row();
-			$query=$this->db->select("content.title, content.urlid, content.id AS content_id")->from("content")->join("content_content","content.id=content_content.content_link_id")->where("content_content.content_id",$section->id)->where("content.content_type_id",$content_type_id)->get();
+			$query=$this->db->select("content.title, content.urlid, content.id AS content_id")->from("content")->join("content_content","content.id=content_content.content_link_id")->where("content_content.content_id",$section->id)->where("content.content_type_id",$content_type_id)->order_by("title")->get();
 			return $query->result();
 		}
 
