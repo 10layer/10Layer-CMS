@@ -927,9 +927,20 @@ ul.ui-tabs-nav {
 }*/
 
 #canvasloader-container {
-	position: fixed;
+	/*
+position: fixed;
 	top: 40px;
 	margin-left: 915px;
-	z-index: 1001;
+*/
+	position:fixed;
+	
+	z-index: 1001;	
+}
+
+#canvasLoader{
+	border:1px solid #ccc;
+	padding:20px;
+	background: #fff;
+	-moz-border-radius: .5em;
 	
 }

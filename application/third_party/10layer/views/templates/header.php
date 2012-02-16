@@ -163,6 +163,7 @@
 	
 	<div id="wrapper" class="shadow whitegradient">
 		<div id="canvasloader-container" class="wrapper">
+	
 		</div>
 		<script type="text/javascript" src="/tlresources/file/js/loader.js"></script>
 		<div id="cookiecrumbs">
