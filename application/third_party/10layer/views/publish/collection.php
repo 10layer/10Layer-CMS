@@ -45,6 +45,11 @@
 			location.href="/publish/collection/<?= $content_type->urlid ?>/"+urlid;
 		});
 		
+		$(".fireaction2").live("click", function(){
+			var urlid=$(this).attr("urlid");
+			location.href="/publish/collection/<?= $content_type->urlid ?>/"+urlid;
+		});
+		
 		
 		$("#dyncontent").delegate(".parents","click",function() {
 			var urlid=$(this).children(":first").attr("urlid");
