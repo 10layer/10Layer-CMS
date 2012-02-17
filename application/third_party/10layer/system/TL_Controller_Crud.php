@@ -726,6 +726,9 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		} elseif($this->uri->segment(2)=="simple") { //A simple list
 			$this->simple();
 			return true;
+		} elseif($this->uri->segment(2)=="nested") { //A simple list
+			$this->nested();
+			return true;
 		} elseif($this->uri->segment(3)=="deepsearch") { //A simple list
 			$this->deepsearch();
 			return true;
@@ -845,6 +848,45 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$data["contenttype"]="{$this->_contenttypeurlid}";
 		$this->load->view("content/default/simplelist",$data);
 	}
+	
+	function nested()
+	{
+		$segments=$this->uri->segment_array();
+		$searchcheck=array_slice($segments,-2);
+		$tree = $this->content->get_sectionmap($searchcheck[0]);
+		$data['tree'] = $this->make_nested_tree($tree,$searchcheck[0] );// $tree;	
+		$data["contenttype"]="{$this->_contenttypeurlid}";
+		$this->load->view("content/default/nested_sections",$data);
+	}
+	
+	
+	
+	function make_nested_tree($sections, $contenttype){
+		$string = "<ul class='nested_tree '>";
+		foreach($sections as $section){
+
+			$string .= "<li class='main_section'><div id='".$section->content_id."' class='small_item'>"
+							.$section->title."</div>".$this->nested_children($section->children, $contenttype).
+						"</li>";
+		}
+		$string .= "</ul>";
+		
+		return $string;
+	}
+	
+	function nested_children($children, $contenttype)
+	{
+		$string = "<ul class='small_section'>";
+		foreach($children as $item){
+			
+			$string .= "<li class='nested_section'><div id='".$item->content_id."' class='small_item'>".$item->title."</div></li>";
+		}
+		$string .= "</ul>";
+		return $string;
+	}
+	
+	
+	
 	
 	public function deepsearch() {
 		$this->load->library("search");

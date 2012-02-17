@@ -153,3 +153,4 @@
 			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
 		}
 	}
+?>

@@ -6,6 +6,7 @@
 		$this->db->where("content_content.content_id",$id);
 		$this->db->where("content_content.fieldname",$field->name);
 		$result=$this->db->get("content_content");
+		
 		$contents=array();
 		if ($result->num_rows()>0) {
 			if ($field->multiple) {
