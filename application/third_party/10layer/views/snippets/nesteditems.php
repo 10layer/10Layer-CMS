@@ -32,7 +32,7 @@
 	<input id="nestedselect_view_<?= $field->tablename ?>_<?= $field->name ?>" name="<?= $field->tablename ?>_<?= $field->name ?>" type="hidden" tablename="<?= $field->tablename ?>" contenttype="<?= $field->contenttype ?>" fieldname="<?= $field->name ?>" class="nestedselect <?= $field->class ?>" value="<?php if(isset($field->data)){ print $field->data->fields["id"]->value; } ?>" <?php if ($field->contenttype=='mixed') { ?> mixed='mixed' contenttypes='<?= implode(",",$field->contenttypes) ?>' <?php } ?> />
 
 	<div class="single_item_label">
-		<?php if(isset($field->data)){ print $field->data->fields["title"]->value; } else{ print "Click on change to set the value..."; }  ?>
+		<?php if(isset($field->data)){ print $field->data->fields["title"]->value; } else{ print "Click on change..."; }  ?>
 	</div>
 	<div class="single_item_button">
 		Change...
