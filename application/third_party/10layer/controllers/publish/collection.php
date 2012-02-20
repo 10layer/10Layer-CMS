@@ -27,15 +27,25 @@
 				$this->layout();
 				return true;
 			}
-			$urlid=$this->uri->segment(3);
-			$content_type=$this->model_content->get_content_type($urlid);
-			$data["content_type"]=$content_type;
-			$data["menu1_active"]="publish";
-			$data["menu2_active"]="publish/collection/$urlid";
 			
-			$this->load->view('templates/header',$data);
-			$this->load->view("publish/collection");
-			$this->load->view("templates/footer");
+			$urlid=$this->uri->segment(3);
+			
+			if($urlid == ""){
+				redirect("publish/collection/section");
+			}else{
+				$content_type=$this->model_content->get_content_type($urlid);
+				$data["content_type"]=$content_type;
+				$data["menu1_active"]="publish";
+				$data["menu2_active"]="publish/collection/$urlid";
+			
+				$this->load->view('templates/header',$data);
+				$this->load->view("publish/collection");
+				$this->load->view("templates/footer");
+			}
+			
+			
+			
+			
 		}
 		
 		protected function layout() {
