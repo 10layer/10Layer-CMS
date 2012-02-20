@@ -870,23 +870,35 @@
 			$this->setContentType($content_type);
 			$content_type_id = $this->content_type->id;
 			$result=array();
-			$query=$this->db->select("content.urlid, content.title, content.id AS content_id")->from("content")->join("content_content","content_content.content_id=content.id")->join("content AS content2","content_content.content_link_id=content2.id")->where("content.content_type_id",$content_type_id)->where("content2.content_type_id",$content_type_id)->group_by("content.id")->get();
-			$parents=$query->result();
+			$query=$this->db->select("content.urlid, content.title, content.id AS content_id", false)->from("content")->where("content_type_id", $content_type_id)->get();
+			$all=$query->result();
+			$query=$this->db->select("content.urlid, content.title, content.id AS content_id, content_content.content_id AS parent_id")->from("content")->join("content_content","content_content.content_link_id=content.id")->join("content AS content2","content_content.content_id=content2.id")->where("content.content_type_id",$content_type_id)->where("content2.content_type_id",$content_type_id)->group_by("content.id")->get();
+			$children=$query->result();
+			$parents=array();
+			foreach($all as $section) {
+				$found=false;
+				foreach($children as $child) {
+					if ($child->content_id==$section->content_id) {
+						$found=true;
+					}
+				}
+				if (!$found) {
+					$parents[]=$section;
+				}
+			}
+			for($y=0; $y<sizeof($parents); $y++) {
+				for($x=0; $x<sizeof($children); $x++) {
+					if ($children[$x]->parent_id==$parents[$y]->content_id) {
+						$parents[$y]->children[]=$children[$x];
+					}
+				}
+			}
 			$keys=array();
 			foreach($parents as $parent) {
 				$keys[]=$parent->title;
 			}
 			array_multisort($keys, $parents);
-			foreach($parents as $parent) {
-				$children=$this->get_subsections($parent->content_id, $content_type_id);
-				$result[$parent->urlid]=$parent;
-				foreach($children as $child) {
-					$result[$parent->urlid]->children[]=$child;
-				}
-			}
-			
-			return $result;
-
+			return $parents;
 		}
 		
 		/**
