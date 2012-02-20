@@ -865,9 +865,13 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$string = "<ul class='nested_tree '>";
 		foreach($sections as $section){
 
-			$string .= "<li class='main_section'><div id='".$section->content_id."' class='small_item'>"
-							.$section->title."</div>".$this->nested_children($section->children, $contenttype).
-						"</li>";
+			$string .= "<li class='main_section'><div id='".$section->content_id."' class='small_item'>".$section->title."</div>";
+						if(isset($section->children) && is_array($section->children))
+						{
+							$string .= $this->nested_children($section->children, $contenttype);
+						}
+							//.$section->title."</div>".$this->nested_children($section->children, $contenttype).
+						$string .= "</li>";
 		}
 		$string .= "</ul>";
 		
