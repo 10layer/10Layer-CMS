@@ -28,9 +28,11 @@
 			$zone_name=$this->input->post("zone_name");
 			$dbdata=array();
 			$x=1;
-			foreach($content as $content_id) {
-				$dbdata[]=array("content_id"=>$content_id,"rank"=>$x,"zone_urlid"=>$zone_id);
-				$x++;
+			if (is_array($content)) {
+				foreach($content as $content_id) {
+					$dbdata[]=array("content_id"=>$content_id,"rank"=>$x,"zone_urlid"=>$zone_id);
+					$x++;
+				}
 			}
 			$this->model_section->setContent($zone_id,$dbdata);
 			//$this->checkCallback("onAfterUpdate", $zone_id);
