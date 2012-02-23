@@ -51,6 +51,7 @@
 				show_404($segments[sizeof($segments)-1]);
 				return true;
 			}
+			
 			$lastmod=filemtime($filename);
 			$filesize=filesize($filename);
 			$cachemins=120*60;

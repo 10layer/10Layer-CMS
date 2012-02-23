@@ -104,40 +104,94 @@
 			return $query->result();
 		}
 		
+		
+		
 		public function setContent($zone_id,$data) {
 			$this->db->where("zone_urlid",$zone_id);
 			$this->db->delete("ranking");
 			foreach($data as $row) {
 				$this->db->insert("ranking",$row);
 			}
+			$this->db->where("zone_urlid",$zone_id);
+			$this->db->delete("ranking_stage");
 			return true;
 		}
 		
-		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $limit=100, $start=0) {
+		public function stage_changes($zone_id,$data) {
+			$this->db->where("zone_urlid",$zone_id);
+			$this->db->delete("ranking_stage");
+			foreach($data as $row) {
+				$this->db->insert("ranking_stage",$row);
+			}
+			return true;
+		}
+		
+		
+		public function staged_zone($zone_id){
+			$records = $this->db->where("zone_urlid",$zone_id)->count_all_results("ranking_stage");
+			if($records > 0){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+		
+		
+		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $selecteds=false, $limit=100, $start=0) {
+			//check if our zone are staged
+			$staged = ($this->staged_zone($zone_id)) ? "staged" : "";
+
 			$this->load->model("model_zones","zones");
 			$ctids=array();
 			$zone=$this->zones->getByIdORM($zone_id)->getData();
 			
-			$published_list=$this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
-			
-			//$published_articles=$this->zones->content;
-			$published_articles=array();
 			$published_ids=array();
-			foreach($published_list as $article) {
-				//We need to make sure the ID exists
-				if (isset($article->content_id)) {
-					$query=$this->db->select("content.*, content_types.urlid AS content_type_urlid")->join("content_types","content_types.id=content.content_type_id")->where("content.id", $article->content_id)->get("content");
-					if ($query->num_rows()==1) {
-						$published_ids[]=$article->content_id;
-						//print $article->content_id;
-						try {
-							$published_articles[]=$query->row();
-						} catch(exception $e) {
+			$published_articles=array();
+	
+			if($this->input->get('selecteds', TRUE) ==""){
+				 
+				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
+				//$published_articles=$this->zones->content;
+				foreach($published_list as $article) {
+					//We need to make sure the ID exists
+					if (isset($article->content_id)) {
+						$query=$this->db->select("content.*, content_types.urlid AS content_type_urlid")->join("content_types","content_types.id=content.content_type_id")->where("content.id", $article->content_id)->get("content");
+						if ($query->num_rows()==1) {
+							$published_ids[]=$article->content_id;
+							//print $article->content_id;
+							try {
+								$published_articles[]=$query->row();
+							} catch(exception $e) {
 							
+							}
 						}
 					}
 				}
+			}else{
+				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
+				//$published_articles=$this->zones->content;
+
+				foreach($published_list as $article) {
+					//We need to make sure the ID exists
+					if (isset($article->content_id)) {
+						$query=$this->db->select("content.*, content_types.urlid AS content_type_urlid")->join("content_types","content_types.id=content.content_type_id")->where("content.id", $article->content_id)->get("content");
+						if ($query->num_rows()==1) {
+							//$published_ids[]=$article->content_id;
+							//print $article->content_id;
+							try {
+								$published_articles[]=$query->row();
+							} catch(exception $e) {
+							
+							}
+						}
+					}
+				}
+			
+				$published_ids = $this->input->get('selecteds', TRUE);
 			}
+			
+
 			$contenttypes=explode(",",$zone->content_types);
 			if (is_array($contenttypes)) {
 				foreach($contenttypes as $ct) {
@@ -169,10 +223,10 @@
 			$this->db->join("content_types","content_types.id=content.content_type_id");
 			
 			if (!empty($startdate)) {
-				$this->db->where("content.start_date >=",date("Y-m-d",strtotime($startdate)));
+				$this->db->where("content.start_date >=",date("Y-m-d",strtotime(rawurldecode($startdate))));
 			}
 			if (!empty($enddate)) {
-				$this->db->where("content.start_date <=",date("Y-m-d",strtotime($enddate)));
+				$this->db->where("content.start_date <=",date("Y-m-d",strtotime(rawurldecode($enddate))));
 			}
 			if (!empty($search)) {
 				$this->db->like("title",$search);
@@ -189,8 +243,12 @@
 			}
 			$this->db->order_by("content.last_modified","DESC");
 			$query=$this->db->get();
+			//echo date("Y-m-d",strtotime(rawurldecode($startdate))). rawurldecode($startdate);
 			//print $this->db->last_query();
+			
 			$result=array();
+			
+			$result["staged"]=$staged;
 			$result["published"]=$published_articles;
 			$result["unpublished"]=$query->result();
 			return $result;

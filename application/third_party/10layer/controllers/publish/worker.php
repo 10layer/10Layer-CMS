@@ -26,6 +26,7 @@
 			$content=$this->input->post("content");
 			$zone_id=$this->input->post("zone_id");
 			$zone_name=$this->input->post("zone_name");
+			
 			$dbdata=array();
 			$x=1;
 			foreach($content as $content_id) {
@@ -39,7 +40,25 @@
 			print "Updated ".$zone_name;
 		}
 		
-		public function subsection($section_urlid, $zone_urlid, $startdate=false, $enddate=false, $searchstr="") {
+		public function stage_rank_section() {
+			$content=$this->input->post("content");
+			$zone_id=$this->input->post("zone_id");
+			$zone_name=$this->input->post("zone_name");
+			
+			$dbdata=array();
+			$x=1;
+			foreach($content as $content_id) {
+				$dbdata[]=array("content_id"=>$content_id,"rank"=>$x,"zone_urlid"=>$zone_id);
+				$x++;
+			}
+			$this->model_section->stage_changes($zone_id,$dbdata);
+			//$this->checkCallback("onAfterUpdate", $zone_id);
+			//$this->messaging->post_action("publish",$zone_id);
+			//$subsection=$this->model_section->getSubSection($subsection_id);
+			print "Staged changes to ".$zone_name;
+		}
+		
+		public function subsection($section_urlid, $zone_urlid, $startdate=false, $enddate=false, $searchstr="", $selecteds="") {
 			if ($zone_urlid=="undefined") {
 				print "This zone is undefined.";
 				return true;
@@ -50,6 +69,9 @@
 			$articles=$this->model_section->getContentInQueue(array("queued_for_publishing", "published"),$zone_urlid,$startdate,$enddate, $searchstr);
 			$data["content"]=$articles["unpublished"];
 			$data["published_articles"]=$articles["published"];
+			
+			$data["staged"]=$articles["staged"];
+			$data["all"] = $this->input->get('all', TRUE);
 			$data["section_id"]=$section->content_id;
 			$this->load->view("publish/subsection",$data);
 		}

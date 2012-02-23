@@ -1,11 +1,11 @@
+
 ul {
 	list-style-type: none; 
 	margin: 0; 
 	padding: 0; 
-	width: 40%;
 	min-height: 200px;
-	border: 1px #CCC solid;
 }
+
 
 ul.sortable li {
 	margin: 3px; padding: 3px; height: auto;
@@ -47,6 +47,7 @@ ul.sortable li {
 	float: left;
 	margin-left: 10px;
 	background-color: #ffb0ad;
+	/* width: 620px; */
 	width: 620px;
 	min-height: 20px;
 	height: 500px;
@@ -78,12 +79,97 @@ ul.sortable li {
 }
 
 #btn_submit {
-	float: left;
+	float: right;
 	margin-right: 10px;
+	margin-top: 5px;
 }
 
 #search {
 	margin-left: 20px;
 	float: left;
 	padding-top: 5px;
+}
+
+#the_display_panel{
+	width:100%;
+	height:500px;
+	border: 1px solid #ccc;
+	background: #fff;
+
+}
+
+#unselected_articles{
+	border:1px solid #ccc;
+	width:70%;
+	min-height: 200px;
+	padding: 5px;
+	float: left;
+	margin:5px;
+	height: 92%;
+	overflow: auto;
+	background: #ccc;
+}
+
+#selected_articles{
+	border:1px solid #ccc;
+	width:25%;
+	min-height: 200px;
+	padding: 5px;
+	float: right;
+	margin: 5px;
+	height: 92%;
+	overflow: auto;
+}
+
+ul.simple_sortable_items{
+	list-style: none;
+	float: left;
+	width:100% !important;
+}
+
+ul.simple_sortable_items li{
+	width:200px;
+	background-color: #fff;
+	margin: 5px;
+	min-height: 50px;
+	border: 1px solid #ccc;
+	margin: 5px;
+	float:left;
+	padding:5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	
+}
+
+ul.simple_sortable_items li:hover{
+	background-color: #a8ffac;
+	
+}
+
+
+ul.simple_sortable_items li .content_tools div{
+	height: 12px;
+	width: 12px;
+	
+}
+
+.staged{
+	background-color: #FFE4E1;
+}
+
+#message_box{
+
+}
+
+.message_box{
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border:1px solid #ccc;
+	width: 780px;
+	float:left;
+	height:20px;
+	margin-top: 5px;
+	font-size:14px;
+	padding:7px 5px;
+	line-height: 20px;
 }
