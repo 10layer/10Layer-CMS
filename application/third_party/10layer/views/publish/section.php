@@ -31,7 +31,7 @@ foreach($zones as $zone) {
 		<div id="date_slider"></div>
 	</div>
 	<div id="search">
-		<input type="text" id="publishSearch" value="" />
+		<label> Search  </label><input type="text" id="publishSearch" value="" />
 	</div>
 	
 </div>

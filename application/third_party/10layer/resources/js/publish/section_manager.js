@@ -87,6 +87,9 @@ function stage_changes(){
 
 
 $(function() {
+
+	
+	//$('div.content-title').gips({ 'theme': 'purple', autoHide: true, text: 'This is purple tooltip, auto hide after pausess time elapses.' });
 	
 	$("#subsection_selector").live("change", function(){
 		$("#the_display_panel").html("");
@@ -185,23 +188,58 @@ $(function() {
 	
 	$(".btn-workflowprev").live("click", function(){
 		
+		var element = $(this).parent().next().next();
 	  $.getJSON("/workflow/change/revert/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"), function(result) {
+			remove_class = "content-workflow-"+(result.major_version + 1);
+			add_class = "content-workflow-"+result.major_version;
+			element.removeClass(remove_class);
+			element.addClass(add_class);
 			//to do something to reflect the change
 	  });
 	});
 	
 	$(".btn-workflownext").live("click", function(){
 		
+		var element = $(this).parent().next().next();	
 	  $.getJSON("/workflow/change/advance/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"), function(result) {
+			remove_class = "content-workflow-"+(result.major_version - 1);
+			add_class = "content-workflow-"+result.major_version;
+			element.removeClass(remove_class);
+			element.addClass(add_class);
+			
 			//to do something to reflect the change
 
 	  });
 	});
 	
 	$(".btn-live").live("click", function(){
-		
+	
+	var element = $(this).children(":first");
+	//console.log(element.attr("class"));	
 	$.getJSON("/workflow/change/togglelive/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"), function(result) {
-			//to do something to reflect the change
+			if(result.live == false){
+				if(element.hasClass("ui-icon-check")){
+					element.removeClass("ui-icon-check");
+					element.addClass("ui-icon-close");
+				}else{
+					element.removeClass("ui-icon-close");
+					element.addClass("ui-icon-check");
+				}
+				
+			}
+			if(result.live == true){
+				if(element.hasClass("ui-icon-close")){
+					element.removeClass("ui-icon-close");
+					element.addClass("ui-icon-check");
+				}else{
+					element.removeClass("ui-icon-check");
+					element.addClass("ui-icon-close");
+				}
+			}
+			
+
+
+			
 	  });
 	});
 

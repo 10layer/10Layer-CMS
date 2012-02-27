@@ -72,6 +72,8 @@
 			$data["content"]=$articles["unpublished"];
 			$data["published_articles"]=$articles["published"];
 			
+			//print_r($articles["unpublished"]); die();
+			
 			$data["staged"]=$articles["staged"];
 			$data["all"] = $this->input->get('all', TRUE);
 			$data["section_id"]=$section->content_id;

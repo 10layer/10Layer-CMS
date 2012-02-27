@@ -131,7 +131,7 @@ ul.simple_sortable_items li{
 	width:200px;
 	background-color: #fff;
 	margin: 5px;
-	min-height: 50px;
+	height: 80px;
 	border: 1px solid #ccc;
 	margin: 5px;
 	float:left;
