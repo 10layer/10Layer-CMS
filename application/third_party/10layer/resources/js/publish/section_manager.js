@@ -90,8 +90,7 @@ function stage_changes(){
 
 $(function() {
 
-	
-	//$('div.content-title').gips({ 'theme': 'purple', autoHide: true, text: 'This is purple tooltip, auto hide after pausess time elapses.' });
+	update_panel(true);
 	
 	$("#subsection_selector").live("change", function(){
 		$("#the_display_panel").html("");
@@ -244,6 +243,8 @@ $(function() {
 			
 	  });
 	});
+	
+	
 
 	
 });
