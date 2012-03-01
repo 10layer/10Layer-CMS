@@ -12,7 +12,7 @@
 
 <div id="btn_submit">
 <select name="subsections" id="subsection_selector">
-	<option value="">Select zone</option>
+	
 <?php
 foreach($zones as $zone) {	
 ?>

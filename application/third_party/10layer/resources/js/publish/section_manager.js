@@ -64,7 +64,9 @@ function update_panel(all){
 			else{
 				$("#the_display_panel").html(data);
 			}
-			$( "#selected_items" ).sortable();
+			$( "#selected_items" ).sortable({stop:function(event,ui){
+				stage_changes();
+			}});
 			$( "#selected_items" ).disableSelection();
   		
 		});

@@ -20,6 +20,7 @@
 			$this->load->model("model_content");
 			$this->load->model("model_site_sections","sections");
 			$this->load->model("model_zones","zones");
+			$this->load->helper("blurb");
 		}
 		
 		public function rank_section() {
