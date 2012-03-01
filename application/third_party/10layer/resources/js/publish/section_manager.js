@@ -52,11 +52,12 @@ function update_panel(all){
 	d2=date_slider_options[$("#date_slider").slider( "values", 1 )];
 	
 	if($("#subsection_selector").val() != ""){
-		var searchstr = $("#publishSearch").val();
+		var searchstr = ($("#publishSearch").val() == "Search...") ? "" : $("#publishSearch").val() ;
 		var selecteds = get_selected();
 		var url = $("#subsection_selector").val()+"/"+d1+"/"+d2+"/"+searchstr;
 		var params = {'selecteds[]': selecteds, "all":all}
 		
+		$("#loading_icon").show();
 		$.get(url,params, function(data) {
 			if ($("#selected_items").length > 0){
 				$("#unselected_articles").html(data);
@@ -68,7 +69,7 @@ function update_panel(all){
 				stage_changes();
 			}});
 			$( "#selected_items" ).disableSelection();
-  		
+  			$("#loading_icon").hide();
 		});
 
 	}else{
@@ -87,6 +88,15 @@ function stage_changes(){
 
 }
 
+function search(){
+		if ($("#selected_items").length > 0){
+			update_panel(false);
+		}else{
+			update_panel(true);		
+		}
+	}
+	
+
 
 $(function() {
 
@@ -96,15 +106,16 @@ $(function() {
 		$("#the_display_panel").html("");
 		update_panel(true);		
 	});
+		
 	
 	$("#publishSearch").live("keyup", function(){
-		if ($("#selected_items").length > 0){
-			update_panel(false);
-		}else{
-			update_panel(true);		
+		var wait = setTimeout(search, 1000);
+		if($(this).val() == ""){
+			$(this).val("Search...")
 		}
-		
 	});
+
+	
 	
 	
 	$('.move_over').live('click',function(){

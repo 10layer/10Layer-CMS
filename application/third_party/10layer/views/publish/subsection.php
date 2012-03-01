@@ -14,13 +14,18 @@
 
 <?php if($all == "true"){ ?>
 <div id="unselected_articles">
-<?php } ?>
+<?php } 
+if(sizeof($content) < 1)
+{
+	echo "<li> There are no results for your specified criteria, please refine it...</li>";
+}
+
+?>
 	<ul id="unselected_items" class="simple_sortable_items sortable">
 		<?php
 			foreach($content as $item) {
-				//print_r($item);
 		?>
-			<li title="<?= $item->title ?>" class="sectionrow" id="content=<?= $item->id ?>" contenttype="<?= $item->contenttype ?>" urlid="<?= $item->urlid ?>">
+			<li title="<?= ($item->title != '' ) ? $item->title : $item->urlid ?>" class="sectionrow" id="content=<?= $item->id ?>" contenttype="<?= $item->contenttype ?>" urlid="<?= $item->urlid ?>">
 			
 			<div class="content-tools" >
 				<div style="height:12px; width:12px;" class="btn-edit ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Edit"><span class="ui-button-icon-primary ui-icon ui-icon-pencil"></span><span class="ui-button-text">Edit</span></div>
@@ -35,7 +40,7 @@
 
 				<img style="float: left; margin-right: 5px" src="/workers/picture/display/<?= $item->id ?>/cropThumbnailImage/50/40" />
 				
-				<div  class="content-title content-workflow-<?= $item->major_version ?>"><?= clean_blurb($item->title, 25) ?></div>
+<div  class="content-title content-workflow-<?= $item->major_version ?>"><?= clean_blurb(($item->title != '' ) ? $item->title : $item->urlid, 25) ?></div>
 				
 
 <br clear="both" />
@@ -66,7 +71,7 @@
 					
 					
 			?>		
-					<li title="<?= $item->title ?>" class="sectionrow" id="content=<?= $item->id ?>" contenttype="<?= $item->content_type_urlid ?>" urlid="<?= $item->urlid ?>">
+					<li title="<?= ($item->title != '' ) ? $item->title : $item->urlid ?>" class="sectionrow" id="content=<?= $item->id ?>" contenttype="<?= $item->content_type_urlid ?>" urlid="<?= $item->urlid ?>">
 					
 					<div class="content-tools" >
 			<div style="height:12px; width:12px;" class="btn-edit ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Edit"><span class="ui-button-icon-primary ui-icon ui-icon-pencil"></span><span class="ui-button-text">Edit</span></div>
@@ -78,7 +83,7 @@
 			<span class="ui-button-text"><?php echo ($item->live == 1) ? "Make Unlive" : "Make Live" ; ?></span></div>
 		</div>
 						<img style="float: left; margin-right: 5px" src="/workers/picture/display/<?= $item->urlid ?>/cropThumbnailImage/50/40" />
-						<div class="content-title content-workflow-<?= $item->major_version ?>"><?= clean_blurb($item->title, 25) ?></div>
+						<div class="content-title content-workflow-<?= $item->major_version ?>"><?= clean_blurb(($item->title != '' ) ? $item->title : $item->urlid, 25) ?></div>
 						
 						<br clear="both" />
 

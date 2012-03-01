@@ -31,7 +31,11 @@ foreach($zones as $zone) {
 		<div id="date_slider"></div>
 	</div>
 	<div id="search">
-		<label> Search  </label><input type="text" id="publishSearch" value="" />
+		<input type="text" id="publishSearch" value="Search..." />
+		<span id="loading_icon" style="display:none;">
+			<img src="/tlresources/file/images/loader.gif" />
+		</span>
+
 	</div>
 	
 </div>
@@ -44,7 +48,7 @@ foreach($zones as $zone) {
 	
 </div>
 
-<div class="message_box" id="message_box"> Select Zone to start... </div>
+<div class="message_box" id="message_box">  </div>
 
 <div id="btn_submit">
 		<button aria-disabled="false" role="button" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " id="doUpdate"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-check"></span>Update Content</span></button>
