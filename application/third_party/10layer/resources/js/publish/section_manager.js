@@ -110,8 +110,11 @@ $(function() {
 	
 	$("#publishSearch").live("keyup", function(){
 		var wait = setTimeout(search, 1000);
-		if($(this).val() == ""){
-			$(this).val("Search...")
+	});
+	
+	$("#publishSearch").live("focus", function(){
+		if($(this).val() == "Search..."){
+			$(this).val("");
 		}
 	});
 
