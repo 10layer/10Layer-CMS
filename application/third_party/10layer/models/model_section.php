@@ -138,7 +138,7 @@
 
 		
 		
-		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $selecteds=false, $limit=100, $start=0) {
+		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $limit=100, $start=0) {
 			//check if our zone are staged
 			$staged = ($this->staged_zone($zone_id)) ? "staged" : "";
 
@@ -149,7 +149,7 @@
 			$published_ids=array();
 			$published_articles=array();
 	
-			if($this->input->get('selecteds', TRUE) ==""){
+			if($this->input->get('selecteds', TRUE) == ""){
 				 
 				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
 				//$published_articles=$this->zones->content;
