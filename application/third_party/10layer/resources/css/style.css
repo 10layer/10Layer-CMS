@@ -778,6 +778,16 @@ form input.inactive[type="submit"] {
 	background: none !important;
 }
 
+/*---- TinyMCE ----*/
+
+.richedit {
+	height: 500px;
+}
+
+.mceLayout {
+	margin-top: 20px !important;
+}
+
 /*-----Dialogs-----*/
 .dropdown-header {
 	background-color: #CCCCCC;

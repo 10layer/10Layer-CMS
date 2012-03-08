@@ -4,6 +4,57 @@
 		return true;
 	}
 	
+	function tinymce() {
+	?>
+		<script type='text/javascript' src='/tlresources/file/tinymce/jquery.tinymce.js'></script>
+		<script type="text/javascript">
+			
+			function init_tinymce() {
+				//TinyMCE
+				var spell_timer=false;
+				$('.richedit').tinymce({
+					script_url: '/tlresources/file/tinymce/tiny_mce.js',
+					strict_loading_mode: true,
+					
+					theme : "advanced",
+					theme_advanced_toolbar_location: "top",
+					theme_advanced_statusbar_location: "bottom",
+					theme_advanced_resizing: "true",
+					plugins: "searchreplace, fullscreen, spellchecker, wordcount",
+					
+					theme_advanced_path : false,
+					
+					theme_advanced_buttons1: "bold, italic, underline, |, cut, copy, paste, pastetext, pasteword, |, search, replace, |, bullist, numlist, |, undo, redo, |, link, unlink, |, charmap, image, |, code, fullscreen, spellchecker",
+					
+					theme_advanced_buttons2: null,
+					theme_advanced_buttons3: null,
+					spellchecker_rpc_url: "/workers/spellcheck",
+					spellchecker_languages : "English=en, +English UK=en_GB",
+					
+					gecko_spellcheck: false,
+					oninit: function() {
+						var ed=this.activeEditor;
+						var tinymce=this;
+						ed.controlManager.setActive('spellchecker', true);
+						this.execCommand('mceSpellCheck', true);
+						ed.onKeyUp.add(function(ed, e) {
+							clearTimeout(spell_timer);
+							spell_timer=setTimeout(function() {updateSpelling(tinymce)}, 1000);
+					    });
+					},
+				});
+				
+				function updateSpelling(tinymce) {
+					tinymce.execCommand('mceWordcountCheck');
+					tinymce.execCommand('mceActiveSpellCheck');
+				}
+			
+			};
+			
+		</script>
+	<?php
+	}
+	
 	function ckeditor() {
 	?>
 		<script type='text/javascript' src='/tlresources/file/ckeditor2/ckeditor.js'></script>
