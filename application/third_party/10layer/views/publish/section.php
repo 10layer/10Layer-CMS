@@ -3,10 +3,6 @@
 ?>
 
 
-
-
-
-
 <div class="message hidden" id="message"></div>
 <div id="controlls">
 
