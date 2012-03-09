@@ -3,7 +3,7 @@
 	$data["menu2_active"]="edit/".$type;
 	$this->load->view('templates/header',$data);
 	link_js("/tlresources/file/js/forms.js");
-	link_js("/tlresources/file/jquery/jquery.form.js");
+	link_js("/tlresources/file/jquery/jquery.form.js?1");
 	link_js("/tlresources/file/js/forms/default.js");
 	//ckeditor();
 	tinymce();
