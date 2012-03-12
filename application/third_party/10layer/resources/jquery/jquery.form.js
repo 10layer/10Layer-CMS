@@ -415,7 +415,7 @@ $.fn.ajaxSubmit = function(options) {
                     timeoutHandle = undefined;
                 }
             }
-
+            
             // add "extra" data to form if provided in options
             var extraInputs = [];
             try {
@@ -477,7 +477,8 @@ $.fn.ajaxSubmit = function(options) {
                 return;
             }
             else if (e == SERVER_ABORT && xhr) {
-                xhr.abort('server abort');
+            	//This causes general chaos
+                //xhr.abort('server abort');
                 return;
             }
 
