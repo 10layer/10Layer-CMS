@@ -57,7 +57,7 @@ function cometProcessAction(cometobj) {
 	if (eval ('typeof '+func+'=="function"')){
 		eval(func+'.apply(this, params)');
 	} else {
-		console.log("Could not find "+func)
+		//console.log("Could not find "+func)
 	}
 }
 
