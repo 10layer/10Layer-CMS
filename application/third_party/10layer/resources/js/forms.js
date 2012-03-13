@@ -47,7 +47,20 @@ $(function() {
 		}
 		$(this).autocomplete({
 		
-			source: source,
+			source: function (request, response) {
+				try {
+					$.ajax({
+						url: source,
+						data: request,
+						dataType: "json",
+						success: function(data, status) {
+							response(data);
+						}
+					});
+				} catch(err) {
+					//Do nothing
+				}
+			},
 			select: function( event, ui ) {
 				if (ui.item) {
 					if ($(this).hasClass("multiple")) {
@@ -60,16 +73,18 @@ $(function() {
             		    		primary: "ui-icon-circle-close"
 							}
 						});
-						$(this).after($(newdisp).button({
-							icons: {
-    		    				primary: "ui-icon-circle-close"
-							}
-						}));
+						$(this).after(
+							$(newdisp).button({
+								icons: {
+    		    					primary: "ui-icon-circle-close"
+								}
+							}));
 						$(this).val("");
 						return false;
 					} else {
-						$("#autocomplete_"+$(this).attr("contenttype")+"_"+$(this).attr("fieldname")).val(ui.item.id);
-						alert($("#autocomplete_"+$(this).attr("contenttype")+"_"+$(this).attr("fieldname")).val());
+						//This looks incomplete
+						//$("#autocomplete_"+$(this).attr("contenttype")+"_"+$(this).attr("fieldname")).val(ui.item.id);
+						//alert($("#autocomplete_"+$(this).attr("contenttype")+"_"+$(this).attr("fieldname")).val());
 					}
 				}
 			},

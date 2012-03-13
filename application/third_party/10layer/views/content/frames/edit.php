@@ -3,9 +3,10 @@
 	$data["menu2_active"]="edit/".$type;
 	$this->load->view('templates/header',$data);
 	link_js("/tlresources/file/js/forms.js");
-	link_js("/tlresources/file/jquery/jquery.form.js");
+	link_js("/tlresources/file/jquery/jquery.form.js?1");
 	link_js("/tlresources/file/js/forms/default.js");
-	ckeditor();
+	//ckeditor();
+	tinymce();
 ?>
 <script language="javascript">
 	
@@ -26,7 +27,8 @@
 		$("#dyncontent").load("<?= base_url()."edit/fullview/$type/$urlid" ?>", function() {
 			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
 			if ($(".richedit").length) {
-				initCKEditor();
+				//initCKEditor();
+				init_tinymce();
 			}
 		});
 		
