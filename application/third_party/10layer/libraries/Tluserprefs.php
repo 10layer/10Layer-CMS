@@ -100,6 +100,7 @@
 				return false;
 			}
 			$this->data=$data[0];
+			
 		}
 		
 		public function set_queue($queueid,$data) {
@@ -119,7 +120,7 @@
 			$this->get_data();
 		}
 		
-		public function set_queue_name($queueid, $name) {
+		public function set_queue_name($queueid, $name, $order, $width, $height) {
 			if (isset($this->data->queues)) {
 				$queues=$this->data->queues;
 			} else {
@@ -127,7 +128,11 @@
 				$queues=array();
 			}
 			$queues[$queueid]["name"]=$name;
+			$queues[$queueid]["order"]=$order;
 			$queues[$queueid]["id"]=$queueid;
+			$queues[$queueid]["width"]=$width;
+			$queues[$queueid]["height"]=$height;
+			
 			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
 		}
 		
@@ -139,8 +144,24 @@
 			}
 		}
 		
+		function save_queue_order($id, $order){
+			$queue = $this->get_queue($id);
+			$queue["order"] = $order + 1;
+			$this->set_queue_name($id,$queue["name"],$queue["order"],$queue["width"], $queue["height"]);
+			$this->get_data();
+		}
+		
+		function save_queue_size($id, $height, $width){
+			$queue = $this->get_queue($id);
+			$queue["height"] = $height;
+			$queue["width"] = $width;
+			$this->set_queue_name($id,$queue["name"],$queue["order"],$queue["width"], $queue["height"]);
+			$this->get_data();
+		}
+		
 		public function get_queues() {
 			if (isset($this->data->queues)) {
+				//print_r($this->data->queues);
 				return $this->data->queues;
 			} else {
 				return array();

@@ -12,7 +12,8 @@
 		var queuecount=0;
 		
 		queueModel=Backbone.Model.extend({
-			defaults: function() {
+			/*
+defaults: function() {
 				queuecount++;
 				id=Math.round(new Date().getTime()/1000);
 				return {
@@ -24,6 +25,7 @@
 			url: function() {
 				return "/queues/content/queues/"+this.get("id");
 			},
+*/
 		});
 		
 		queueCollection=Backbone.Collection.extend({
@@ -40,6 +42,9 @@
 			render: function() {
 				this.queueid=this.model.get("id");
 				var root=this;
+				var preffered_width = (this.model.get("width") > 950 ) ? 950 : this.model.get("width");
+    			this.model.set({"width":preffered_width});
+    						
 				$(this.el).html(this.template(this.model.toJSON()));
 				this.nameinput=this.$(".queuename-edit");
 				this.nameinput.bind('blur', _.bind(this.saveName, this));
@@ -54,6 +59,15 @@
         				$(this).parent().next(".options").toggle();
     	    		}
 		        );
+		        
+		        this.$(".config_close").button({
+		        	icons: {
+        				primary: "ui-icon-close",
+		        	},
+        			text: false,
+		        }).click(function(){
+		        	$(this).parent().toggle();
+		        });
 		        
 		        this.$(".options_close").button({
 		        	icons: {
@@ -170,8 +184,8 @@
 			
 		});
 		
-		queues=new queueCollection;
-		
+		 var queues=new queueCollection;
+		 		
 		/*----------
 		/ CONTENT  /
 		----------*/
@@ -367,36 +381,161 @@
 			},
 			
 			events: {
-				".addqueue click": "newQueue"
+				".addqueue click": "newQueue",
+				"#tiles click":"retile"
 			},
 			
 			init: function(queues) {
+				//clean the container first
+				$('#queues').html("");
 				var root=this;
 				if (queues.length==0) { //No queues, make some
 					this.newQueue();
-				} else { //Queues exist, draw them
+				} else { //Queues exist, draw them					
 					queues.each(function(model) {
 						root.drawQueue(model);
 					});
 				}
 				this.addqueuebutton=$(".addqueue");
 				this.addqueuebutton.bind('click', _.bind(this.newQueue, this));
+				
+				this.retile_button=$("#tiles");
+				this.retile_button.bind('click', _.bind(this.retile, this));
+				this.addBehaviour();
+
+				$('#queues').append("<br clear='both'>");
+								
+				
+				
 			},
 			
-			drawQueue: function(queue) {
+			drawQueue: function(queue, new_) {
 				var view = new queueView({ model: queue });
-				$("#homepage").append(view.render().el);
+				if(!new_){
+					$("#queues").append(view.render().el);
+				}else{
+					$("#queues").prepend(view.render().el);
+				}
+				
 			},
 			
 			newQueue: function() {
 				var model= new queueModel();
-				this.drawQueue(model);
-				model.save();
+				
+				var queue_count = $("#queues").children().length + 1;
+								
+				var id=Math.round(new Date().getTime()/1000);
+				model.set({"name": "Queue_"+queue_count,"order":queue_count,"height":160, "width":950, "id":id});
+				this.drawQueue(model,true);
+				queues.add(model);
+				
+				//we save all because we want to store the new order
+				var items = $("#queues").children();
+      				var number;
+      				items.each(function(index){
+      					number = index+1;
+      					the_id = $(this).children(":first").attr("id");
+      					the_model = queues.get(the_id);
+      					updates = {order:number,height:$(this).height(), width:$(this).width()};
+      					the_model.set(updates);
+      					the_model.save();      					//console.log(index);
+      				});
+				
+				
+				//model.save();
+			},
+			
+			addBehaviour:function(){
+				$(".options").draggable();
+				$('#queues').sortable({
+					stop: function(event,ui){
+      					var items = $("#queues").children("div");
+      					//go through the list and update collection items
+      					items.each(function(index){
+      						the_id = $(this).children(":first").attr("id")
+      						the_model = queues.get(the_id);
+      						updates = {order:index+1,height:$(this).height(), width:$(this).width()};
+      						the_model.set(updates);
+      					});
+      					
+      					selecteds = [];
+      					var items = $("#queues").children("div");
+      					items.each(function(index){
+      						the_id = $(this).children(":first").attr("id");
+      						selecteds.push(the_id);
+      					});
+      					
+      					var params = {'selecteds[]': selecteds}
+      					
+      					$.post("/queues/content/set_queue_order", params,function(data){
+      						//alert(data);
+      					});
+      							
+          			}
+				});
+      			$(".queue").resizable({minHeight: 200, minWidth: 300, maxHeight: 500, maxWidth: 960,
+      			
+      				resize:function(){
+      					//adjust the size of the inner ones as well
+      					var item = $(this);
+      					var formatter = item.children(":first").find(".queue_formatter");
+      					formatter.css("width",item.width()-10);
+      					formatter.css("height",item.height()-40);
+      			    	
+						
+      				}, 
+      				stop: function(event,ui){
+      					var items = $(this).parent().children("div");
+      					items.each(function(index){
+      						the_id = $(this).children(":first").attr("id"); //$(this).children(":first").attr("id");
+      						the_model = queues.get(the_id);
+      						updates = {order:index+1,height:$(this).height(), width:$(this).width()};
+      						the_model.set(updates);
+      						//the_model.save();
+      						
+      					});
+      					
+      		
+      						the_queues = [];
+      						var items = $("#queues").children("div");
+      						items.each(function(index){
+      							the_id = $(this).children(":first").attr("id");
+      							var item = the_id+"|"+$(this).height()+"|"+$(this).width();
+      							the_queues.push(item);
+      						});
+      						
+      						var params = {'selecteds[]': the_queues}
+      						
+      						$.post("/queues/content/set_queue_size", params,function(data){
+      							//alert(data);
+      						});
+	
+          			}
+          			
+          			});
+          		$( ".queue" ).resizable( "option", "grid", [5, 5] );
+      			
 			},
 			
 			edited: function() {
 				//console.log("Caught edit");
 			},
+			retile:function(){
+				//$("#queues").html("");
+				var items = $("#queues").children("div");
+      				var number;
+      				items.each(function(index){
+      					number = index+1;
+      					the_id = $(this).children(":first").attr("id");
+      					the_model = queues.get(the_id);
+      					updates = {order:number,height:160, width:950};
+      					the_model.set(updates);
+      					the_model.save();      					//console.log(index);
+      				});
+      				this.init(queues);
+      				//window.location.reload();
+      				//Backbone.history.navigate("/home", true);
+			}
 			
 		});
 		
@@ -417,6 +556,10 @@
 	</div>
 </script>
 
+
+
+
+
 <script type="text/template" id="contenttypes-template">
 	<div class="contenttype">
 		<input class="contenttype_check" type="checkbox" <%= checked ? 'checked="checked"' : '' %> value="<%= urlid %>" /> <%= name %>
@@ -430,13 +573,18 @@
 </script>
 
 <script type="text/template" id="queue-template">
-	<div id="queue_<%= order %>">
+	<div id="<%= id %>" >
+		
 		<div class="options_icons">
 			<div class="queue-name"><input class="queuename-edit" name="queuename" value="<%= name %>" /></div>
 			<div class="options_close">Delete queue</div>
 			<div class="options_dropdown">Filter queue</div>
 		</div>
-		<div class="options">
+		<div class="options shadow">
+		
+		<a class="config_close">close</a>
+		
+			<h4><%= name %> Configuarations...</h4>
 			<div class="option">
 				<div class="option_header">Content Types</div>
 			</div>
@@ -449,23 +597,144 @@
 				<div class="option_header">Workflow</div>
 			</div>
 			<div class="option_popout workflows"></div>
-			
+			<br clear="both">
 		</div>
+		<div class="queue_formatter" style="height:<%= height %>px; width:<%= width %>px">
 		<div class="queue-content"></div>
+		</div>
 	</div>
 </script>
 
 <style>
+
+	#queues{
+		background: #fff;
+		padding: 5px;
+		min-height: 500px;
+	}
 	
-	#homepage .queue {
-		width: 300px;
+		
+	.queue {
 		float: left;
-		margin-right: 10px;
+		margin: 5px;
 		margin-bottom: 10px;
+		border:1px solid #ccc;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
 		
 	}
 	
-	#homepage .options {
+	.queue_formatter{
+		overflow: auto;
+		padding:5px;
+	}
+	
+	
+	.queue_header{
+		    background-color: #CCCCCC;
+    		color: #FFFFFF;
+    		cursor: pointer;
+    		height: 20px;
+    		padding: 5px;
+    		-moz-border-radius: 5px;
+			border-radius: 5px;
+	}
+	
+	.queue-name {
+		width: 180px;
+		float: left;
+	}
+
+	
+	.options_close, .options_dropdown{
+		height: 14px;
+		width:14px;
+		float:right;
+	}
+	
+	.options_icons {
+		height: 20px;
+		background-color: #ccc;
+		color: #FFF;
+		cursor: pointer;
+		padding: 5px;
+	}
+	
+	.options_icons input {
+		border:1px solid #999;
+		color: #999;
+		padding: 2px;
+		
+	}
+	
+	.options_close, .options_dropdown{
+		height: 14px;
+		width:14px;
+		float:right;
+	}
+	
+	.options {
+    	background-color: #FFFFFF;
+    	border: 1px solid #CCCCCC;
+    	border-radius: 5px 5px 5px 5px;
+    	cursor: pointer;
+    	display: none;
+    	margin-top: 5px;
+    	padding: 10px;
+    	position: absolute;
+    	right: 41px;
+    	top: -15px;
+    	width: 600px;
+    	z-index: 999;
+	}
+	
+	.option_header {
+    	background: none repeat scroll 0 0 #999999;
+    	border: 1px solid #CCCCCC;
+    	border-radius: 5px 5px 5px 5px;
+    	clear: both;
+    	color: #FFFFFF;
+    	margin-top: 3px;
+    	padding: 10px;
+	}		
+	
+	.contenttype, .workflow {
+    	border-bottom: 1px solid #CCCCCC;
+    	float: left;
+    	height: 16px;
+    	line-height: 17px;
+    	margin: 5px;
+    	padding: 5px;
+    	width: 177px;
+	}
+	
+	.config_close {
+		float: right;
+		height:12px;
+		width:12px;
+	}
+	
+	.select-all, .select-none{
+		margin: 0 5px;
+		
+	}
+	
+	.select-all:hover, .select-none:hover{
+		text-decoration: underline;
+	}
+	
+	.allnone {
+    	background: none repeat scroll 0 0 #CCCCCC;
+    	border: 1px solid #CCCCCC;
+    	color: #FFFFFF;
+    	margin-top: 5px;
+    	padding: 5px;
+    	text-align: center;
+    	width: 100px;
+	}
+
+	/*
+.options {
 		display: none;
 		position: absolute;
 		z-index: 50;
@@ -477,94 +746,54 @@
 		margin-left: 270px;
 		margin-top: 5px;
 	}
+*/
 	
-	#homepage .queue-content {
-		background: #FFF;
-		border: 1px #CCC solid;
-		padding: 5px;
-		height: 500px;
-		overflow: auto;
-	}
-	
-	#homepage .queue-content li {
-		list-style: none;
-		padding: 5px;
-		border: 1px #CCC solid;
-		margin-bottom: 5px;
-	}
-	
-	#homepage .options_icons {
-		width: 290px;
-		height: 20px;
-		background-color: #999;
-		/*text-align: right;*/
-		color: #FFF;
-		cursor: pointer;
-		padding: 5px;
-	}
-	
-	#homepage .option_popout {
-		display: none;
-		float: right;
-	}
-	
-	#homepage .option {
-		width: auto;
-		padding: 10px;
-	}
-	
-	#homepage .options_dropdown, #homepage .options_close {
-		float: right;
-		width: 20px;
-		height: 20px;
-	}
-	
-	#homepage .queue-name {
-		width: 200px;
-		float: left;
-	}
-	
-	#homepage .option_header {
-		width: 100px;
-		cursor: pointer;
-		font-weight: bold;
-		border-bottom: 1-x #444 solid;
-	}
-	
-	#homepage .options_icons input {
-		border: none;
-		color: #fff;
-		background-color: #999;
-	}
-	
-	#homepage #topbuttons {
-		clear: both;
-		margin-bottom: 10px;
-	}
-	
-	#homepage .content-tools {
-	}
-	
-	#homepage .content-tools div {
+	.content-tools div {
 		width: 12px;
 		height: 12px;
 	}
 	
-	#homepage .allnone span {
-		cursor: pointer;
-		text-decoration: underline;
+	
+	.queue-content {
+		padding:3px;
+	}
+	.queue-content li{
+		list-style: none;
 	}
 	
+	.queue-content li .content{
+		border:1px solid #ccc;
+		padding:2px;
+		margin-top: 3px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		background: #f1fcf8;
+	}
+	
+	.queue-content li .content:hover{
+		background: #c9f8e6;
+	}
+		
 	
 </style>
 
 <script>
 	$(function() {
+	
+		
+		
+	
 		$(".addqueue").button({
 			icons: {
 				primary: "ui-icon-circle-plus",
 			}
 		});
+		$("#tiles").button({
+			icons: {
+				primary: "ui-icon-circle-plus",
+			}
+		});
+
 		
 		$(".option").live("click",
 			function() {
@@ -617,6 +846,11 @@
 	</div>
 	</div>
 	<div id="topbuttons">
-		<div class="addqueue">Add a queue</div>
+		<div class="addqueue">Add a queue</div> <div id="tiles">Tile queues</div>
+	</div>
+	
+	<div id="queues">
+		
 	</div>
 </div>
+

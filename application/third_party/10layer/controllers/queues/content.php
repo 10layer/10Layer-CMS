@@ -61,17 +61,75 @@
 		}
 		
 		public function queues($queueid=false) {
+			
+			//$json = file_get_contents('php://input');
 			$json=$this->input->post("model", true);
+			
+						
 			$method=$this->input->post("_method");
 			if ($method=="DELETE") {
 				$this->tluserprefs->delete_queue($queueid);
 			}
 			if (!empty($json)) {
 				$data=json_decode($json);
-				$this->tluserprefs->set_queue_name($data->id, $data->name);
+				$this->tluserprefs->set_queue_name($data->id, $data->name, $data->order, $data->width, $data->height);
 			}
 			$queues=$this->tluserprefs->get_queues();
+			$holder = array();
+			foreach($queues as $q){
+				if(!isset($q["order"])){
+					$q["order"]=5;
+				}
+				if(!isset($q["height"])){
+					$q["height"]=75;
+				}
+				if(!isset($q["width"])){
+					$q["width"]=230;
+				}
+				
+				array_push($holder, $q);
+			}
+			$queues = $holder;
+			
+			usort($queues,array($this,"cmp"));		
+			
 			print json_encode(array_values($queues));
+		}
+		
+		
+		function set_queue_order(){
+			
+			$sequence = $this->input->post("selecteds");
+			for($i = 0; $i < sizeof($sequence); $i++){
+				$this->tluserprefs->save_queue_order($sequence[$i], $i);
+			}
+			
+			echo "Queues reordered successfully";
+			
+		}
+		
+		function set_queue_size(){
+		
+			$sequence = $this->input->post("selecteds");
+			
+			//print_r(json_decode($sequence));
+			
+			foreach($sequence as $item){
+				$the_item = explode("|",$item);
+				$id = $the_item[0];
+				$height = $the_item[1];
+				$width = $the_item[2];	
+				$this->tluserprefs->save_queue_size($id, $height, $width);
+			}
+		
+			echo "Queues resized successfully";
+		}
+		
+		
+		
+		function cmp($a, $b)
+		{
+    		return strcmp($a["order"], $b["order"]);
 		}
 		
 		public function contenttypes($queueid) {
