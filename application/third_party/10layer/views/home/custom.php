@@ -448,6 +448,7 @@ defaults: function() {
 			addBehaviour:function(){
 				$(".options").draggable();
 				$('#queues').sortable({
+					
 					stop: function(event,ui){
       					var items = $("#queues").children("div");
       					//go through the list and update collection items
@@ -621,6 +622,7 @@ defaults: function() {
 		border:1px solid #ccc;
 		-moz-border-radius: 5px;
 		border-radius: 5px;
+		background: #fff;
 		
 	}
 	
@@ -733,20 +735,6 @@ defaults: function() {
     	width: 100px;
 	}
 
-	/*
-.options {
-		display: none;
-		position: absolute;
-		z-index: 50;
-		background-color: #FFF;
-		border: 1px #CCC solid;
-		width: 200px;
-		padding-right: 10px;
-		padding-bottom: 10px;
-		margin-left: 270px;
-		margin-top: 5px;
-	}
-*/
 	
 	.content-tools div {
 		width: 12px;
