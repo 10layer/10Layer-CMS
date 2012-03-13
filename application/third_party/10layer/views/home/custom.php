@@ -829,13 +829,7 @@ defaults: function() {
 		});
 
 		
-		$(".option").live("click",
-			function() {
-				$(this).next(".option_popout").toggle();
-				$(this).next(".option_popout").center();
-			}
-		);
-		
+				
 		function update_content(contenttype,urlid) {
 			alert("Changed: "+contenttype+"/"+urlid);
 		}
