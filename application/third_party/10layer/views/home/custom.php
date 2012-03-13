@@ -1,6 +1,25 @@
 <script type="text/javascript" src="/tlresources/file/js/underscore-1.1.6.js"></script>
 <script type="text/javascript" src="/tlresources/file/js/backbone.js"></script>
 <script>
+
+jQuery.fn.center = function () {
+	//Get the window height and width
+	var winH = $(window).height();
+	var winW = $(window).width();
+	
+	var top_pos = winH/2-$(this).height()/2;
+	var left_pos = winW/2-$(this).width()/2;
+              
+		//Set the popup window to center
+	this.css('top',  top_pos);
+	this.css('left', left_pos);
+
+    this.css("position","absolute");
+    //this.css("top", ($(window).height() / 2) + "px");
+    //this.css("left", ($(window).width()  / 2) + "px");
+    return this;
+}
+
 	$(function() {
 		Backbone.emulateJSON = true;
 		Backbone.emulateHTTP = true;
@@ -56,7 +75,18 @@ defaults: function() {
 	    	    })
 		        .click(
         			function() {
-        				$(this).parent().next(".options").toggle();
+        				//needed to hack this here in order to center the popup
+        				var container = $(this).parent().parent().parent();
+        				var displayer = $(this).parent().next();
+        				
+        				if (displayer.css('display') == 'none'){
+   							container.removeClass("ui-resizable");
+   							displayer.toggle().center();
+						}else{
+							container.addClass("ui-resizable");
+   							displayer.toggle();
+						}
+						
     	    		}
 		        );
 		        
@@ -66,7 +96,13 @@ defaults: function() {
 		        	},
         			text: false,
 		        }).click(function(){
-		        	$(this).parent().toggle();
+		        
+		        	//needed to hack this here in order to center the popup
+        				var container = $(this).parent().parent().parent();
+        				var displayer = $(this).parent();
+        				container.addClass("ui-resizable");
+   						displayer.toggle();		        		
+		        		
 		        });
 		        
 		        this.$(".options_close").button({
@@ -581,25 +617,30 @@ defaults: function() {
 			<div class="options_close">Delete queue</div>
 			<div class="options_dropdown">Filter queue</div>
 		</div>
-		<div class="options shadow">
 		
-		<a class="config_close">close</a>
+				<div class="options shadow">
 		
-			<h4><%= name %> Configuarations...</h4>
-			<div class="option">
-				<div class="option_header">Content Types</div>
+				<a class="config_close">close</a>
+				
+				<h4><%= name %> Configuarations...</h4>
+				<div class="option">
+					<div class="option_header">Content Types</div>
+				</div>
+				
+				<div class="option_popout contenttypes">
+				<div class="allnone"><span class="select-all">All</span> | <span class="select-none">None</span></div>
+				
+				</div>
+				
+				<div class="option">
+					<div class="option_header">Workflow</div>
+				</div>
+				<div class="option_popout workflows"></div>
+				<br clear="both">
 			</div>
-			
-			<div class="option_popout contenttypes">
-			<div class="allnone"><span class="select-all">All</span> | <span class="select-none">None</span></div>
-			</div>
-			
-			<div class="option">
-				<div class="option_header">Workflow</div>
-			</div>
-			<div class="option_popout workflows"></div>
-			<br clear="both">
-		</div>
+		
+		
+	
 		<div class="queue_formatter" style="height:<%= height %>px; width:<%= width %>px">
 		<div class="queue-content"></div>
 		</div>
@@ -683,9 +724,9 @@ defaults: function() {
     	display: none;
     	margin-top: 5px;
     	padding: 10px;
-    	position: absolute;
-    	right: 41px;
-    	top: -15px;
+    	/* position: absolute; */
+    	/* right: 41px; */
+    	/* top: -15px; */
     	width: 600px;
     	z-index: 999;
 	}
@@ -766,6 +807,11 @@ defaults: function() {
 </style>
 
 <script>
+
+
+
+
+
 	$(function() {
 	
 		
@@ -786,6 +832,7 @@ defaults: function() {
 		$(".option").live("click",
 			function() {
 				$(this).next(".option_popout").toggle();
+				$(this).next(".option_popout").center();
 			}
 		);
 		
@@ -795,7 +842,7 @@ defaults: function() {
 		
 		$(".select-all").live("click",function() {
 			$(this).parent().parent().find("input:checkbox").each(function() { 
-				$(this).trigger("check");
+				$(this.el).trigger("check");
 				$(this).attr("checked", true);
 			});
 			$(this).trigger("save_update");
@@ -804,7 +851,8 @@ defaults: function() {
 		
 		$(".select-none").live("click",function() {
 			$(this).parent().parent().find("input:checkbox").each(function() { 
-				$(this).trigger("uncheck");
+				//console.log("testing");
+				$(this.el).trigger("uncheck");
 				$(this).attr("checked", false);
 			});
 			$(this).trigger("save_update");
