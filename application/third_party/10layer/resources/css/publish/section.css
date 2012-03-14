@@ -110,6 +110,10 @@ ul.sortable li {
 	background: #ccc;
 }
 
+#unselected_items li:hover{
+	cursor: default;
+}
+
 #selected_articles{
 	border:1px solid #ccc;
 	width:25%;

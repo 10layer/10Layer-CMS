@@ -48,7 +48,7 @@ if(sizeof($content) < 1)
 
 <br clear="both" />
 
-<div style="height:12px; width:12px; float:right" class="move_over ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move to the section list"><span class="ui-icon ui-icon-circle-arrow-e"></span><span class="ui-button-text">Move to the section list</span>
+<div style="height:20px; width:20px; float:right;" class="move_over ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move to the section list"><span class="ui-icon ui-icon-circle-arrow-e"></span><span class="ui-button-text">Move to the section list</span>
 </div>
 			</li>
 		<?php
@@ -90,7 +90,7 @@ if(sizeof($content) < 1)
 						
 						<br clear="both" />
 
-<div style="height:12px; width:12px; float:right" class="move_back ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move out of the section list"><span class="ui-icon ui-icon-circle-arrow-w"></span><span class="ui-button-text">Move out of the section list</span>
+<div style="height:20px; width:20px; float:right;" class="move_back ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move out of the section list"><span class="ui-icon ui-icon-circle-arrow-w"></span><span class="ui-button-text">Move out of the section list</span>
 </div>
 					</li>
 			<?php
