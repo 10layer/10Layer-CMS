@@ -57,19 +57,24 @@
 			$data["menu2_active"]="publish/collection/$cturlid";
 			$section=$this->sections->getByIdORM($urlid);
 			$sectiondata=$section->getData();
+			
+			//print_r($sectiondata); die();
+			
 			$zones=array();
 			if(is_array($sectiondata->zones)) {
 				foreach($sectiondata->zones as $zone) {
 					$zones[]=$this->zones->getByIdORM($zone);
 				}
 			}
+			
 			//$data["layouts"]=$this->model_section->getLayouts($urlid);
 			//$data["subsections"]=$this->model_section->getSubSections($urlid);
 			$data["content"]=array();
 			$data["section_id"]=$section->content_id;
 			$data["section_urlid"]=$section->urlid;
 			$data["zones"]=$zones;
-			$data["section"]=$section;
+			//$data["section"]=$section;
+			$data["section_data"]=$sectiondata;
 			$data["stylesheets"]=array("/tlresources/file/css/publish/section.css");
 			$this->load->view('templates/header',$data);
 			$this->load->view("publish/section",$data);

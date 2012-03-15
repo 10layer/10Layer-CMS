@@ -86,6 +86,72 @@
 			$this->load->view("publish/subsection",$data);
 		}
 		
+		public function automate_section($section_id){
+			//get the section zones
+			$zones=$this->db->select("content2.id")->from("content")->join("content_content","content.id=content_content.content_id")->join("content AS content2", "content_content.content_link_id=content2.id")->where("content.id",$section_id)->where("content2.content_type_id",21)->get()->result();
+			
+			foreach($zones as $zone){
+				//start by setting the zone to auto
+				$this->model_section->automate_zone($zone->id);
+				//generate the content for the zone and store it
+				$this->generate_zone_content($section_id,$zone->id);
+			}
+			echo "Successfully automated this section";
+		
+		}
+		
+		public function generate_zone_content($section_id,$zone_id){
+				$zone=$this->zones->getByIdORM($zone_id)->getData();
+				
+				
+				$content_types= (isset($zone->content_types) AND $zone->content_types!="") ? explode(",",$zone->content_types):array();
+				if ($zone->auto == 1) {
+					//print "Auto-generating content for ".$zone->urlid."\n";
+					$articles=$this->db->select("content.id AS content_id, content_content.content_id AS parent")->from("content")->join("content_types", "content.content_type_id=content_types.id")->join("content_content","content_content.content_link_id=content.id")->where_in("content_types.name", $content_types)->where("content_content.content_id",$section_id)->where("content.live",true)->where("content.major_version",4)->order_by("content.start_date DESC")->limit($zone->auto_limit)->get()->result();
+					
+					$x=1;
+					$this->db->where("ranking.zone_urlid",$zone->urlid)->delete("ranking");
+					foreach($articles as $article) {
+						$data=array();
+						$data["rank"]=$x++;
+						$data["content_id"]=$article->content_id;
+						$data["zone_urlid"]=$zone->urlid;
+						$this->db->insert("ranking",$data);
+					}
+				}
+		}
+		
+		function clean_zone_content($zone_id){
+			$zone=$this->zones->getByIdORM($zone_id)->getData();
+			$this->db->where("ranking.zone_urlid",$zone->urlid)->delete("ranking");
+		}
+		
+		function automate_zone($section_id,$zone_id){
+			$this->model_section->automate_zone($zone_id);
+			$this->generate_zone_content($section_id,$zone_id);
+			echo "Successfully automated this zone";
+		}
+		
+		function de_automate_section($section_id){
+			//get the section zones
+			$zones=$this->db->select("content2.id")->from("content")->join("content_content","content.id=content_content.content_id")->join("content AS content2", "content_content.content_link_id=content2.id")->where("content.id",$section_id)->where("content2.content_type_id",21)->get()->result();
+			foreach($zones as $zone){
+				//start by setting the zone from auto
+				$this->model_section->de_automate_zone($zone->id);
+				//generate the content for the zone and store it
+				$this->clean_zone_content($zone->id);
+			}
+			echo "Successfully de-automated this section";
+		}
+		
+		function de_automate_zone($zone_id){
+			$this->model_section->de_automate_zone($zone_id);
+			$this->clean_zone_content($zone_id);
+			echo "Successfully de-automated this zone";
+		}
+		
+		
+		
 	}
 
 /* End of file worker.php */

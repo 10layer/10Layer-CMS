@@ -44,10 +44,10 @@ function update_panel(all){
 	d1=date_slider_options[$("#date_slider").slider( "values", 0)];
 	d2=date_slider_options[$("#date_slider").slider( "values", 1 )];
 	
-	if($("#subsection_selector").val() != ""){
+	if($("#active_zone").val() != ""){
 		var searchstr = ($("#publishSearch").val() == "Search...") ? "" : $("#publishSearch").val() ;
 		var selecteds = get_selected();
-		var url = $("#subsection_selector").val()+"/"+d1+"/"+d2+"/"+searchstr;
+		var url = $("#active_zone").val()+"/"+d1+"/"+d2+"/"+searchstr;
 		var params = {'selecteds[]': selecteds, "all":all}
 		
 		$("#loading_icon").show();
@@ -95,10 +95,19 @@ $(function() {
 
 	update_panel(true);
 	
-	$("#subsection_selector").live("change", function(){
+	/*
+$("#subsection_selector").live("change", function(){
 		$("#the_display_panel").html("");
 		update_panel(true);		
 	});
+*/
+	
+	/*
+$(".zone_selector").live("click", function(){
+		$("#the_display_panel").html("");
+		update_panel(true);		
+	});
+*/
 		
 	
 	$("#publishSearch").live("keyup", function(){
@@ -132,6 +141,8 @@ $(function() {
 	
 			$( "#informer" ).dialog({
 					modal: true,
+					height:200,
+					width:400,
 					buttons: {
 					Ok: function() {
 						$( this ).dialog( "close" );
@@ -156,6 +167,19 @@ $(function() {
     		$("#unselected_items").prepend($(this).parent());
     		$(this).parent().effect("pulsate", { times:3 }, 500);
     		stage_changes();
+		}else{
+			$( "#informer:ui-dialog" ).dialog( "destroy" );
+	
+			$( "#informer" ).dialog({
+					modal: true,
+					height:200,
+					width:400,
+					buttons: {
+					Ok: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
 		}
 
 	});
@@ -265,6 +289,87 @@ $(function() {
 	  });
 	});
 	
+	
+	//this.$(".options_close")
+	
+	
+	$("#config_section_options").button({
+		icons: {
+        	primary: "ui-icon-triangle-1-s",
+		},
+        text: false,
+	}).live("click", function(){
+		$("#section_config").slideToggle();
+	});
+	
+	
+	
+	$(".zone_selector").live("click", function(){
+		$("#the_display_panel").html("");
+		$("#section_config").slideToggle();
+		var dest_class = ($(this).hasClass("auto_0")) ? "auto_0" : "auto_1";
+		var rem_class = ($("#active_zone_display").hasClass("auto_0")) ? "auto_0" : "auto_1";
+		$("#active_zone").val($(this).attr("href"));
+		$("#active_zone_display").html($(this).html()).removeClass(rem_class).addClass(dest_class);
+		update_panel(true);
+		return false;
+	});
+	
+	$('input[type="checkbox"][class="zone_automator"]').change(function() {
+		$("#the_display_panel").html("");
+		var zone = $(this).attr("id");
+     	if(this.checked) {
+     	    //automate a zone
+     	    $.get("/publish/worker/automate_zone/"+$("#section_id").val()+"/"+zone,function(data) {
+	 				$("#message_box").html(data);
+	 		 });
+	 		 
+	 		 $(this).parent().next().children(":first").removeClass("auto_0");
+	 		 $(this).parent().next().children(":first").addClass("auto_1");
+	 		 
+	 		 
+     	}else{
+     		$.get("/publish/worker/de_automate_zone/"+zone,function(data) {
+	 				$("#message_box").html(data);
+	 		 });
+	 		 
+	 		 $(this).parent().next().children(":first").removeClass("auto_1");
+	 		 $(this).parent().next().children(":first").addClass("auto_0");
+     	}
+     	
+     	update_panel(true);
+     	     
+ 	}); 	
+
+	$(".mass_selector").live("click", function(){
+     	$("#the_display_panel").html("");
+     	//get all checkboxes
+     	if($(this).attr("option") == "all"){
+     		$(".zone_automator").each(function(){
+     			$(this).attr("checked", "checked");
+     			$(this).parent().next().children(":first").removeClass("auto_0");
+	 		 	$(this).parent().next().children(":first").addClass("auto_1");
+     		});
+     		//then make section auto
+     		$.get("/publish/worker/automate_section/"+$("#section_id").val(),function(data) {
+				$("#message_box").html(data);
+		 	});
+     		
+     	}else{
+     		$(".zone_automator").each(function(){
+     			$(this).removeAttr("checked");
+     			$(this).parent().next().children(":first").removeClass("auto_1");
+	 		 	$(this).parent().next().children(":first").addClass("auto_0");
+
+     		});
+     		//then make section not auto
+     		$.get("/publish/worker/de_automate_section/"+$("#section_id").val(),function(data) {
+				$("#message_box").html(data);
+		 	});
+     	}
+     	update_panel(true);
+     });
+
 	
 
 	

@@ -4,7 +4,12 @@
 
 <br style="clear:both" />
 
-<div id="informer" title="Prohibited Action" style="display:none;"> This zone( <?= $zone->title ?> ) can have a minimum of <?= $zone->min_count ?> entries and a maximum of <?= $zone->min_count ?>. Please review your entries and try again   </div>
+<div id="informer" title="Prohibited Action" style="display:none;"> 
+<div class="small_notice">
+	This zone( <?= $zone->title ?> ) can have a minimum of <?= $zone->min_count ?> entries and a maximum of <?= $zone->max_count ?>. Please review this zone's settings and try again.
+</div>
+
+</div>
 
 <input type="hidden" id="zone_name" value="<?= $zone->title ?>">
 <input type="hidden" id="max_count" value="<?= $zone->max_count ?>">
@@ -13,17 +18,21 @@
 <input type="hidden" id="section_id" value="<?= $section_id ?>">
 
 
-
-
 <?php if($all == "true"){ ?>
 <div id="unselected_articles">
-<?php } 
-if(sizeof($content) < 1)
+<?php }
+if(sizeof($content) < 1 AND $zone->auto == 0)
 {
-	echo "<li> There are no results for your specified criteria, please refine it...</li>";
+	echo "<div class='big_error_message'> There are no results for your specified criteria, please refine it...</div>";
 }
 
 ?>
+
+<?php
+	if($zone->auto == 0){
+?>
+
+
 	<ul id="unselected_items" class="simple_sortable_items sortable">
 		<?php
 			foreach($content as $item) {
@@ -48,17 +57,34 @@ if(sizeof($content) < 1)
 
 <br clear="both" />
 
-<div style="height:12px; width:12px; float:right" class="move_over ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move to the section list"><span class="ui-icon ui-icon-circle-arrow-e"></span><span class="ui-button-text">Move to the section list</span>
+
+<div style="height:20px; width:20px; float:right;" class="move_over ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move to the section list"><span class="ui-icon ui-icon-circle-arrow-e"></span><span class="ui-button-text">Move to the section list</span>
 </div>
+
 			</li>
 		<?php
 			}
 		?>
 		</ul>
+		
+		<?php
+	}else{
+?>
+	<div class="auto_note">This is an AUTO ZONE, The items in here cannot be edited</div>
+<?php
+	}
+?>
+
+		
+		
+		
 <?php if($all == "true"){ ?>
 </div>
 <?php } ?>
 
+
+
+<!--  =========================================== separation of concerns ========================== -->
 
 <?php
 
@@ -89,9 +115,10 @@ if(sizeof($content) < 1)
 						<div class="content-title content-workflow-<?= $item->major_version ?>"><?= clean_blurb(($item->title != '' ) ? $item->title : $item->urlid, 25) ?></div>
 						
 						<br clear="both" />
-
-<div style="height:12px; width:12px; float:right" class="move_back ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move out of the section list"><span class="ui-icon ui-icon-circle-arrow-w"></span><span class="ui-button-text">Move out of the section list</span>
+<?php if($zone->auto == 0){ ?>
+<div style="height:20px; width:20px; float:right;" class="move_back ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" title="Move out of the section list"><span class="ui-icon ui-icon-circle-arrow-w"></span><span class="ui-button-text">Move out of the section list</span>
 </div>
+<?php } ?>
 					</li>
 			<?php
 						}
