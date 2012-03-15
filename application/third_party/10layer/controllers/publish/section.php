@@ -29,6 +29,7 @@
 			//print_r($section);
 			$section=$this->sections->getByIdORM($urlid);
 			$sectiondata=$section->getData();
+			
 			$zones=array();
 			if(is_array($sectiondata->zones)) {
 				foreach($sectiondata->zones as $zone) {

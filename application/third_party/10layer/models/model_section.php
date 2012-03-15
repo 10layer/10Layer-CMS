@@ -135,6 +135,24 @@
 				return false;
 			}
 		}
+		
+		
+		//automate the zone
+		public function automate_zone($zone_id){
+			$this->db->where("content_id", $zone_id);
+			$this->db->update("section_zones", array("auto"=> 1));
+		}
+		
+		//de_automate the zone
+		public function de_automate_zone($zone_id){
+			$this->db->where("content_id", $zone_id);
+			$this->db->update("section_zones", array("auto"=> 0));
+		}
+		
+		public function clean_zone_content($zone_id){
+			$this->db->where("content_id", $zone_id);
+			$this->db->delete("ranking");
+		}
 
 		
 		
