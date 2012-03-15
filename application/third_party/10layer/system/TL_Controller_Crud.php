@@ -423,6 +423,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				$this->versions->bump_minor_version();
 				//print_r($contentobj);
 				$contentobj->update();
+				$this->clear_autosave($type, $urlid);
 				$returndata["msg"]="Successfully updated {$this->_contenttypeurlid}";
 				$this->checkCallback("onAfterSubmit",$contentobj);
 			}
@@ -459,6 +460,64 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		print "</textarea>";
 	}
 	
+	public function autosave($type, $urlid) {
+		$this->load->library("mongo_db");
+		$result=$this->mongo_db->where(array("urlid"=>$urlid))->get("tl_content");
+		if (empty($result)) {
+			$this->mongo_db->insert("tl_content",array("urlid"=>$urlid));
+		}
+		$this->mongo_db->where(array("urlid"=>$urlid))->update("tl_content",array("autosave"=>$_POST, "autosave_time"=>date("c")));
+		//$result=$this->mongo_db->where(array("urlid"=>$urlid))->get("tl_content");
+		
+		
+		$result=$this->check_change($_POST, $urlid);
+		
+		print "<script>document.domain=document.domain;</script><textarea>";
+		print json_encode($result);
+		print "</textarea>";
+	}
+	
+	protected function check_change($data, $urlid) {
+		$content=$this->content->getByIdORM($urlid)->getData();
+		$changedfields=array();
+		$unchangedfields=array();
+		$missingfields=array();
+		$changed=false;
+		foreach($data as $longkey=>$val) {
+			$key=substr($longkey, strpos($longkey,"_")+1, strlen($longkey));
+			if (isset($content->$key)) {
+				if ($content->$key!=$val) {
+					//Check for datetime vs just date
+					if (strpos($content->$key,"00:00:00")!==false) {
+						$comp=str_replace(" 00:00:00", "", $content->$key);
+						if ($comp!=$val) {
+							$changed=true;
+							$changedfields[]=array($key=>$val);
+						}
+					} else {
+						$changed=true;
+						$changedfields[]=array($key=>$val);
+					}
+				} else {
+					$unchangedfields[]=$key;
+				}
+			} else {
+				$missingfields[]=$key;
+			}
+		}
+		return array("changed"=>$changed, "changed_fields"=>$changedfields, "unchanged_fields"=>$unchangedfields, "missing_fields"=>$missingfields);
+	}
+	
+	public function clear_autosave($type, $urlid) {
+		$this->load->library("mongo_db");
+		$this->mongo_db->where(array("urlid"=>$urlid))->update("tl_content", array("autosave"=>false));
+		$result=$this->mongo_db->where(array("urlid"=>$urlid))->get("tl_content");
+		/*print "<script>document.domain=document.domain;</script><textarea>";
+		print json_encode($result);
+		print "</textarea>";*/
+		return true;
+	}
+	
 	/**
 	 * view function.
 	 * 
@@ -481,7 +540,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			return true;
 		}
 		$contentobj=$this->content->getByIdORM($urlid, $this->_contenttype->id);
-//		print_r($contentobj);
 		if (empty($contentobj->content_id)) {
 			show_404("/edit/".$this->uri->segment(3)."/".$urlid);
 		}
@@ -500,6 +558,40 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$data["contenttype"]=$this->_contenttypeurlid;
 		
 		$this->load->library("formcreator");
+		
+		//Check if we have an autosaved version
+		$this->load->library("mongo_db");
+		$result=$this->mongo_db->where(array("urlid"=>$urlid))->get("tl_content");
+		$autosaved=false;
+		if (isset($result[0]->autosave) && !empty($result[0]->autosave)) {
+			$checkautosave=$this->check_change($result[0]->autosave, $urlid);
+			$autosaved=$checkautosave["changed"];
+			$autosave=$result[0]->autosave;
+			foreach($autosave as $key=>$val) {
+				$key=substr($key, strpos($key, "_")+1, strlen($key));
+				if (isset($contentobj->fields[$key])) {
+					if ($contentobj->fields[$key]->value!=$val) {
+						$contentobj->fields[$key]->value=$val;
+						if (isset($contentobj->fields[$key]->data)) {
+							if (is_array($val)) {
+								$x=0;
+								foreach($val as $cid) {
+									$contentobj->fields[$key]->data[$x++]=$this->content->getByIdORM($cid);
+								}
+							} else {
+								$contentobj->fields[$key]->data[0]=$this->content->getByIdORM($val);
+							}
+						}
+						//$autosaved=true;
+					}
+				}
+				//print "Set $key to = $val<br />";
+				
+			}
+			//print_r($contentobj);
+			//die();
+		}
+		$data["autosaved"]=$autosaved;
 		$this->formcreator->setFields($contentobj->getFields());
 		$data["menu1_active"]="edit";
 		$data["menu2_active"]="edit/".$this->_contenttypeurlid;
@@ -776,6 +868,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 	}
 	
 	public function suggest() {
+
 		$this->load->library("search");
 		$s=$this->input->get("term");
 		$type=$this->uri->segment(2);

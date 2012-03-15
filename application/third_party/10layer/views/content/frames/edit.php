@@ -10,8 +10,54 @@
 ?>
 <script language="javascript">
 	
-
+	var dirty=false;
+	var autosaveTimer=false;
+	
+	function markDirty(e) {
+		dirty=true;
+		//console.log("Setting timer");
+		clearTimeout(autosaveTimer);
+		autosaveTimer=setTimeout("autosave()", 5000);
+	}
+	
+	function autosave() {
+		//console.log("Checking autosave");
+		if (dirty) {
+			$("#contentform").ajaxSubmit({
+				dataType: "json",
+				iframe: true,
+				debug: true,
+				url: "<?= base_url()."edit/autosave/$type/$urlid" ?>",
+				beforeSubmit: function(a,f,o) {
+					o.dataType = "json";
+				},
+				success: function(result) {
+					if (result.changed) {
+						$("#autosave").slideDown("slow");
+					} else {
+						$("#autosave").slideUp("slow");
+					}
+				},
+			});
+		}
+		dirty=false;
+	}
+	
+	var autosaveTimer=false;
+	
+	
+	
 	$(function() {
+		$(window).unload(function() {
+			if (dirty) {
+				autosave();
+			}
+		});
+		
+		$("#dyncontent").keypress(function(e) {
+			markDirty(e);
+		});
+		
 		$(document).ajaxError(function(e, xhr, settings, exception) { 
 			$("#dyncontent").html(xhr.responseText); 
 		});
@@ -74,10 +120,10 @@
 				iframe: true,
 				
 				beforeSubmit: function(a,f,o) {
-					o.dataType = "json";
+					o.iframe = true;
+					
 				},
 				success: function(data) {
-					//console.log(data);
 					if (data.error) {
 						//console.log(data);
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
@@ -108,7 +154,10 @@
 							}
 						});
 					}
-					
+				},
+				error: function(data) {
+					//console.log("Caught error");
+					//console.log(data);
 				}
 			});
 			return false;
@@ -119,10 +168,11 @@
 			$(this).ajaxSubmit({
 				dataType: "json",
 				iframe: true,
-				
+				debug: true,
 				beforeSubmit: function(a,f,o) {
 					o.dataType = "json";
 				},
+				
 				success: function(data) {
 					//console.log(data);
 					if (data.error) {

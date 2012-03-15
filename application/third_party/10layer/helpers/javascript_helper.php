@@ -40,6 +40,7 @@
 						ed.onKeyUp.add(function(ed, e) {
 							clearTimeout(spell_timer);
 							spell_timer=setTimeout(function() {updateSpelling(tinymce)}, 1000);
+							markDirty(e);
 					    });
 					},
 				});

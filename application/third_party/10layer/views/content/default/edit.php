@@ -21,7 +21,7 @@
 		$(function() {
 			$("#dosubmit_right").click(function() {
 				$("#contentform").submit();
-				
+				$("#autosave").slideUp();
 			});
 			$("#dodone_right").click(function() {
 				$("#contentform").submit();
@@ -70,6 +70,16 @@
 			$("#dolink_right").click(function() {
 				$("#link_action").val("link");
 				$("#link_targets").dialog();
+			});
+			
+			$("#revert_original").click(function() {
+				$.ajax({ type: "GET", url: "<?= base_url()."edit/clear_autosave/$contenttype/$urlid" ?>", async: true});
+				$("#dyncontent").load("<?= base_url()."edit/fullview/$contenttype/$urlid" ?>", function() {
+					$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
+					if ($(".richedit").length) {
+						init_tinymce();
+					}
+				});
 			});
 			
 			$("#dolink_submit").click(function() {
@@ -145,6 +155,17 @@
 		<div id="workflows">
 	
 		</div>
+	</div>
+	<?php
+		$autosavestyle="";
+		if (!$autosaved) {
+			$autosavestyle="style='display:none'";
+		}
+	?>
+	<div id="autosave" <?= $autosavestyle ?>>
+		<h4>This document has been autosaved.</h4>
+		<button id="revert_original" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowreturnthick-1-w"></span>Revert to original</button><br />
+		
 	</div>
 </div>
 <br clear="both" />

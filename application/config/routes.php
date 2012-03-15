@@ -43,12 +43,15 @@ $route['404_override'] = '';
 
 $route['create/fullview/(:any)']='create/tldefault/view/$1';
 $route['create/ajaxsubmit/(:any)']='create/tldefault/ajaxsubmit/$1';
+$route['create/autosave/(:any)']='create/tldefault/autosave/$1';
 $route['create/embed/(:any)']='create/tldefault/embed/$1';
 $route['create/(:any)']='create/frame/display/$1';
 
 $route['edit/fullview/(:any)']='edit/tldefault/view/$1';
 $route['edit/checkin/(:any)']='edit/tldefault/checkin/$1';
 $route['edit/ajaxsubmit/(:any)']='edit/tldefault/ajaxsubmit/$1';
+$route['edit/autosave/(:any)']='edit/tldefault/autosave/$1';
+$route['edit/clear_autosave/(:any)']='edit/tldefault/clear_autosave/$1';
 $route['edit/row/(:any)']='edit/tldefault/row/$1';
 $route['edit/(:any)']='edit/frame/fulldisplay/$1';
 
