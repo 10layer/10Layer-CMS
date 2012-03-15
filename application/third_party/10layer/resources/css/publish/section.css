@@ -80,8 +80,7 @@ ul.sortable li {
 
 #btn_submit {
 	float: right;
-	margin-right: 10px;
-	margin-top: 5px;
+	
 }
 
 #search {
@@ -177,3 +176,131 @@ ul.simple_sortable_items li .content_tools div{
 	padding:7px 5px;
 	line-height: 20px;
 }
+
+
+
+#config_section_container {
+    background: none repeat scroll 0 0 #999999;
+    border: 1px solid #999999;
+    border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    padding: 3px;
+}
+#config_section_container a{
+	color: #FFFFFF;
+}
+
+#section_config {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 0 5px 5px 5px;
+    display: none;
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    z-index: 1000;
+}
+
+#config_container{
+	position: relative;
+}
+
+#config_section_options{
+	margin-left: 10px;
+}
+
+.mass_selector{
+	margin: 0 10px;
+	cursor: pointer;
+}
+
+.mass_selector:hover{
+	text-decoration: underline;
+}
+
+#zone_automators{
+	padding: 5px;
+	border:1px solid #ccc;
+	-moz-border-radius: 5px;
+	border-radius: 5px; 
+	margin-top: 10px;
+}
+
+.small_table
+{
+  padding: 0;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+
+.small_table th, .small_table td
+{
+  border-bottom: 1px solid #ccc;
+  padding: 0.5em;
+  text-align: center;
+  
+}
+
+.big_error_message{
+	border:3px solid red;
+	text-align: center;
+	font-size: 20px;
+	padding: 20px;
+	margin: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	background: #F78691;
+	color: #fff;
+	
+}
+
+.auto_note{
+	border:3px solid red;
+	text-align: center;
+	font-size: 20px;
+	padding: 20px;
+	margin: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	background: #F78691;
+	color: #fff;
+
+}
+
+.small_notice{
+	border:3px solid red;
+	text-align: center;
+	font-size: 14px;
+	padding: 7px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	background: #F78691;
+	color: #fff;
+}
+
+.auto_1 {
+    background: none repeat scroll 0 0 red;
+    border: 1px solid red;
+    border-radius: 5px 5px 5px 5px;
+    padding: 3px;
+}
+
+.auto_0 {
+    background: none repeat scroll 0 0 green;
+    border: 1px solid green;
+    border-radius: 5px 5px 5px 5px;
+    padding: 3px;
+}
+
+a.auto_1, a.auto_0 {
+	color: #fff;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+
+
+
