@@ -618,7 +618,7 @@ defaults: function() {
 			<div class="options_dropdown">Filter queue</div>
 		</div>
 		
-				<div class="options shadow">
+				<div class="options shadow" style="z-index:100000;">
 		
 				<a class="config_close">close</a>
 				
