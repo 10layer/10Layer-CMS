@@ -957,14 +957,16 @@ class TL_Controller_List extends TL_Controller_CRUD {
 	function make_nested_tree($sections, $contenttype){
 		$string = "<ul class='nested_tree '>";
 		foreach($sections as $section){
-
-			$string .= "<li class='main_section'><div id='".$section->content_id."' class='small_item'>".$section->title."</div>";
+			//hack to remove the home page section on the list
+			if($section->title != "Home Page"){
+				$string .= "<li class='main_section'><div id='".$section->content_id."' class='small_item'>".$section->title."</div>";
 						if(isset($section->children) && is_array($section->children))
 						{
 							$string .= $this->nested_children($section->children, $contenttype);
 						}
-							//.$section->title."</div>".$this->nested_children($section->children, $contenttype).
 						$string .= "</li>";
+			}
+						
 		}
 		$string .= "</ul>";
 		
@@ -974,9 +976,12 @@ class TL_Controller_List extends TL_Controller_CRUD {
 	function nested_children($children, $contenttype)
 	{
 		$string = "<ul class='small_section'>";
+		
 		foreach($children as $item){
+			if($item->title != "Home Page"){
+				$string .= "<li class='nested_section'><div id='".$item->content_id."' class='small_item'>".$item->title."</div></li>";
+			}
 			
-			$string .= "<li class='nested_section'><div id='".$item->content_id."' class='small_item'>".$item->title."</div></li>";
 		}
 		$string .= "</ul>";
 		return $string;
