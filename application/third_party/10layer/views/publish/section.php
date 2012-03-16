@@ -19,7 +19,12 @@ if(isset($zones[0])){
 <div id="config_container">
 <!-- ===================================== -->
 <div id="config_section_container">
-	<a id="config_section"> Publishing to <?php echo $section_data->title; ?> </a> > <span id="active_zone_display" class="auto_<?= $zones[0]->getData()->auto ?>"><?php echo $zones[0]->getData()->title; ?></span> <div style="height:15px; width:15px; float:right;" id="config_section_options">Options</div>
+
+	<a id="config_section"> Publishing to <?php echo $section_data->title; ?> </a> > 
+	<span id="active_zone_display" class="auto_<?= $zones[0]->getData()->auto ?>"><?php echo $zones[0]->getData()->title; ?></span> 
+	
+	<span style="height:12px; width:12px;" id="config_section_options">Options</span>
+	
 </div>
 
 

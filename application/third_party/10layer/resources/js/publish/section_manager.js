@@ -7,21 +7,27 @@ var def_min_slider=8;
 
 
 function can_add_more(){
-	if($("#selected_items li").size() < $("#max_count").val()){
-		console.log($("#max_count").val()+" - " + $("#selected_items li").size());
-		return true;
+	if($("#max_count").val() != 0){
+		if($("#selected_items li").size() < $("#max_count").val()){
+			return true;
+		}else{
+			return false;
+		}
 	}else{
-		return false;
+		return true;
 	}
+	
 }
 
 function can_remove_more(){
-	console.log($("#min_count").val()+" - " + $("#selected_items li").size());
-	if($("#selected_items li").size() > $("#min_count").val()){
-		
-		return true;
+	if($("#min_count").val() != 0){
+		if($("#selected_items li").size() > $("#min_count").val()){
+			return true;
+		}else{
+			return false;
+		}
 	}else{
-		return false;
+		return true;
 	}
 }
 

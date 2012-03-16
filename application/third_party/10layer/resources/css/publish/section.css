@@ -182,7 +182,7 @@ ul.simple_sortable_items li .content_tools div{
 #config_section_container {
     background: none repeat scroll 0 0 #999999;
     border: 1px solid #999999;
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
     color: #FFFFFF;
     padding: 3px;
@@ -207,9 +207,7 @@ ul.simple_sortable_items li .content_tools div{
 	position: relative;
 }
 
-#config_section_options{
-	margin-left: 10px;
-}
+
 
 .mass_selector{
 	margin: 0 10px;
