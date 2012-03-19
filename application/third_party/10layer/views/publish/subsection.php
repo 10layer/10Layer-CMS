@@ -20,6 +20,7 @@
 
 <?php if($all == "true"){ ?>
 <div id="unselected_articles">
+
 <?php }
 if(sizeof($content) < 1 AND $zone->auto == 0)
 {
@@ -91,6 +92,8 @@ if(sizeof($content) < 1 AND $zone->auto == 0)
  if($all == "true"){ ?>	
 
 <div id="selected_articles" class="<?php echo $staged; ?>">
+<div id="counter_display"> <span id="counter">0</span> <br> articles </div>
+
 		<ul id="selected_items" class="simple_sortable_items sortable">
 				
 			<?php

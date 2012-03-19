@@ -122,6 +122,27 @@ ul.sortable li {
 	margin: 5px;
 	height: 92%;
 	overflow: auto;
+	position: relative;
+}
+
+
+
+#counter_display {
+    background: none repeat scroll 0 0 #000000;
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px;
+    color: #FFFFFF;
+    font-size: 15px;
+    height: 50px;
+    margin-left: 261px;
+    padding: 10px;
+    position: fixed;
+    text-align: center;
+    z-index: -1;
+}
+
+#counter{
+	font-size: 35px;
 }
 
 ul.simple_sortable_items{

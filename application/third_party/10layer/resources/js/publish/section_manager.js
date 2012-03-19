@@ -6,6 +6,11 @@ var def_min_slider=8;
 
 
 
+function update_counter(){
+	var count = $("#selected_items").children('li').length;
+	$("#counter").html(count);
+}
+
 function can_add_more(){
 	if($("#max_count").val() != 0){
 		if($("#selected_items li").size() < $("#max_count").val()){
@@ -69,15 +74,17 @@ function update_panel(all){
 			}});
 			$( "#selected_items" ).disableSelection();
   			$("#loading_icon").hide();
+  			update_counter();
 		});
 
 	}else{
 		$("#the_display_panel").html("<h3 align='center'>Please select the zone...</h3>");
 	}
-	
+		
 }
 
 function stage_changes(){
+	update_counter();
 	var post_data = {"content":get_selected(), "zone_name":$("#zone_name").val(), "zone_id":$("#zone_id").val(),}
 		
 		$.post("/publish/worker/stage_rank_section",post_data,function(data) {
@@ -100,6 +107,7 @@ function search(){
 $(function() {
 
 	update_panel(true);
+	
 	
 	/*
 $("#subsection_selector").live("change", function(){
