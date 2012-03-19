@@ -65,21 +65,22 @@ $(function() {
 				if (ui.item) {
 					if ($(this).hasClass("multiple")) {
 						//console.log(ui.item);
-						var newdisp="<button class='autocomplete_item'>"+ui.item.label+"</button>";
+						var newdisp= ui.item.label;
 						var newobj="<input type='hidden' value='"+ui.item.id+"' name='"+$(this).attr("tablename")+"_"+$(this).attr("fieldname")+"[]' value='' />";
-						$(this).after(newobj);
-						$(newdisp).button({
-							icons: {
-            		    		primary: "ui-icon-circle-close"
-							}
-						});
-						$(this).after(
-							$(newdisp).button({
+
+						var append_material = "<li class='autocomplete_item'><span class='ui-icon ui-icon-arrowthick-2-n-s float-left'></span><span class='remover'>" + newdisp + "</span>" + newobj + "</li>";
+						
+						$(this).next().next().children(":first").append(append_material);
+						
+						$(".remover").button({
 								icons: {
     		    					primary: "ui-icon-circle-close"
 								}
-							}));
+						});
+						
+						$(".items_container").sortable();
 						$(this).val("");
+						
 						return false;
 					} else {
 						//This looks incomplete
@@ -97,16 +98,10 @@ $(function() {
 		return false;
 	});
 			
-	$(".autocomplete_item").each(function() {
-		$(this).button({
-			icons: {
-                primary: "ui-icon-circle-close"
-			}
-		});
-	});
+	$(".items_container").sortable();
 			
 	$(".autocomplete_item").live("click", function() {
-		$(this).next().remove();
+		//$(this).next().remove();
 		$(this).remove();
 		return false;
 	});

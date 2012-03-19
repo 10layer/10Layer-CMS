@@ -673,11 +673,18 @@ form input.inactive[type="submit"] {
 }
 
 .autocomplete_item {
-	float: left;
-	width: 300px;
-	margin-left: 110px;
-	margin-top: 10px;
-	clear:both;	
+    border: 1px solid #CCCCCC;
+    clear: both;
+    float: left;
+    margin-left: 72px;
+    margin-top: 8px;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    width: 226px;
+    border-radius: 5px;
+	-moz-border-radius: 5px;
+	background: #fff;
+	cursor: move;
 }
 
 
@@ -1019,5 +1026,24 @@ ul.nested_tree li, ul.small_section li{
 .small_item:hover{
 	background: none repeat scroll 0 0 #B8FAB6;
 }
+
+
+.items_container{
+	list-style: none;
+}
+
+.aligner{
+	margin-right: 110px;
+}
+
+.float-left{
+	float:left;
+	margin-top: 8px;
+}
+
+.remover {
+     width: 200px;
+}
+
 
 

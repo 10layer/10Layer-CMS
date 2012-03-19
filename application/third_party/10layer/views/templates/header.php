@@ -154,7 +154,7 @@
 		</div>
 		
 	</div>
-	<div id="menu2_scrollr" class="next browse right">Right</div>
+	<div id="menu2_scrollr" class="next browse right">Click to see more items</div>
 	
 	<div id="logo">
 		<img src="/tlresources/file/images/logo_square_90.png" />
