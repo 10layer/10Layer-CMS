@@ -39,24 +39,5 @@
 		}
 	?>
 	
-	<div class="aligner">
-		
-		
-	</div>
 	
 	
-	<div class="aligner">
-		<ul class="items_container">
-		
-			<li class="autocomplete_item">
-			
-			<span class="ui-icon ui-icon-arrowthick-2-n-s float-left"></span>
-			<span class="remover ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false">
-			
-			<span class="ui-button-icon-primary ui-icon ui-icon-circle-close"></span>
-			<span class="ui-button-text">Comment &amp; Analysis</span></span>
-			
-			<input type="hidden" name="site_sections_child_sections[]" value="68"></li>
-		
-		</ul>
-	</div>

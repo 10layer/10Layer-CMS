@@ -1,6 +1,8 @@
 //This javascript isn't run because it is loaded before teh dynamic content
 
 $(function() {
+	$(".items_container").sortable();
+	
 	$("input, textarea").keyup(function() {
 		var reqs=checkreqs();
 	});
@@ -98,7 +100,7 @@ $(function() {
 		return false;
 	});
 			
-	$(".items_container").sortable();
+	
 			
 	$(".autocomplete_item").live("click", function() {
 		//$(this).next().remove();

@@ -33,26 +33,13 @@
 			}, 1000);
 			
 		});
-		
-		
-		
-	/*
-	$.post("/list/<?= $field->contenttype ?>/deepsearch?term="+escape(val),{"selected[]":items, function(data) {
-  					resultdiv.html("");
-					for(x=0; x<result.length; x++) {
-						resultdiv.append("<div class='deepsearch_item' id='"+result[x].id+"'>"+result[x].value+"</div>");
-					}
-				},1000);
-*/
-		
+	
 		$(".deepsearch_item").live("click", function(){
 		
 			var selected_set = $(this).parent().next();
 			var used_element = $(this).parent().prev().prev();
-			//console.log(selected_values.attr("class"));
 			var label = $(this).html();
 			var id = this.id;
-			//var newdisp="<button class='autocomplete_item'>"+label+"</button>";
 			var newdisp="<div class='deepsearch_selected_item'>"+
 			"<input type='hidden' value='"+id+"' name='"+used_element.attr("tablename")+"_"+used_element.attr("fieldname")+"[]' value='' /><span class='label'>"+
 			label+"</span></div>";
@@ -65,8 +52,6 @@
 		$(".deepsearch_selected_item").live("click", function(){
 		
 			var search_result_set = $(this).parent().prev();
-			//var used_element = $(this).parent().prev().prev();
-			//console.log(selected_values.attr("class"));
 			var label = $(this).text();
 			var id = $(this).children(":first").val();
 			
