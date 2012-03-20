@@ -3,15 +3,30 @@
 		if (substr($url,0,1)=="/") {
 			$url=substr($url,1);
 		}
-		$tmp=explode("/",$url);
+		
+		$url_parts = explode("/", $url);
+		
+		$ci=&get_instance(); 
+	
+		$container = array();
+		foreach($url_parts as $part){
+			$object = $ci->db->query("SELECT * FROM `content_types` where urlid = '".$part."' limit 1")->row();
+			if(isset($object) AND $object != null){
+				$container[$object->urlid] = $object->name;
+			}else{
+				$container[$part] = $part;
+			}
+			
+		} 
+		
 		$result=array();
 		$tmpurl="";
-		foreach($tmp as $s) {
+		foreach($container as $s => $v) {
 			$tmpurl.="/".trim($s);
 			$s=str_replace(array("_","-")," ",$s);
 			$s=trim(ucwords($s));
 			if ($link) {
-				$result[]="<a href='".site_url($tmpurl)."'>$s</a>";
+				$result[]="<a href='".site_url($tmpurl)."'>$v</a>";
 			} else {
 				$result[]=$s;
 			}
