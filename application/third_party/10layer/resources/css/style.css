@@ -680,7 +680,7 @@ form input.inactive[type="submit"] {
     margin-top: 8px;
     padding-top: 4px;
     padding-bottom: 2px;
-    width: 226px;
+    width: 300px;
     border-radius: 5px;
 	-moz-border-radius: 5px;
 	background: #fff;
@@ -1042,7 +1042,7 @@ ul.nested_tree li, ul.small_section li{
 }
 
 .remover {
-     width: 200px;
+     width: 270px;
 }
 
 
