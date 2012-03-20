@@ -102,6 +102,12 @@ function search(){
 		}
 	}
 	
+function reset(){
+	$("#date_slider").slider("values",0,def_min_slider);
+	$("#date_slider").slider("values",1,def_max_slider);
+	$("#publishSearch").val("Search...");
+	update_panel(false);
+}
 
 
 $(function() {
@@ -131,6 +137,14 @@ $(function() {
 
 	}
 	
+	$( "#reset_search" ).button({
+            icons: {
+                primary: "ui-icon-refresh"
+            },
+            text: false
+     }).click(function(){
+     	reset();
+     });
 
 	update_panel(true);
 		
