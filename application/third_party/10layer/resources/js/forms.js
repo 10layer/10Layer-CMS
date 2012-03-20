@@ -114,6 +114,22 @@ $(function() {
 			timeFormat:"hh:mm",
 		});
 	});
+	
+	$(document).unbind('keydown').bind('keydown', function (event) {
+		var doPrevent = false;
+		if (event.keyCode === 8) {
+			/*var d = event.srcElement || event.target;
+			if ((d.tagName.toUpperCase() === 'INPUT' && d.type.toUpperCase() === 'TEXT') || d.tagName.toUpperCase() === 'TEXTAREA') {
+            	doPrevent = d.readOnly || d.disabled;
+        	} else {*/
+            	doPrevent = true;
+        	//}
+    	}
+
+	    if (doPrevent) {
+        	event.preventDefault();
+    	}
+	});
 });
 
 function checkreqs() {
