@@ -488,7 +488,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			if (isset($content->$key)) {
 				if ($content->$key!=$val) {
 					//Check for datetime vs just date
-					if (strpos($content->$key,"00:00:00")!==false) {
+					if  ((is_string($content->$key)) && (strpos($content->$key,"00:00:00")!==false)) {
 						$comp=str_replace(" 00:00:00", "", $content->$key);
 						if ($comp!=$val) {
 							$changed=true;
