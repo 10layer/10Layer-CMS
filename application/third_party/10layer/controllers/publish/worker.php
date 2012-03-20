@@ -71,6 +71,7 @@
 				print "This zone is undefined.";
 				return true;
 			}
+			
 			$section=$this->sections->getByIdORM($section_urlid);
 			
 			$data["zone"]=$this->zones->getByIdORM($zone_urlid)->getData();

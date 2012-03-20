@@ -54,7 +54,7 @@ function get_selected(){
 function update_panel(all){
 	d1=date_slider_options[$("#date_slider").slider( "values", 0)];
 	d2=date_slider_options[$("#date_slider").slider( "values", 1 )];
-	
+		
 	if($("#active_zone").val() != ""){
 		var searchstr = ($("#publishSearch").val() == "Search...") ? "" : $("#publishSearch").val() ;
 		var selecteds = get_selected();
@@ -106,22 +106,33 @@ function search(){
 
 $(function() {
 
+	$("#date_slider").slider({
+	    range: true,
+	    min: min_slider,
+	    max: max_slider,
+	    values: [ def_min_slider, def_max_slider ],
+	    stop: function(event, ui) {
+	    	if ($("#selected_items").length > 0){
+				update_panel(false);
+			}else{
+				update_panel(true);		
+			}
+	    },
+	    slide: function(event, ui) {
+	    	$("#date_slider_value").html(date_slider_options[ui.values[0]]+" to "+date_slider_options[ui.values[1]]);
+	    }
+	});
+	
+	var d1=date_slider_options[$("#date_slider").slider( "values", 0 )];
+	var d2=date_slider_options[$("#date_slider").slider( "values", 1 )];
+	try {
+		$("#date_slider_value").html(d1+" to "+d2);
+	} catch(err) {
+
+	}
+	
+
 	update_panel(true);
-	
-	
-	/*
-$("#subsection_selector").live("change", function(){
-		$("#the_display_panel").html("");
-		update_panel(true);		
-	});
-*/
-	
-	/*
-$(".zone_selector").live("click", function(){
-		$("#the_display_panel").html("");
-		update_panel(true);		
-	});
-*/
 		
 	
 	$("#publishSearch").live("keyup", function(){
@@ -209,37 +220,6 @@ $(".zone_selector").live("click", function(){
 					
 		});
 	});
-	
-	
-	
-	
-	
-	$("#date_slider").slider({
-	    range: true,
-	    min: min_slider,
-	    max: max_slider,
-	    values: [ def_min_slider, def_max_slider ],
-	    stop: function(event, ui) {
-	    	if ($("#selected_items").length > 0){
-				update_panel(false);
-			}else{
-				update_panel(true);		
-			}
-	    },
-	    slide: function(event, ui) {
-	    	$("#date_slider_value").html(date_slider_options[ui.values[0]]+" to "+date_slider_options[ui.values[1]]);
-	    }
-	});
-	
-	
-	
-	var d1=date_slider_options[$("#date_slider").slider( "values", 0 )];
-	var d2=date_slider_options[$("#date_slider").slider( "values", 1 )];
-	try {
-		$("#date_slider_value").html(d1+" to "+d2);
-	} catch(err) {
-
-	}
 	
 	
 	$(".btn-edit").live("click", function(){
