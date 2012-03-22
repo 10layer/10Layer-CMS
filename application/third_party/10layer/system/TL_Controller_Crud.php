@@ -139,6 +139,7 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 				}
 			}
 			
+			
 			$contentobj->transformFields();
 			$validation=$contentobj->validateFields();
 			if (!$validation["passed"]) {

@@ -600,6 +600,32 @@ class TLContent {
 				}
 			}
 		}
+		
+		//Now we look for nesteditems relationships NB: this is an addition for the MG's need for nested items
+		foreach($this->fields as $field) {
+			if ($field->type=="nesteditems") {
+				$ci->db->select("content_content.id AS content_content_id");
+				$ci->db->join("content", "content.id=content_content.content_id");
+				$ci->db->join("content_types","content.content_type_id=content_types.id");
+				$ci->db->where("content_content.content_link_id",$this->content_id);
+				$ci->db->where("content_types.urlid",$field->contenttype);
+				$result=$ci->db->get("content_content");
+				foreach($result->result() as $row) {
+					$ci->db->where("id",$row->content_content_id);
+					$ci->db->delete("content_content");
+				}
+				$vals=$field->value;
+				if (!is_array($field->value)) {
+					$vals=array($field->value);
+				}
+				foreach($vals as $val) {
+					if (!empty($val)) {
+						$ci->db->insert("content_content",array("content_id"=>$val, "content_link_id"=>$this->content_id, "fieldname"=>$this->content_type->urlid));
+					}
+				}
+			}
+		}
+		
 		//Make sure we set urlid
 		$this->urlid=$ci->db->where("id",$this->content_id)->get("content")->row()->urlid;
 	}
