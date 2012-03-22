@@ -55,8 +55,6 @@
 			}
 		}
 	}
-	
-	echo $field->value;	
 
 ?>
 
