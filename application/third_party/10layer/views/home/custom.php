@@ -62,6 +62,8 @@ defaults: function() {
 				this.queueid=this.model.get("id");
 				var root=this;
 				var preffered_width = (this.model.get("width") > 950 ) ? 950 : this.model.get("width");
+				preffered_width = (this.model.get("width") <= 220 ) ? 220 : this.model.get("width");
+				
     			this.model.set({"width":preffered_width});
     						
 				$(this.el).html(this.template(this.model.toJSON()));
@@ -461,9 +463,10 @@ defaults: function() {
 				var queue_count = $("#queues").children().length + 1;
 								
 				var id=Math.round(new Date().getTime()/1000);
-				model.set({"name": "Queue_"+queue_count,"order":queue_count,"height":160, "width":950, "id":id});
+				model.set({"name": "Queue_"+queue_count,"order":queue_count,"height":160, "width":220, "id":id});
 				this.drawQueue(model,true);
 				queues.add(model);
+				model.save();
 				
 				//we save all because we want to store the new order
 				var items = $("#queues").children();
@@ -510,7 +513,7 @@ defaults: function() {
       							
           			}
 				});
-      			$(".queue").resizable({minHeight: 200, minWidth: 300, maxHeight: 500, maxWidth: 960,
+      			$(".queue").resizable({minHeight: 200, minWidth: 220, maxHeight: 500, maxWidth: 950,
       			
       				resize:function(){
       					//adjust the size of the inner ones as well
@@ -557,6 +560,22 @@ defaults: function() {
 			edited: function() {
 				//console.log("Caught edit");
 			},
+			resize: function(){
+				the_queues = [];
+      				var items = $("#queues").children("div");
+      				items.each(function(index){
+      				    the_id = $(this).children(":first").attr("id");
+      				    var item = the_id+"|"+$(this).height()+"|"+$(this).width();
+      				    the_queues.push(item);
+      				});
+      				
+      				var params = {'selecteds[]': the_queues}
+      				
+      				$.post("/queues/content/set_queue_size", params,function(data){
+      				    //alert(data);
+      				});
+
+			},
 			retile:function(){
 				//$("#queues").html("");
 				var items = $("#queues").children("div");
@@ -565,11 +584,14 @@ defaults: function() {
       					number = index+1;
       					the_id = $(this).children(":first").attr("id");
       					the_model = queues.get(the_id);
-      					updates = {order:number,height:160, width:950};
+      					updates = {order:number,height:160, width:220};
       					the_model.set(updates);
-      					the_model.save();      					//console.log(index);
+      					//the_model.save();      					//console.log(index);
       				});
+      				
+      				 				
       				this.init(queues);
+      				this.resize();
       				//window.location.reload();
       				//Backbone.history.navigate("/home", true);
 			}
