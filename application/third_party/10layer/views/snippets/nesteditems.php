@@ -56,13 +56,14 @@
 		}
 	}
 	
+	echo $field->value;	
 
 ?>
 
 
 <div class="single_item_actions">
 
-	<input id="nestedselect_view_<?= $field->tablename ?>_<?= $field->name ?>" name="<?= $field->tablename ?>_<?= $field->name ?>" type="hidden" tablename="<?= $field->tablename ?>" contenttype="<?= $field->contenttype ?>" fieldname="<?= $field->name ?>" class="nestedselect <?= $field->class ?>" value="<?php if(isset($field->data)){ print $field->data->fields["id"]->value; } ?>" <?php if ($field->contenttype=='mixed') { ?> mixed='mixed' contenttypes='<?= implode(",",$field->contenttypes) ?>' <?php } ?> />
+	<input id="nestedselect_view_<?= $field->tablename ?>_<?= $field->name ?>" name="<?= $field->tablename ?>_<?= $field->name ?>" type="hidden" tablename="<?= $field->tablename ?>" contenttype="<?= $field->contenttype ?>" fieldname="<?= $field->name ?>" class="nestedselect <?= $field->class ?>" value="<?php if(isset($field->data)){ print $field->value; } ?>" <?php if ($field->contenttype=='mixed') { ?> mixed='mixed' contenttypes='<?= implode(",",$field->contenttypes) ?>' <?php } ?> />
 	
 	
 
