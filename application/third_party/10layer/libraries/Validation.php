@@ -65,11 +65,34 @@
 			return array("passed"=>$this->passed,"failed_fields"=>$this->failed_fields,"failed_names"=>$this->failed_names,"failed_messages"=>$this->failed_messages);
 		}
 		
+		
 		public function display_errors($deliminator="<br />") {
 			if ($this->passed) {
 				return "";
 			}
 			return implode($deliminator,$this->failed_messages);
+		}
+		
+		public function min_count($value, $var){
+			
+			if($value[0][0] != ""){
+				return (sizeof($value[0]) >= $var);
+			}else{
+				return false;
+			}
+			
+			
+		}
+		
+		public function max_count($value, $var){
+			
+			if($value[0][0] != ""){
+				return (sizeof($value[0]) <= $var);
+			}else{
+				return false;
+			}
+			
+			
 		}
 		
 		public function required($value,$var=false) {
@@ -303,6 +326,10 @@
 			$s="";
 			switch($rule) {
 				case "required": $s="$name is required";
+					break;
+				case "min_count": $s="$name field must have at least $var item(s)";
+					break;
+				case "max_count": $s="$name field must have $var or less item(s)";
 					break;
 				case "minlen": $s="$name must be at least $var characters long";
 					break;
