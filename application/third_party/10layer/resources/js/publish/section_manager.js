@@ -243,7 +243,6 @@ $(function() {
 	$(".btn-workflowprev").live("click", function(){
 		
 		var element = $(this).parent().prev().prev().prev();
-		console.log(element.html());
 	  $.getJSON("/workflow/change/revert/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"), function(result) {
 			remove_class = "content-workflow-"+(result.major_version + 1);
 			add_class = "content-workflow-"+result.major_version;
