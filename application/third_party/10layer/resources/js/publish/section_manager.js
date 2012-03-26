@@ -169,8 +169,8 @@ $(function() {
 			$(this).children(":first").addClass("ui-icon-circle-arrow-w");
 			$(this).removeClass("move_over");
 			$(this).addClass("move_back");
-    		$("#selected_items").prepend($(this).parent());
-    		$(this).parent().effect("pulsate", { times:3 }, 500);
+    		$("#selected_items").prepend($(this).parent().parent());
+    		$(this).parent().parent().effect("pulsate", { times:3 }, 500);
     		if(!$(this).parent().parent().hasClass("staged")){
 				$(this).parent().parent().parent().addClass("staged");
 			}
@@ -203,8 +203,8 @@ $(function() {
 			$(this).children(":first").addClass("ui-icon-circle-arrow-e");
 			$(this).removeClass("move_back");
 			$(this).addClass("move_over");
-    		$("#unselected_items").prepend($(this).parent());
-    		$(this).parent().effect("pulsate", { times:3 }, 500);
+    		$("#unselected_items").prepend($(this).parent().parent());
+    		$(this).parent().parent().effect("pulsate", { times:3 }, 500);
     		stage_changes();
 		}else{
 			$( "#informer:ui-dialog" ).dialog( "destroy" );
@@ -242,7 +242,8 @@ $(function() {
 	
 	$(".btn-workflowprev").live("click", function(){
 		
-		var element = $(this).parent().next().next();
+		var element = $(this).parent().prev().prev().prev();
+		console.log(element.html());
 	  $.getJSON("/workflow/change/revert/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"), function(result) {
 			remove_class = "content-workflow-"+(result.major_version + 1);
 			add_class = "content-workflow-"+result.major_version;
@@ -254,7 +255,7 @@ $(function() {
 	
 	$(".btn-workflownext").live("click", function(){
 		
-		var element = $(this).parent().next().next();	
+		var element = $(this).parent().prev().prev().prev();
 	  $.getJSON("/workflow/change/advance/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"), function(result) {
 			remove_class = "content-workflow-"+(result.major_version - 1);
 			add_class = "content-workflow-"+result.major_version;
