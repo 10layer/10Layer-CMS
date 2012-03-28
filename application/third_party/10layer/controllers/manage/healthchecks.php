@@ -141,7 +141,10 @@
 							if (!empty($field["tablename"])) {
 								$tablename=$field["tablename"];
 							}
-							if ($tablename==$row->table_name && !isset($field["link"])) {
+							if (!isset($field["contenttype"])) {
+								$field["contenttype"]="";
+							}
+							if ($tablename==$row->table_name && !isset($field["link"]) && ($field["contenttype"]!="mixed")) {
 								if ($this->db->table_exists($tablename)) {
 									if (!$this->db->field_exists($field["name"],$tablename)) {
 										$error_cts["Field '".$field["name"]."' Missing from ".$tablename][]=$row->model;
