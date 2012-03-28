@@ -78,7 +78,7 @@
 			if($value[0][0] != ""){
 				return (sizeof($value[0]) >= $var);
 			}else{
-				return false;
+				return true;
 			}
 			
 			
@@ -89,7 +89,7 @@
 			if($value[0][0] != ""){
 				return (sizeof($value[0]) <= $var);
 			}else{
-				return false;
+				return true;
 			}
 			
 			
