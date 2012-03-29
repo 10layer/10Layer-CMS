@@ -230,7 +230,7 @@ $(function() {
 		
 		$.post("/publish/worker/rank_section",post_data,function(data) {
 				$("#message_box").html(data).delay(2400).html();
-				$("#selected_items").parent().removeClass("staged");
+				$("#selected_items").removeClass("staged");
 					
 		});
 	});
