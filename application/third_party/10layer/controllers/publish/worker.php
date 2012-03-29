@@ -57,8 +57,6 @@
 				}
 			}
 			
-			print_r($dbdata);
-			
 			$this->model_section->stage_changes($zone_id,$dbdata);
 			//$this->checkCallback("onAfterUpdate", $zone_id);
 			//$this->messaging->post_action("publish",$zone_id);

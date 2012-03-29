@@ -70,6 +70,7 @@ function update_panel(all){
 				$("#the_display_panel").html(data);
 			}
 			$( "#selected_items" ).sortable({stop:function(event,ui){
+				$(this).parent().addClass("staged");
 				stage_changes();
 			}});
 			$( "#selected_items" ).disableSelection();
@@ -88,7 +89,7 @@ function stage_changes(){
 	var post_data = {"content":get_selected(), "zone_name":$("#zone_name").val(), "zone_id":$("#zone_id").val(),}
 		
 		$.post("/publish/worker/stage_rank_section",post_data,function(data) {
-				$("#message_box").html(data).delay(2400);
+				//$("#message_box").html(data).delay(2400);
 				$("#message_box").html("You have staged changes, click update to save them");
 		});
 
@@ -171,8 +172,8 @@ $(function() {
 			$(this).addClass("move_back");
     		$("#selected_items").prepend($(this).parent().parent());
     		$(this).parent().parent().effect("pulsate", { times:3 }, 500);
-    		if(!$(this).parent().parent().hasClass("staged")){
-				$(this).parent().parent().parent().addClass("staged");
+    		if(!$(this).parent().parent().parent().hasClass("staged")){
+				$(this).parent().parent().parent().parent().addClass("staged");
 			}
     		stage_changes();
 		}else{
@@ -195,8 +196,8 @@ $(function() {
 	$('.move_back').live('click',function(){
 	
 		if(can_remove_more()){
-			if(!$(this).parent().parent().hasClass("staged")){
-				$(this).parent().parent().parent().addClass("staged");
+			if(!$(this).parent().parent().parent().hasClass("staged")){
+				$(this).parent().parent().parent().parent().addClass("staged");
 			}
 			$(this).attr("title", "Move to Section List");
 			$(this).children(":first").removeClass("ui-icon-circle-arrow-w").next().html("Move to Section List");
