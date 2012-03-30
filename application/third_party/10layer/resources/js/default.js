@@ -1,4 +1,6 @@
 $(function() {
+	set_title();
+
 	$(".button").each(function() {
 		$(this).button();
 	});
@@ -17,6 +19,13 @@ $(function() {
 	
 	findErrorMsgs();
 });
+
+function set_title(){
+	var str = location.pathname;	
+	var title = "10Layer CMS :" + str.split('/').join(' -> ') ;
+	document.title = title;
+}
+
 
 function findErrorMsgs() {
 	$(".errormsg").each(function() {
