@@ -281,32 +281,30 @@ defaults: function() {
 					if(container.html() == ""){
 						$.get("/queues/content/load_recipients/", function(data) {
 							container.html(data).toggle();
-							$(".add_to").button({icons: {primary: "ui-icon-circle-plus",},text: false,});
-							$(".remove_from").button({icons: {primary: "ui-icon-circle-minus",},text: false,});
+							$(".add_to").button({icons: {primary: "ui-icon-circle-plus",},text: false,}).click(function(){
+								var container = $(this).parent().parent();
+								var user_id = $(this).parent().attr("id");
+								var item_id = $(this).parent().parent().prev().children(":first").attr("id");
+								$.get("/queues/content/send_to/"+user_id+"/"+item_id, function(data) {
+									alert(data); //container.html(data).slideToggle();
+								});
+					
+								container.toggle();
+							});
+							$(".remove_from").button({icons: {primary: "ui-icon-circle-minus",},text: false,}).click(function(){
+									var user_id = $(this).parent().attr("id");
+									var item_id = $(this).parent().parent().prev().children(":first").attr("id");
+									$.get("/queues/content/remove_from/"+user_id+"/"+item_id, function(data) {
+										alert(data); //container.html(data).slideToggle();
+									});
+					
+									$(this).parent().parent().toggle();
+							});
 						});
 					}else{
 						container.toggle();
 					}
 					
-					$(".add_to").live("click",function(){
-						var user_id = $(this).parent().attr("id");
-						var item_id = $(this).parent().parent().prev().children(":first").attr("id");
-						$.get("/queues/content/send_to/"+user_id+"/"+item_id, function(data) {
-							alert(data); //container.html(data).slideToggle();
-						});
-					
-						$(this).parent().parent().toggle();
-					});
-					
-					$(".remove_from").live("click",function(){
-						var user_id = $(this).parent().attr("id");
-						var item_id = $(this).parent().parent().prev().children(":first").attr("id");
-						$.get("/queues/content/remove_from/"+user_id+"/"+item_id, function(data) {
-							alert(data); //container.html(data).slideToggle();
-						});
-					
-						$(this).parent().parent().toggle();
-					});
 
 				});
 				
