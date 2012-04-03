@@ -120,6 +120,9 @@
 				"rules"=>array(
 					"required",
 				),
+				"transformations"=>array(
+					"safetext"
+				),
 				"libraries"=>array(
 					"semantic"=>true,
 					"search"=>"like",
