@@ -145,13 +145,13 @@
 				//no personal queue
 				if($queue_id == ""){
 					//this users doesnt have a personal queue - lets see if we can create one for him
-					$queueid = time();
-					$user_data->queues[$queueid]["name"]="new personal queue";
-					$user_data->queues[$queueid]["order"]=1;
-					$user_data->queues[$queueid]["id"]=$queueid;
-					$user_data->queues[$queueid]["width"]=220;
-					$user_data->queues[$queueid]["height"]=200;
-					$user_data->queues[$queueid]["personal"]="personal";
+					$queue_id = time();
+					$user_data->queues[$queue_id]["name"]="new personal queue";
+					$user_data->queues[$queue_id]["order"]=1;
+					$user_data->queues[$queue_id]["id"]=$queue_id;
+					$user_data->queues[$queue_id]["width"]=220;
+					$user_data->queues[$queue_id]["height"]=200;
+					$user_data->queues[$queue_id]["personal"]="personal";
 				}
 				
 				
