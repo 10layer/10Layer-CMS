@@ -142,6 +142,18 @@
 					}
 				}
 				
+				//no personal queue
+				if($queue_id == ""){
+					//this users doesnt have a personal queue - lets see if we can create one for him
+					$queueid = time();
+					$user_data->queues[$queueid]["name"]="new personal queue";
+					$user_data->queues[$queueid]["order"]=1;
+					$user_data->queues[$queueid]["id"]=$queueid;
+					$user_data->queues[$queueid]["width"]=220;
+					$user_data->queues[$queueid]["height"]=200;
+					$user_data->queues[$queueid]["personal"]="personal";
+				}
+				
 				
 				$includes = array();
 				if(isset($user_data->queues[$queue_id]["includes"]) AND $user_data->queues[$queue_id]["includes"] != null){
@@ -164,12 +176,12 @@
 				
 			} else {
 				//this users doesnt have queues - lets see if we can create one for him
-				$queueid = "0000000001";
+				$queueid = time();
 				$queues[$queueid]["name"]="new personal queue";
 				$queues[$queueid]["order"]=1;
 				$queues[$queueid]["id"]=$queueid;
 				$queues[$queueid]["width"]=220;
-				$queues[$queueid]["height"]=160;
+				$queues[$queueid]["height"]=200;
 				$queues[$queueid]["personal"]="personal";
 				//create includes
 				$queues[$queueid]["includes"]= array($item_id);
