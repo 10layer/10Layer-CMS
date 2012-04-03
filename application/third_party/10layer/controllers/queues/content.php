@@ -127,7 +127,7 @@
 		function load_recipients(){
 			$string = ""; // "<h5>Send this item to...";
 			foreach($this->tluserprefs->get_all_users() as $user){
-				$string .= "</h5><div class='user_item' id='".$user->id."'>".$user->name."<span class='add_to'>remove</span> <span class='remove_from'>remove</span></div>";
+				$string .= "<div class='user_item' id='".$user->id."'>".$user->name."<span class='add_to'>send to...</span> <span class='remove_from'>remove from...</span></div>";
 			}
 			echo $string;
 		}

@@ -236,7 +236,7 @@
 					$this->ci->mongo_db->where(array("userid"=>$user_id))->update("userprefs", array("queues"=>$user_data->queues));
 					print "Item removed successfully...";
 				}else{
-					print "This item is not in the selected user's ques...";
+					print "This item is not in the selected user's queues...";
 				}
 					
 				
