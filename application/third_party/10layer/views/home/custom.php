@@ -107,6 +107,29 @@ defaults: function() {
 		        		
 		        });
 		        
+		        this.$(".options_personalise").button({
+		        	icons: {
+        				primary: "ui-icon-person",
+		        	},
+        			text: false,
+        		}).click(function(){
+        			var this_queue = $(this).parent().parent();
+        			var id = $(this).parent().parent().attr("id");
+        								
+					if(!this_queue.hasClass("personal")){
+						$.post("queues/content/personalise/"+id+"/"+"on", function(data) {
+							
+						});
+						this_queue.addClass("personal");
+					}else{
+						$.post("queues/content/personalise/"+id+"/"+"off", function(data) {
+						
+						});
+						this_queue.removeClass("personal");
+					}
+					
+        		});
+		        
 		        this.$(".options_close").button({
 		        	icons: {
         				primary: "ui-icon-close",
@@ -247,12 +270,53 @@ defaults: function() {
 				//root=this;
 				$(this.el).html(this.template(this.model.toJSON()));
 				//this.setText();
+				
+				this.$(".btn-send").button({
+					icons: {
+						primary: "ui-icon-transfer-e-w",
+					},
+					text: false,
+				}).click(function(){
+					var container = $(this).parent().next();
+					if(container.html() == ""){
+						$.get("/queues/content/load_recipients/", function(data) {
+							container.html(data).toggle();
+							$(".add_to").button({icons: {primary: "ui-icon-circle-plus",},text: false,});
+							$(".remove_from").button({icons: {primary: "ui-icon-circle-minus",},text: false,});
+						});
+					}else{
+						container.toggle();
+					}
+					
+					$(".add_to").live("click",function(){
+						var user_id = $(this).parent().attr("id");
+						var item_id = $(this).parent().parent().prev().children(":first").attr("id");
+						$.get("/queues/content/send_to/"+user_id+"/"+item_id, function(data) {
+							alert(data); //container.html(data).slideToggle();
+						});
+					
+						$(this).parent().parent().toggle();
+					});
+					
+					$(".remove_from").live("click",function(){
+						var user_id = $(this).parent().attr("id");
+						var item_id = $(this).parent().parent().prev().children(":first").attr("id");
+						$.get("/queues/content/remove_from/"+user_id+"/"+item_id, function(data) {
+							alert(data); //container.html(data).slideToggle();
+						});
+					
+						$(this).parent().parent().toggle();
+					});
+
+				});
+				
 				this.$(".btn-edit").button({
 					icons: {
 						primary: "ui-icon-pencil",
 					},
 					text: false,
 				});
+				
 				this.$(".btn-workflownext").button({
 					icons: {
 						primary: "ui-icon-arrowthick-1-e",
@@ -286,6 +350,7 @@ defaults: function() {
 				"click .btn-workflownext": "workflownext",
 				"click .btn-workflowprev": "workflowprev",
 				"click .btn-live": "live",
+				"click .btn-send" : "send",
 			},
 			edit: function() {
 				location.href="/edit/"+this.model.get("content_type")+"/"+this.model.get("urlid");
@@ -303,6 +368,14 @@ defaults: function() {
 					root.model.set({"major_version": result.major_version});
 					root.render();
 				});
+			},
+			send:function(){
+				var root=this;
+				//$.getJSON("/queues/content/load_recipients/", function(results) {
+					//alert(results);
+					//root.model.set({"live": result.live});
+					//root.render();
+				//});
 			},
 			live: function() {
 				var root=this;
@@ -463,23 +536,23 @@ defaults: function() {
 				var queue_count = $("#queues").children().length + 1;
 								
 				var id=Math.round(new Date().getTime()/1000);
-				model.set({"name": "Queue_"+queue_count,"order":queue_count,"height":160, "width":220, "id":id});
+				model.set({"name": "Queue_"+queue_count,"order":queue_count,"height":160, "width":220, "id":id, "personal":""});
 				this.drawQueue(model,true);
 				queues.add(model);
 				model.save();
 				
 				//we save all because we want to store the new order
-				var items = $("#queues").children();
-      				var number;
-      				items.each(function(index){
-      					number = index+1;
-      					the_id = $(this).children(":first").attr("id");
-      					the_model = queues.get(the_id);
-      					updates = {order:number,height:$(this).height(), width:$(this).width()};
-      					the_model.set(updates);
-      					the_model.save();      					//console.log(index);
-      				});
-				
+				selecteds = [];
+      			var items = $("#queues").children("div");
+      			items.each(function(index){
+      				the_id = $(this).children(":first").attr("id");
+      				selecteds.push(the_id);
+      			});
+      					
+      			var params = {'selecteds[]': selecteds}
+      					
+      			$.post("/queues/content/set_queue_order", params,function(data){ });
+
 				
 				//model.save();
 			},
@@ -605,12 +678,15 @@ defaults: function() {
 
 <script type="text/template" id="content-template">
 	<div class="content">
+		
 		<div class="content-tools">
+			<div class="btn-send" id="<%= id %>">Send to</div>
 			<div class="btn-edit">Edit</div>
 			<div class="btn-workflowprev">Revert Workflow</div>
 			<div class="btn-workflownext">Advance Workflow</div>
 			<div class="btn-live"><%= live ? 'Make unlive' : 'Make live' %></div>
 		</div>
+		<div class="directory_container shadow"></div>
 		<div class="content-title content-workflow-<%= major_version %>"><%= title %></div>
 	</div>
 </script>
@@ -632,12 +708,13 @@ defaults: function() {
 </script>
 
 <script type="text/template" id="queue-template">
-	<div id="<%= id %>" >
+	<div id="<%= id %>" class="<%= personal %>" >
 		
 		<div class="options_icons">
 			<div class="queue-name"><input class="queuename-edit" name="queuename" value="<%= name %>" /></div>
 			<div class="options_close">Delete queue</div>
 			<div class="options_dropdown">Filter queue</div>
+			<div class="options_personalise">Make this queue personal</div>
 		</div>
 		
 				<div class="options shadow" style="z-index:100000;">
@@ -645,6 +722,7 @@ defaults: function() {
 				<a class="config_close">close</a>
 				
 				<h4><%= name %> Configuarations...</h4>
+				
 				<div class="option">
 					<div class="option_header">Content Types</div>
 				</div>
@@ -711,7 +789,7 @@ defaults: function() {
 	}
 
 	
-	.options_close, .options_dropdown{
+	.options_close, .options_dropdown, .options_personalise{
 		height: 14px;
 		width:14px;
 		float:right;
@@ -797,8 +875,7 @@ defaults: function() {
     	text-align: center;
     	width: 100px;
 	}
-
-	
+		
 	.content-tools div {
 		width: 12px;
 		height: 12px;
@@ -823,6 +900,56 @@ defaults: function() {
 	
 	.queue-content li .content:hover{
 		background: #c9f8e6;
+	}
+	
+	.personal{
+		background: #ffd9a2;
+	}
+	
+	/*
+.directory_container{
+		border:1px solid #ffd9a2;
+		padding: 5px;
+		display: none;
+		margin-bottom: 5px;
+		background: #fff;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+*/
+	
+.directory_container {
+    background: none repeat scroll 0 0 #999;
+    border: 1px solid #ccc;
+    border-radius: 5px 5px 5px 5px;
+    display: none;
+    left: -5px;
+    margin-top: -1px;
+    min-height: 50px;
+    padding: 5px;
+    position: absolute;
+    width: 248px;
+    z-index: 2000;
+}
+	
+	
+	.user_item{
+		padding: 5px;
+		background: #fff;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		margin-top: 3px;
+	}
+	.user_item:hover{
+		background: #70C046;
+		cursor: pointer;
+		color: #fff;
+	}
+	
+	.user_item span{
+		width:15px;
+		height: 15px;
+		float: right;
 	}
 		
 	
@@ -891,6 +1018,7 @@ defaults: function() {
 </script>
 
 <div id="homepage">
+
 	<div id="dialog_first_queue" style="display: none">
 		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>You don't have any queues. Create one now?</p>
 	<div id="dialog_confirm_queue_delete" style="display: none">

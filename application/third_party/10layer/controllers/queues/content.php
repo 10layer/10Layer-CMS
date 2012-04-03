@@ -22,41 +22,60 @@
 			$this->db->select("content_types.urlid AS content_type");
 			$this->db->join("content_types", "content.content_type_id=content_types.id");
 			$contentqueue=(array) $this->tluserprefs->get_queue($queueid);
-			if (!empty($contentqueue["contenttypes"])) {
-				$exclude_contenttypes=array();
-				foreach($contentqueue["contenttypes"] as $contenttype) {
-					if (is_array($contenttype["checked"])) {
-						$contenttype["checked"]=array_pop($contenttype["checked"]);
-					}
-					if (is_array($contenttype["id"])) {
-						$contenttype["id"]=array_pop($contenttype["id"]);
-					}
-					if (empty($contenttype["checked"]) && isset($contenttype["id"])) {
-						$exclude_contenttypes[]=$contenttype["id"];
-					}
+			
+			if(isset($contentqueue["personal"]) AND $contentqueue["personal"] == "personal"){
+				//print_r($contentqueue["includes"]);
+				
+				$include_items=array(0);
+				if (!empty($contentqueue["includes"])) {
+					$this->db->where_in("content.id",$contentqueue["includes"]);					
+				}else{
+					$this->db->where_in("content.id",$include_items);
 				}
-				if (!empty($exclude_contenttypes)) {
-					$this->db->where_not_in("content_type_id",$exclude_contenttypes);
-				}
+						
+
+			}else{
+					if (!empty($contentqueue["contenttypes"])) {
+						$exclude_contenttypes=array();
+						foreach($contentqueue["contenttypes"] as $contenttype) {
+							if (is_array($contenttype["checked"])) {
+								$contenttype["checked"]=array_pop($contenttype["checked"]);
+							}
+							if (is_array($contenttype["id"])) {
+								$contenttype["id"]=array_pop($contenttype["id"]);
+							}
+							if (empty($contenttype["checked"]) && isset($contenttype["id"])) {
+								$exclude_contenttypes[]=$contenttype["id"];
+							}
+						}
+						if (!empty($exclude_contenttypes)) {
+							$this->db->where_not_in("content_type_id",$exclude_contenttypes);
+						}
+					}			
+					if (!empty($contentqueue["workflow"])) {
+						$exclude_workflow=array();
+						foreach($contentqueue["workflow"] as $workflow) {
+							if (is_array($workflow["checked"])) {
+								$workflow["checked"]=array_pop($workflow["checked"]);
+							}
+							if (is_array($workflow["major_version"])) {
+								$workflow["major_version"]=array_pop($workflow["major_version"]);
+							}
+							if (empty($workflow["checked"]) && isset($workflow["major_version"])) {
+								$exclude_workflow[]=$workflow["id"];
+							}
+						}
+						if (!empty($exclude_workflow)) {
+							$this->db->where_not_in("major_version", $exclude_workflow);
+						}
+					}			
 			}
-			if (!empty($contentqueue["workflow"])) {
-				$exclude_workflow=array();
-				foreach($contentqueue["workflow"] as $workflow) {
-					if (is_array($workflow["checked"])) {
-						$workflow["checked"]=array_pop($workflow["checked"]);
-					}
-					if (is_array($workflow["major_version"])) {
-						$workflow["major_version"]=array_pop($workflow["major_version"]);
-					}
-					if (empty($workflow["checked"]) && isset($workflow["major_version"])) {
-						$exclude_workflow[]=$workflow["id"];
-					}
-				}
-				if (!empty($exclude_workflow)) {
-					$this->db->where_not_in("major_version", $exclude_workflow);
-				}
-			}
+						
+			
+			
 			$query=$this->db->get();
+			//echo $this->db->last_query();
+						
 			print json_encode($query->result());
 		}
 		
@@ -86,6 +105,9 @@
 				if(!isset($q["width"])){
 					$q["width"]=230;
 				}
+				if(!isset($q["personal"])){
+					$q["personal"]="";
+				}
 				
 				array_push($holder, $q);
 			}
@@ -94,6 +116,28 @@
 			usort($queues,array($this,"cmp"));		
 			
 			print json_encode(array_values($queues));
+		}
+		
+		
+		function personalise($id,$message){
+			$this->tluserprefs->personalise_que($id, $message);
+		}
+		
+		
+		function load_recipients(){
+			$string = ""; // "<h5>Send this item to...";
+			foreach($this->tluserprefs->get_all_users() as $user){
+				$string .= "</h5><div class='user_item' id='".$user->id."'>".$user->name."<span class='add_to'>remove</span> <span class='remove_from'>remove</span></div>";
+			}
+			echo $string;
+		}
+		
+		function send_to($user_id, $item_id){
+			$this->tluserprefs->send_to($user_id, $item_id);
+		}
+		
+		function remove_from($user_id, $item_id){
+			$this->tluserprefs->remove_from($user_id, $item_id);
 		}
 		
 		

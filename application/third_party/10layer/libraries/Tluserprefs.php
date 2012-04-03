@@ -103,6 +103,139 @@
 			
 		}
 		
+		function get_all_users(){
+			$users = $this->ci->db->query("select * from tl_users")->result();//=&get_instance();
+			return $users;
+		}
+		
+		function get_personal_pref(){
+			//get all prefs
+			$all_prefs = $this->ci->mongo_db->get("userprefs");
+			foreach($all_prefs as $pref){
+				print_r($pref->queues)."<br/><br/>============";
+			}
+			
+		}
+		
+		function send_to($user_id, $item_id){
+			//start by getting the user's prefs
+			$raw = $this->ci->mongo_db->where(array("userid"=>$user_id))->get("userprefs");
+			$user_data = $raw [0];
+			
+			//does this user have preferences
+			if($user_data == null){
+				//no prefs - create them
+				$this->ci->mongo_db->insert("userprefs",array("userid"=>$user_id));
+				//ok, we have created prefs - reload them
+				$user_data = $this->ci->mongo_db->where(array("userid"=>$user_id))->get("userprefs");
+			}
+					
+			//does this user have queues
+			if (isset($user_data->queues)) {
+				//find the personal queue (to change once we cater for more personal queues)
+				
+				//find the queue_id for that illusive personal queue
+				$queue_id = "";
+				foreach($user_data->queues as $queue){
+					if(isset($queue["personal"]) AND $queue["personal"] == "personal"){
+						$queue_id = $queue["id"];	
+					}
+				}
+				
+				
+				$includes = array();
+				if(isset($user_data->queues[$queue_id]["includes"]) AND $user_data->queues[$queue_id]["includes"] != null){
+					//echo "we have includes";
+					$includes = $user_data->queues[$queue_id]["includes"];
+				}
+				
+				if(!in_array($item_id, $includes)){
+					array_push($includes, $item_id);
+					$user_data->queues[$queue_id]["includes"] = $includes;
+					$this->ci->mongo_db->where(array("userid"=>$user_id))->update("userprefs", array("queues"=>$user_data->queues));
+					print "Item sent successfully...";
+				}else{
+					print "This Item has already been sent to the specified user...";
+				}
+				
+				
+				
+				
+				
+			} else {
+				//this users doesnt have queues - lets see if we can create one for him
+				$queueid = "0000000001";
+				$queues[$queueid]["name"]="new personal queue";
+				$queues[$queueid]["order"]=1;
+				$queues[$queueid]["id"]=$queueid;
+				$queues[$queueid]["width"]=220;
+				$queues[$queueid]["height"]=160;
+				$queues[$queueid]["personal"]="personal";
+				//create includes
+				$queues[$queueid]["includes"]= array($item_id);
+				
+				$this->ci->mongo_db->where(array("userid"=>$user_id))->update("userprefs", array("queues"=>$queues));
+				
+				$user_data = $this->ci->mongo_db->where(array("userid"=>$user_id))->get("userprefs");
+								
+				print "Item sent successfully...";
+			}
+			
+			
+		}
+		
+		function remove_from($user_id, $item_id){
+			//start by getting the user's prefs
+			$raw = $this->ci->mongo_db->where(array("userid"=>$user_id))->get("userprefs");
+			$user_data = $raw [0];
+			
+			//does this user have preferences
+			if($user_data == null){
+				//no prefs - create them
+				$this->ci->mongo_db->insert("userprefs",array("userid"=>$user_id));
+				//ok, we have created prefs - reload them
+				$user_data = $this->ci->mongo_db->where(array("userid"=>$user_id))->get("userprefs");
+			}
+					
+			//does this user have queues
+			if (isset($user_data->queues)) {
+				//find the personal queue (to change once we cater for more personal queues)
+
+				//find the queue_id for that illusive personal queue
+				$queue_id = "";
+				foreach($user_data->queues as $queue){
+					if(isset($queue["personal"]) AND $queue["personal"] == "personal"){
+						$queue_id = $queue["id"];	
+					}
+				}
+				
+				
+				$includes = array();
+				if(isset($user_data->queues[$queue_id]["includes"]) AND $user_data->queues[$queue_id]["includes"] != null){
+					//echo "we have includes";
+					$includes = $user_data->queues[$queue_id]["includes"];
+				}
+				
+				if(in_array($item_id, $includes)){
+					
+					// remove the elements who's values are yellow or red
+					$includes = array_diff($includes, array($item_id));
+					$user_data->queues[$queue_id]["includes"] = $includes;
+					$this->ci->mongo_db->where(array("userid"=>$user_id))->update("userprefs", array("queues"=>$user_data->queues));
+					print "Item removed successfully...";
+				}else{
+					print "This item is not in the selected user's ques...";
+				}
+					
+				
+			} else {				
+				print "This user does not have queues...";
+			}
+			
+		}
+		
+		
+		
 		public function set_queue($queueid,$data) {
 			if (isset($this->data->queues)) {
 				$queues=$this->data->queues;
@@ -120,7 +253,7 @@
 			$this->get_data();
 		}
 		
-		public function set_queue_name($queueid, $name, $order, $width, $height) {
+		public function set_queue_name($queueid, $name="", $order, $width, $height, $personal="") {
 			if (isset($this->data->queues)) {
 				$queues=$this->data->queues;
 			} else {
@@ -132,7 +265,12 @@
 			$queues[$queueid]["id"]=$queueid;
 			$queues[$queueid]["width"]=$width;
 			$queues[$queueid]["height"]=$height;
-			
+			if($personal == "on"){
+				$queues[$queueid]["personal"]="personal";
+			}
+			if($personal == "off"){
+				$queues[$queueid]["personal"]="";
+			}			
 			$this->ci->mongo_db->where(array("userid"=>$this->userid))->update("userprefs", array("queues"=>$queues));
 		}
 		
@@ -142,6 +280,12 @@
 			} else {
 				return array();
 			}
+		}
+		
+		function personalise_que($id, $message){
+			$queue = $this->get_queue($id);
+			$this->set_queue_name($id,$queue["name"],$queue["order"],$queue["width"], $queue["height"], $message);
+			$this->get_data();
 		}
 		
 		function save_queue_order($id, $order){
@@ -161,7 +305,7 @@
 		
 		public function get_queues() {
 			if (isset($this->data->queues)) {
-				//print_r($this->data->queues);
+
 				return $this->data->queues;
 			} else {
 				return array();
