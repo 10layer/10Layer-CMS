@@ -320,6 +320,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		
 		$do_action=$this->input->post("action");
 		
+		
 		if (!empty($do_action)) {
 			$this->checkCallback("onBeforeAction",$contentobj);
 			$dbdata=array();
@@ -531,7 +532,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function view($type,$urlid=false,$action=false) {
-		//$this->output->enable_profiler(true);
+				
 		if (empty($urlid) || ($urlid=="pg")) {
 			$this->index();
 			return true;

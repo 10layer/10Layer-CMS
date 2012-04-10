@@ -647,6 +647,7 @@ class TLContent {
 				$tables[$field->tablename][$field->name]=$field->value;
 			}
 		}
+		$tables["content"]["last_modified"]=date("c");
 		$tables["content"]["content_type_id"]=$this->content_type->id;
 		#FIRST insert into Content table to get content_id
 		$ci->db->insert("content",$tables["content"]);
