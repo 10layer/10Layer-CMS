@@ -82,6 +82,7 @@
 	<div class="selected_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:right;">
 	<?php
 			if (is_array($field->value)) {
+				
 			$x=0;
 			foreach($field->data as $data) {
 				$value=$data->content_id;
@@ -98,7 +99,7 @@
 		}
 ?>
 <?php
-		if ($field->external) {
+		/*if ($field->external) {
 	?>
 	
 	<div class="selected_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:right;">
@@ -107,7 +108,7 @@
 	</div>
 
 	<?php
-		}
+		}*/
 	?>
 
 		
