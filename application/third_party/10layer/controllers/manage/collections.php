@@ -55,9 +55,9 @@
 			$data["content_types"]=$this->model_content->get_content_types();
 			$zones=array();
 			//pull zones directly
-			$the_zones = $this->db->query("SELECT * FROM `content_content` join section_zones on content_content.content_link_id = section_zones.id where content_content.content_id =". $section->content_id)->result();
-			
 			$the_zones = $this->db->query("select c.id, c.title, c.urlid from content c join content_content cc on c.id = cc.content_link_id where  c.content_type_id = 21 and cc.content_id = ". $section->content_id)->result();
+			
+			//echo $this->db->last_query();
 			
 			if(sizeof($the_zones) > 0){
 				foreach($the_zones as $zone){
@@ -65,26 +65,9 @@
 				}
 			}
 				
-			
-			/*
-if (!empty($section->getData()->zones)) {
-				foreach($section->getData()->zones as $zone) {
-					$zones[]=$this->zones->getByIdORM($zone)->getData();
-				}
-			}else{
-				$the_zones = $this->db->query("SELECT * FROM `content_content` join section_zones on content_content.content_link_id = section_zones.id where content_content.content_id =". $section->content_id)->result();
-			if(sizeof($the_zones) > 0){
-				foreach($the_zones as $zone){
-					$zones[]=$this->zones->getByIdORM($zone->content_id)->getData();
-				}
-			}			
-			}
-*/
-			
-			//print_r($zones); die();
 			$data["zones"]=$zones;
 			
-			
+			//print_r($zones); die();
 			
 			$this->load->view('templates/header',$data);
 			$this->load->view("manage/sections/section_config");

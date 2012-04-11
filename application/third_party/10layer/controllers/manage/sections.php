@@ -49,27 +49,38 @@
 		
 		public function dosave($urlid) {
 			$returndata=array("error"=>false,"msg"=>"");
-			$section=$this->sections->getByIdORM($urlid);
-			$data=$section->getData();
-			//Find and delete existing Zones
-			if (is_array($data->zones)) {
-				foreach($data->zones as $zone) {
-					$this->db->where("content_link_id",$zone)->delete("content_content");
-					$this->db->where("content_id",$zone)->delete("content_content");
-					$this->db->where("content_id",$zone)->delete("section_zones");
-					$this->db->where("id",$zone)->delete("content");
-				}
+			//$section=$this->sections->getByIdORM($urlid);
+			
+			$section = $this->db->query("select * from content where urlid='".$urlid."'")->row();
+			
+			$existing_zones = $this->db->query("select c.id, c.title, c.urlid from content c join content_content cc on c.id = cc.content_link_id where  c.content_type_id = 21 and cc.content_id = ". $section->id)->result();
+			
+			
+			foreach($existing_zones as $zone) {
+					$this->db->where("content_link_id",$zone->id)->delete("content_content");
+					$this->db->where("content_id",$zone->id)->delete("content_content");
+					$this->db->where("content_id",$zone->id)->delete("section_zones");
+					$this->db->where("id",$zone->id)->delete("content");
 			}
-			//Add new zones
+			
+			
+			//grab the defined zones
+			
 			$titles=$this->input->post("content_title");
+			
+			//print_r($section); die();
+			//echo $section->content_id." - ".$urlid; die();
+			
 			$max=sizeof($titles);
+			
 			$content_ids=array();
 			$contentobj=new TLContent();
-			
+
 			$contentobj->setContentType("zones");
-			
+
 			for($x=0;$x<$max;$x++) {
 				$contentobj->clearData();
+				
 				foreach($contentobj->getFields() as $field) {
 					$fieldval=$this->input->post($field->tablename."_".$field->name);
 					if (empty($fieldval)) {
@@ -78,8 +89,13 @@
 						$contentobj->{$field->name}=$fieldval[$x];
 					}
 				}
+				
+				
+				
 				$contentobj->transformFields();
 				$validation=$contentobj->validateFields();
+				
+				
 				if (!$validation["passed"]) {
 					$returndata["error"]=true;
 					$returndata["msg"]="Failed to create {$this->_contenttypeurlid}";
@@ -88,12 +104,16 @@
 					
 					$contentobj->insert();
 					$content_ids[]=$contentobj->getData()->content_id;
-				}
+					
+					}
 			}
+			
+			//print_r($contentobj);
+			
 			//Link them
 			if (!$returndata["error"]) {
 				foreach($content_ids as $content_id) {
-					$this->db->insert("content_content", array("content_id"=>$data->content_id, "content_link_id"=>$content_id));
+					$this->db->insert("content_content", array("content_id"=>$section->id, "content_link_id"=>$content_id));
 				}
 				print "<script>document.domain=document.domain;</script><textarea>";
 				print json_encode($returndata);

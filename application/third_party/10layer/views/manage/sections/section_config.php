@@ -128,6 +128,7 @@
 		</div>
 		<br clear="both" />
 		<?php
+			
 			if (empty($zones)) {
 		?>
 		<div class="zone" id="first_zone">
@@ -177,19 +178,19 @@
 					<label>Automatic</label>
 					<input type="checkbox" name="section_zones_automatic[]" class="zone_automatic" /><br />
 					<label>Max Items</label>
-					<input type="text" name="section_zones_max_count[]" /><br />
+					<input type="text" name="section_zones_max_count[]" value="<?= $zone->max_count ?>" /><br />
 					<label>Min Items</label>
-					<input type="text" name="section_zones_min_count[]" /><br />
+					<input type="text" name="section_zones_min_count[]" value="<?= $zone->min_count ?>" /><br />
 					<label>Where Statement</label>
-					<input type="text" name="section_zones_auto_where[]" /><br />
+					<input type="text" name="section_zones_auto_where[]" value="<?= $zone->auto_where ?>" /><br />
 					<label>Limit</label>
-					<input type="text" name="section_zones_auto_limit[]" /><br />
+					<input type="text" name="section_zones_auto_limit[]" value="<?= $zone->auto_limit ?>" /><br />
 					<label>Order By</label>
-					<input type="text" name="section_zones_auto_order_by[]" /><br />
+					<input type="text" name="section_zones_auto_order_by[]" value="<?= $zone->auto_order_by ?>" /><br />
 				
 			</div>
 			<div class="zone_content_types_header">Content Types</div>
-			<div class="zone_content_types connectedSortable">
+			<div class="zone_content_types connectedSortable">	
 				<?php
 					$cts=explode(",",$zone->content_types);
 					foreach($cts as $ct) {
