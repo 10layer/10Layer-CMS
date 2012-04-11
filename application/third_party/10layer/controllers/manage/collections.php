@@ -54,22 +54,29 @@
 			$data["section"]=$section;
 			$data["content_types"]=$this->model_content->get_content_types();
 			$zones=array();
-			if (!empty($section->getData()->zones)) {
+			//pull zones directly
+			$the_zones = $this->db->query("SELECT * FROM `content_content` join section_zones on content_content.content_link_id = section_zones.id where content_content.content_id =". $section->content_id)->result();
+			if(sizeof($the_zones) > 0){
+				foreach($the_zones as $zone){
+					$zones[]=$this->zones->getByIdORM($zone->content_id)->getData();
+				}
+			}
+				
+			
+			/*
+if (!empty($section->getData()->zones)) {
 				foreach($section->getData()->zones as $zone) {
 					$zones[]=$this->zones->getByIdORM($zone)->getData();
 				}
 			}else{
-				//lets check if we can get zones directly
 				$the_zones = $this->db->query("SELECT * FROM `content_content` join section_zones on content_content.content_link_id = section_zones.id where content_content.content_id =". $section->content_id)->result();
-				//print_r($the_zones); die();
-				
-				if(sizeof($the_zones) > 0){
-					foreach($the_zones as $zone){
-						$zones[]=$this->zones->getByIdORM($zone->content_id)->getData();
-					}
+			if(sizeof($the_zones) > 0){
+				foreach($the_zones as $zone){
+					$zones[]=$this->zones->getByIdORM($zone->content_id)->getData();
 				}
-				
+			}			
 			}
+*/
 			
 			//print_r($zones); die();
 			$data["zones"]=$zones;
