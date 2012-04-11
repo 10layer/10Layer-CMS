@@ -12,7 +12,7 @@ if(isset($zones[0])){
 
 <div id="controlls">
 
-<input type="hidden" id="active_zone" value="/publish/worker/subsection/<?= $section_urlid ?>/<?= $zones[0]->getData()->urlid ?>">
+<input type="hidden" id="active_zone" value="/publish/worker/subsection/<?= $section_urlid ?>/<?= $zones[0]->urlid ?>">
 
 <div id="btn_submit">
 
@@ -21,7 +21,7 @@ if(isset($zones[0])){
 <div id="config_section_container">
 
 	<a id="config_section"> Publishing to <?php echo $section_data->title; ?> </a> > 
-	<span id="active_zone_display" class="auto_<?= $zones[0]->getData()->auto ?>"><?php echo $zones[0]->getData()->title; ?></span> 
+	<span id="active_zone_display" class="auto_<?= $zones[0]->auto ?>"><?php echo $zones[0]->title; ?></span> 
 	
 	<span style="height:12px; width:12px;" id="config_section_options">Options</span>
 	
@@ -48,8 +48,8 @@ if(isset($zones[0])){
 		?>
 			
 		<tr>
-			<td align="center"><input type="checkbox" class="zone_automator" <?php echo ($zone->getData()->auto == "0") ? "" : "checked='checked'" ?> id="<?= $zone->getData()->content_id ?>"></td>
-			<th><a class="zone_selector auto_<?= $zone->getData()->auto ?>" href="/publish/worker/subsection/<?= $section_urlid ?>/<?= $zone->urlid ?>"><?= $zone->getData()->title ?></a></t>
+			<td align="center"><input type="checkbox" class="zone_automator" <?php echo ($zone->auto == "0") ? "" : "checked='checked'" ?> id="<?= $zone->content_id ?>"></td>
+			<th><a class="zone_selector auto_<?= $zone->auto ?>" href="/publish/worker/subsection/<?= $section_urlid ?>/<?= $zone->urlid ?>"><?= $zone->title ?></a></t>
 		</tr>
 			
 				

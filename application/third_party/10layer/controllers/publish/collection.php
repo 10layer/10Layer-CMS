@@ -58,14 +58,31 @@
 			$section=$this->sections->getByIdORM($urlid);
 			$sectiondata=$section->getData();
 			
-			//print_r($sectiondata); die();
+			//print_r($section); die();
+			
+			
+			$the_zones = $this->db->query("select c.id, c.title, c.urlid from content c join content_content cc on c.id = cc.content_link_id where  c.content_type_id = 21 and cc.content_id = ". $section->content_id)->result();
+			
+			//echo $this->db->last_query();
 			
 			$zones=array();
+			if(sizeof($the_zones) > 0){
+				foreach($the_zones as $zone){
+					$zones[]=$this->zones->getByIdORM($zone->id)->getData();
+				}
+			}
+
+			
+			//print_r($sectiondata); die();
+			
+			/*
+$zones=array();
 			if(is_array($sectiondata->zones)) {
 				foreach($sectiondata->zones as $zone) {
 					$zones[]=$this->zones->getByIdORM($zone);
 				}
 			}
+*/
 			
 			//$data["layouts"]=$this->model_section->getLayouts($urlid);
 			//$data["subsections"]=$this->model_section->getSubSections($urlid);
