@@ -45,7 +45,7 @@ class Model_Site_Sections extends Model_Content {
 	    ),
 	    array(
 	    	"name"=>"zones",
-	    	"type"=>"hidden",
+	    	"type"=>"autocomplete",
 	    	"multiple"=>true,
 			"contenttype"=>"zones",
 			"tablename"=>"site_zones",
