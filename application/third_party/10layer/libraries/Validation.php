@@ -74,9 +74,8 @@
 		}
 		
 		public function min_count($value, $var){
-			
-			if($value[0][0] != ""){
-				return (sizeof($value[0]) >= $var);
+			if(!$this->is_blank_array($value[0])){
+				return (sizeof($value[0]) >= $var+1);
 			}else{
 				return true;
 			}
@@ -85,9 +84,8 @@
 		}
 		
 		public function max_count($value, $var){
-			
-			if($value[0][0] != ""){
-				return (sizeof($value[0]) <= $var);
+			if(!$this->is_blank_array($value[0])){
+				return (sizeof($value[0]) <= $var+1);
 			}else{
 				return true;
 			}
@@ -96,7 +94,25 @@
 		}
 		
 		public function required($value,$var=false) {
-			return (!empty($value));
+			return (!empty($value));		
+		}
+		
+		public function required_list($value, $var=false){
+			return (!$this->is_blank_array($value[0]));
+		}
+		
+		function is_blank_array($array){
+			$check = "";
+			foreach($array as $item){
+				if($item != ""){
+					$check = $item;
+				}
+			}
+			if($check == ""){
+				return true;
+			}else{
+				return false;
+			}
 		}
 		
 		public function minlen($value,$var) {
@@ -326,6 +342,8 @@
 			$s="";
 			switch($rule) {
 				case "required": $s="$name is required";
+					break;
+				case "required_list": $s="$name is required";
 					break;
 				case "min_count": $s="$name field must have at least $var item(s)";
 					break;
