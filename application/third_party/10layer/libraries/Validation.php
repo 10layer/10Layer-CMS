@@ -98,21 +98,30 @@
 		}
 		
 		public function required_list($value, $var=false){
-			return (!$this->is_blank_array($value[0]));
+
+			if(is_array($value[0])){
+				echo $this->is_blank_array($value[0]);
+				return (!$this->is_blank_array($value[0]));
+			}else{
+				return (!empty($value));
+			}
+			
 		}
 		
 		function is_blank_array($array){
 			$check = "";
-			foreach($array as $item){
-				if($item != ""){
-					$check = $item;
+			if(is_array($array)){
+				foreach($array as $item){
+					if($item != ""){
+						$check = $item;
+					}
 				}
-			}
-			if($check == ""){
-				return true;
+				//echo $check;
+				return ($check == "");
 			}else{
-				return false;
+				return (!empty($array));
 			}
+
 		}
 		
 		public function minlen($value,$var) {

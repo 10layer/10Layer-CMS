@@ -95,6 +95,7 @@ function stage_changes(){
 
 }
 
+
 function search(){
 		if ($("#selected_items").length > 0){
 			update_panel(false);
@@ -164,18 +165,45 @@ $(function() {
 	
 	
 	$('.move_over').live('click',function(){
+		var pointer = $(this);
 		if(can_add_more()){
-			$(this).attr("title", "Move out of Section List");
-			$(this).children(":first").removeClass("ui-icon-circle-arrow-e").next().html("Move out of Section List");
-			$(this).children(":first").addClass("ui-icon-circle-arrow-w");
-			$(this).removeClass("move_over");
-			$(this).addClass("move_back");
-    		$("#selected_items").prepend($(this).parent().parent());
-    		$(this).parent().parent().effect("pulsate", { times:3 }, 500);
-    		if(!$(this).parent().parent().parent().hasClass("staged")){
-				$(this).parent().parent().parent().parent().addClass("staged");
-			}
-    		stage_changes();
+			var content_type = $(this).parent().prev().html().toLowerCase();
+			var content_id = $(this).parent().parent().attr("id").split('=')[1];
+			
+			$.get("/publish/worker/validate/"+content_type+"/"+content_id,function(data){
+				if(data == "passed"){
+					pointer.attr("title", "Move out of Section List");
+					pointer.children(":first").removeClass("ui-icon-circle-arrow-e").next().html("Move out of Section List");
+					pointer.children(":first").addClass("ui-icon-circle-arrow-w");
+					pointer.removeClass("move_over");
+					pointer.addClass("move_back");
+    				$("#selected_items").prepend(pointer.parent().parent());
+    				pointer.parent().parent().effect("pulsate", { times:3 }, 500);
+    				if(!pointer.parent().parent().parent().hasClass("staged")){
+						pointer.parent().parent().parent().parent().addClass("staged");
+					}
+    				stage_changes();
+				}else{
+					
+					
+					content = '<div style="padding: 5px" class="ui-state-error"><p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-alert"></span><strong>Failed to publish content...</strong></p><p>'+data+'</p></div>';
+					
+					
+					$("#msgdialog").html(content);
+					$( "#msgdialog:ui-dialog" ).dialog( "destroy" );
+					$( "#msgdialog" ).dialog({
+							modal: true,
+							height:350,
+							width:700,
+							buttons: {
+							Ok: function() {
+								$( this ).dialog( "close" );
+							}
+						}
+					});
+				}
+			});
+			
 		}else{
 			$( "#informer:ui-dialog" ).dialog( "destroy" );
 	

@@ -3,6 +3,7 @@
 ?>
 
   
+<div id="msgdialog"></div>
 
 <?php
 
