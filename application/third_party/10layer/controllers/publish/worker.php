@@ -43,6 +43,22 @@
 			print "Updated ".$zone_name;
 		}
 		
+		public function validate($content_type, $content_id){
+			$content=$this->model_content->getByIdORM($content_id);		
+			$content->transformFields();
+			$validation=$content->validateFields();
+				
+				
+				if (!$validation["passed"]) {
+					echo implode("<br />\n",$validation["failed_messages"]);
+				} else {
+					
+					echo "passed";
+					
+				}
+		
+		}
+		
 		public function stage_rank_section() {
 			$content=$this->input->post("content");
 			$zone_id=$this->input->post("zone_id");
