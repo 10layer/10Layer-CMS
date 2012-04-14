@@ -164,12 +164,18 @@
 			$ctids=array();
 			$zone=$this->zones->getByIdORM($zone_id)->getData();
 			
+			
+			
+			
 			$published_ids=array();
 			$published_articles=array();
+			
 	
 			if($this->input->get('selecteds', TRUE) == ""){
 				 
 				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
+				
+								
 				//$published_articles=$this->zones->content;
 				foreach($published_list as $article) {
 					//We need to make sure the ID exists
@@ -189,7 +195,8 @@
 			}else{
 				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
 				//$published_articles=$this->zones->content;
-
+				
+				
 				foreach($published_list as $article) {
 					//We need to make sure the ID exists
 					if (isset($article->content_id)) {
@@ -207,10 +214,15 @@
 				}
 			
 				$published_ids = $this->input->get('selecteds', TRUE);
+				
+					
 			}
 			
 
 			$contenttypes=explode(",",$zone->content_types);
+			
+			
+			
 			if (is_array($contenttypes)) {
 				foreach($contenttypes as $ct) {
 					$query=$this->db->get_where("content_types",array("urlid"=>$ct));
@@ -219,6 +231,9 @@
 					}
 				}
 			}
+			
+			
+			
 			if (is_array($urlid)) {
 				$major_versions=array();
 				foreach($urlid as $val) {
@@ -261,6 +276,7 @@
 			}
 			$this->db->order_by("content.last_modified","DESC");
 			$query=$this->db->get();
+			
 			//echo date("Y-m-d",strtotime(rawurldecode($startdate))). rawurldecode($startdate);
 			//print $this->db->last_query();
 			
@@ -269,6 +285,7 @@
 			$result["staged"]=$staged;
 			$result["published"]=$published_articles;
 			$result["unpublished"]=$query->result();
+
 			return $result;
 			
 		}
