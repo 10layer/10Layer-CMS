@@ -212,10 +212,12 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$data["menu1_active"]="create";
 		$data["menu2_active"]="create/".$this->_contenttypeurlid;
 		$data["contenttype"]=$this->_contenttypeurlid;
+		$data["heading"]= $this->format_heading($data["menu2_active"]);
 		$this->load->view($this->_view,$data);
 		
 		$this->checkCallback("onAfterView",$contentobj);
 	}
+	
 	
 	public function embed() {
 		$this->_view="content/default/embed";
@@ -597,6 +599,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$this->formcreator->setFields($contentobj->getFields());
 		$data["menu1_active"]="edit";
 		$data["menu2_active"]="edit/".$this->_contenttypeurlid;
+		$data["heading"]= $this->format_heading($data["menu2_active"]);
 		$this->load->view("content/default/edit",$data);
 	}
 	
@@ -1094,6 +1097,17 @@ class TL_Controller_CRUD extends CI_Controller {
 		if (method_exists($this,$callbackname)) {
 			return call_user_func_array(array(&$this,$callbackname),array($returndata));
 		}
+	}
+	
+	protected function format_heading($active_menu){
+		
+		$items = explode("/",$active_menu);
+		$string = "";
+		foreach($items as $item){
+			$string .= ucfirst($item)." - ";
+		}
+		return substr($string, 0, strlen($string) - 3);
+		
 	}
 }
 ?>

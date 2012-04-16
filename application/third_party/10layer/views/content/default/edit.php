@@ -5,6 +5,7 @@
 	var contentTypeId="<?= $contenttype_id ?>";
 </script>
 <div id="create-content" class="boxed wide">
+<h2><?php echo $heading; ?></h2>
 	
 	<form id="contentform" method="post" enctype="multipart/form-data" action="/edit/ajaxsubmit/<?= $contenttype ?>/<?= $urlid ?>">
 		<input type="hidden" name="action" value="submit" />
