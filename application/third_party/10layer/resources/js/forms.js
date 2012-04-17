@@ -70,7 +70,7 @@ $(function() {
 						var newdisp= ui.item.label;
 						var newobj="<input type='hidden' value='"+ui.item.id+"' name='"+$(this).attr("tablename")+"_"+$(this).attr("fieldname")+"[]' value='' />";
 
-						var append_material = "<li class='autocomplete_item'><span class='ui-icon ui-icon-arrowthick-2-n-s float-left'></span><span class='remover'>" + newdisp + "</span>" + newobj + "</li>";
+						var append_material = "<li class='autocomplete_item'><span class='ui-icon ui-icon-arrowthick-2-n-s float-left' style='margin:10px;'></span><span class='remover'>" + newdisp + "</span>" + newobj + "</li>";
 						
 						$(this).next().next().children(":first").append(append_material);
 						
@@ -102,9 +102,9 @@ $(function() {
 			
 	
 			
-	$(".autocomplete_item").live("click", function() {
+	$(".remover").live("click", function() {
 		//$(this).next().remove();
-		$(this).remove();
+		$(this).parent().remove();
 		return false;
 	});
 	
