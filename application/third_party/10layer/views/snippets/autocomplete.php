@@ -16,7 +16,7 @@
 	?>
 	
 	<li class="autocomplete_item">
-		<span class="ui-icon ui-icon-arrowthick-2-n-s float-left"></span>
+		<span class="ui-icon ui-icon-arrowthick-2-n-s float-left" style="margin:10px;"></span>
 		<span class="remover ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false">
 			
 			<span class="ui-button-icon-primary ui-icon ui-icon-circle-close"></span>
