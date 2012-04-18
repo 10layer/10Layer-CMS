@@ -584,7 +584,7 @@ defaults: function() {
       							
           			}
 				});
-      			$(".queue").resizable({minHeight: 200, minWidth: 220, maxHeight: 500, maxWidth: 950,
+      			$(".queue").resizable({minHeight: 200, minWidth: 240, maxHeight: 500, maxWidth: 950,
       			
       				resize:function(){
       					//adjust the size of the inner ones as well
