@@ -578,6 +578,7 @@
 			$this->db->like("title",$s,"after");
 			$this->db->limit($limit);
 			$this->db->where("content_type_id",$this->content_type->id);
+			$this->db->order_by("title ASC");
 			$result=$this->db->get();
 			return $result->result();
 		}
