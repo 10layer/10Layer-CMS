@@ -12,6 +12,7 @@
 	
 	var dirty=false;
 	var autosaveTimer=false;
+	var autosaving=false;
 	
 	function markDirty(e) {
 		dirty=true;
@@ -23,6 +24,7 @@
 	function autosave() {
 		//console.log("Checking autosave");
 		if (dirty) {
+			autosaving=true;
 			$("#contentform").ajaxSubmit({
 				dataType: "json",
 				iframe: true,
@@ -32,11 +34,15 @@
 					o.dataType = "json";
 				},
 				success: function(result) {
+					autosaving=false;
 					if (result.changed) {
 						$("#autosave").slideDown("slow");
 					} else {
 						$("#autosave").slideUp("slow");
 					}
+				},
+				error: function() {
+					autosaving=false;
 				},
 			});
 		}
@@ -67,7 +73,9 @@
 		});
 		
 		$("#dyncontent").ajaxStart(function() {
-			cl.show();
+			if (!autosaving) {
+				cl.show();
+			}
 		});
 		
 		$("#dyncontent").load("<?= base_url()."edit/fullview/$type/$urlid" ?>", function() {
