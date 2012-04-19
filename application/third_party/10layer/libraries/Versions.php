@@ -165,6 +165,7 @@
 			unset($olddata->date_created);
 			$olddata->date_created=date("c");
 			$olddata->original_id=$oldid;
+			$olddata->user_id=$this->ci->session->userdata("id");
 			//$this->ci->db->insert($this->versions_table,$olddata);
 			$olddata->type_id=$this->type_id;
 			
