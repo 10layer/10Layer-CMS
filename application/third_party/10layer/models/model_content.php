@@ -706,39 +706,28 @@
 		 * @return result
 		 */
 		
-		function smart_search($content_type, $s, $limit){
-		
-			
+		function smart_search($content_type, $s, $limit, $offset=0){
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
 			$query = "";
-			if($this->input->get("selected", TRUE) != null)
-			{
+			if($this->input->get("selected", TRUE) != null) {
 				$selecteds = $this->input->get("selected");
 				$this->db->where_not_in("id",$this->db->escape($selecteds) );
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
-	
-			}else{
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
-				
+				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
+			} else {
+				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
 			}
-			
-			
 			if($query->num_rows > 0) {
 				return $query->result();
-
 			} else {
 				if(strlen($s) > 2) {
-					$result=$this->search($content_type, $s, $limit);
+					$result=$this->search($content_type, $s, $limit, $offset);
 				} else {
-					$result=$this->suggest($content_type, $s, $limit);
+					$result=$this->suggest($content_type, $s, $limit, $offset);
 				}
 				return $result;
 			}
-			
 			return $this->count();
-			
-			
 		}
 		
 		
