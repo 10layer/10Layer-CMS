@@ -164,10 +164,10 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 				$this->checkCallback("onAfterAction",$finalobj);
 			}
 			
-			if (!$returndata["error"]) { //Memcached submission
-				//$this->cachesave($this->_contenttypeurlid,$contentobj->content_id);
+			if (!$returndata["error"]) { //Memcached submission and save
+				//$this->cachesave($this->_contenttypeurlid,$contentobj->content_id);			
+				$this->messaging->post_action("create",array($this->_contenttypeurlid,$finalobj->urlid));
 			}
-			$this->messaging->post_action("create",array($this->_contenttypeurlid,$finalobj->urlid));
 			return $returndata;
 		}
 		return array("error"=>true,"msg"=>"No data submitted");
