@@ -46,9 +46,8 @@
 					    var found=false;
 					    $("#contentform").children().each(function() {
 					    	if (!found && ($(this).attr("type") != "hidden" && $(this).is("input") || $(this).is("textarea"))) {
-						    		$(this).focus();
-						    		found=true;
-						    		console.log($(this));
+						    	$(this).focus();
+						    	found=true;
 					    	}
 					    });
 					},
