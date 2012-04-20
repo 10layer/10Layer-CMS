@@ -30,8 +30,9 @@
 					theme_advanced_buttons3: null,
 					spellchecker_rpc_url: "/workers/spellcheck",
 					spellchecker_languages : "English=en, +English UK=en_GB",
-					
+					spellchecker_report_no_misspellings: false,
 					gecko_spellcheck: false,
+					no_events: true,
 					oninit: function() {
 						var ed=this.activeEditor;
 						var tinymce=this;
@@ -41,6 +42,14 @@
 							clearTimeout(spell_timer);
 							spell_timer=setTimeout(function() {updateSpelling(tinymce)}, 1000);
 							markDirty(e);
+					    });
+					    var found=false;
+					    $("#contentform").children().each(function() {
+					    	if (!found && ($(this).attr("type") != "hidden" && $(this).is("input") || $(this).is("textarea"))) {
+						    		$(this).focus();
+						    		found=true;
+						    		console.log($(this));
+					    	}
 					    });
 					},
 				});
