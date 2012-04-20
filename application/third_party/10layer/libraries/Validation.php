@@ -52,7 +52,6 @@
 			foreach($ruleset as $key=>$rulevalue) {
 				
 				$result=$this->$key($value,$rulevalue);
-				print "$fieldname $key".print_r($value)."\n";
 				if (!$result) {
 					$this->passed=false;
 					$this->failed_fields[]=$fieldname;
