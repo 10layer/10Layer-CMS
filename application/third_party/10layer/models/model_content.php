@@ -321,7 +321,30 @@
 			$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
 			
-			return $query->result();
+			$results = $query->result();
+			$container = array();
+			
+			foreach($results as $item){
+				$urlid = $item->urlid;
+				
+				//$result=$this->mongo_db->where("urlid", $urlid)->get("tl_content_versions")->order_by("last_modified DESC")->limit(1);
+				$result = $this->mongo_db->where(array("urlid"=>$urlid))->order_by(array("last_modified"=>"DESC"))->limit(1)->get("tl_content_versions");
+				$user_id= (isset($result[0]->user_id) AND $result[0]->user_id != "") ? $result[0]->user_id : 1;
+				//$last_edit = $result[0]->last_modified;
+				$this->db->limit(1);
+				$name=$this->db->get_where("tl_users",array("id"=>$user_id))->row()->name;
+				
+				//echo $last_edit;
+				
+				$item->name = $name;
+				
+				array_push($container, $item);
+				
+				
+			}
+			
+			
+			return $container; //$query->result();
 		}
 		
 		/**
