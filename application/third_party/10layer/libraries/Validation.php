@@ -52,6 +52,7 @@
 			foreach($ruleset as $key=>$rulevalue) {
 				
 				$result=$this->$key($value,$rulevalue);
+				print "$fieldname $key".print_r($value)."\n";
 				if (!$result) {
 					$this->passed=false;
 					$this->failed_fields[]=$fieldname;
@@ -74,8 +75,11 @@
 		}
 		
 		public function min_count($value, $var){
-			if(!$this->is_blank_array($value[0])){
-				return (sizeof($value[0]) >= $var+1);
+			if (is_array($value[0])) {
+				$value=$value[0];
+			}
+			if(!$this->is_blank_array($value)){
+				return (sizeof($value) >= $var);
 			}else{
 				return true;
 			}
@@ -84,21 +88,25 @@
 		}
 		
 		public function max_count($value, $var){
-			if(!$this->is_blank_array($value[0])){
-				return (sizeof($value[0]) <= $var+1);
-			}else{
+			if (is_array($value[0])) {
+				$value=$value[0];
+			}
+			if(!$this->is_blank_array($value)){
+				return (sizeof($value) <= $var);
+			} else {
 				return true;
 			}
-			
-			
 		}
 		
 		public function required($value,$var=false) {
-			return (!empty($value));		
+			if (is_array($value)) {
+				return (!$this->is_blank_array($value));
+			} else {
+				return (!empty($value));
+			}
 		}
 		
-		public function required_list($value, $var=false){
-
+		/*public function required_list($value, $var=false){
 			if(is_array($value[0])){
 				echo $this->is_blank_array($value[0]);
 				return (!$this->is_blank_array($value[0]));
@@ -106,7 +114,7 @@
 				return (!empty($value));
 			}
 			
-		}
+		}*/
 		
 		function is_blank_array($array){
 			$check = "";
