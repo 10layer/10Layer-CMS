@@ -66,9 +66,20 @@ $(function() {
 			select: function( event, ui ) {
 				if (ui.item) {
 					if ($(this).hasClass("multiple")) {
+						//Check for repeats
+						var isRepeat=false;
+						$(this).next().next().find("input").each(function() {
+							if ($(this).val()==ui.item.id) {
+								isRepeat=true;
+								return false;
+							}
+						});
+						if (isRepeat) {
+							return false;
+						}
 						//console.log(ui.item);
 						var newdisp= ui.item.label;
-						var newobj="<input type='hidden' value='"+ui.item.id+"' name='"+$(this).attr("tablename")+"_"+$(this).attr("fieldname")+"[]' value='' />";
+						var newobj="<input type='hidden' value='"+ui.item.id+"' name='"+$(this).attr("tablename")+"_"+$(this).attr("fieldname")+"[]' />";
 
 						var append_material = "<li class='autocomplete_item'><span class='ui-icon ui-icon-arrowthick-2-n-s float-left' style='margin:10px;'></span><span class='remover'>" + newdisp + "</span>" + newobj + "</li>";
 						
