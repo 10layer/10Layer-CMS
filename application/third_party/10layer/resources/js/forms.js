@@ -61,6 +61,7 @@ $(function() {
 				$(this).next().html(current+" chars");
 			});
 		}
+		$(this).removeClass("countchars");
 	});
 	
 	
