@@ -3,13 +3,16 @@
 		
 		$(".single_item_button").live("click" ,function() {
 			var resultdiv=$(this).next();
-			resultdiv.toggle();
-			if($.trim(resultdiv.html())=="" )
-			{
-				$.get('/list/nested/<?= $field->contenttype ?>/1', function(data) {
+			if(resultdiv.is(':hidden') ) {
+    			$.get('/list/nested/<?= $field->contenttype ?>/1', function(data) {
   					resultdiv.html(data);
+  					resultdiv.toggle();
 				});	
+			}else{
+				resultdiv.toggle();
 			}
+			
+			
 						
 		});
 		
