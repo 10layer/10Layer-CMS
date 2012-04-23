@@ -34,6 +34,36 @@ $(function() {
 		get_wordcount($(this));
 	});
 	
+	$(".countchars").each(function() {
+		if ($(this).hasClass("countdown")) {
+			var max=$(this).attr("max");
+			var current=max-$(this).val().length;
+			if (current>=0) {
+				$(this).after("<div class='charcount'>"+current+" chars remaining</div>");
+			} else {
+				$(this).after("<div class='charcount red'>"+Math.abs(current)+" chars over</div>");
+			}
+			
+			$(this).keyup(function() {
+				var max=$(this).attr("max");
+				var current=max-$(this).val().length;
+				if (current>=0) {
+					$(this).next().html(current+" chars remaining").removeClass("red");
+				} else {
+					$(this).next().html(Math.abs(current)+" chars over").addClass("red");
+				}
+			});
+		} else {
+			var current=$(this).val().length;
+			$(this).after("<div class='charcount'>"+current+" chars</div>");
+			$(this).keyup(function() {
+				current=$(this).val().length;
+				$(this).next().html(current+" chars");
+			});
+		}
+		$(this).removeClass("countchars");
+	});
+	
 	
 	$(".autocomplete").each(function() {
 		var contenttype=$(this).attr("contenttype");

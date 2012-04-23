@@ -1116,6 +1116,18 @@ class TLField {
 	public $contenttypes=array();
 	
 	/**
+	 * showcount
+	 * 
+	 * Shows a count of chars used. Optionally, set to an int value to show a countdown instead
+	 *
+	 * (default value: false)
+	 * 
+	 * @var int
+	 * @access public
+	 */
+	public $showcount=false;
+	
+	/**
 	 * __construct function.
 	 * 
 	 * @access public
