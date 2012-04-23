@@ -1051,4 +1051,14 @@ ul.nested_tree li, ul.small_section li{
 }
 
 
+/* Countdown and word count */
 
+.charcount {
+	width: 615px;
+	text-align: right;
+	font-size: 9pt;
+}
+
+.red {
+	color: #D40D0D;
+}

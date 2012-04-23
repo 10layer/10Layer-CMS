@@ -60,7 +60,7 @@
 			}
 		});
 		
-		$("#dyncontent").keypress(function(e) {
+		$("#dyncontent").keyup(function(e) {
 			markDirty(e);
 		});
 		
