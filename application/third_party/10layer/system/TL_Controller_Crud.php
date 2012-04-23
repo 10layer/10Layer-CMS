@@ -811,6 +811,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 	public function _remap() {
 		//$this->content->setContentType($this->_contenttypeurlid);
 		//$this->content->setPlatform($this->platforms->id());
+		
 		if($this->uri->segment(3)=="item") {
 			$this->item();
 			return true;
@@ -860,9 +861,9 @@ class TL_Controller_List extends TL_Controller_CRUD {
 			$this->_pg_offset=$this->uri->segment(5);
 			$config['uri_segment'] = 5;
 		}
+
 		$result=$this->search->dosearch($this->_contenttypeurlid,$s, $this->_pg_perpage, $this->_pg_offset);
 		$this->load->library('pagination');
-		
 		$config['num_links'] = $this->_pg_numlinks;
 		$config['base_url'] = "/list/".$this->uri->segment(2)."/".$this->uri->segment(3)."/".$s."/pg";
 		$config['total_rows'] = $result["count"];

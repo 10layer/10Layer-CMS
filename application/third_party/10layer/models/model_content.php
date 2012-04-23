@@ -401,6 +401,7 @@
 			}
 			$this->db->select("COUNT(*) AS count",false);
 			$query=$this->db->get("content");
+		
 			return $query->row()->count;
 		}
 		
@@ -520,7 +521,6 @@
 			}
 			
 			//$this->_prepQuery();
-			
 			return $this->count();
 		}
 		
@@ -537,9 +537,7 @@
 		 * @return object
 		 */
 		public function search($content_type, $searchstr,$limit,$start=0) {
-		
-			
-			
+
 			$tables=array("content");
 			$this->setContentType($content_type);
 			$this->setPlatform($this->platforms->id());
@@ -768,33 +766,49 @@
 		 */
 		
 		function smart_count($content_type, $s){
-		
 			
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
 			$query = "";
-			if($this->input->get("selected", TRUE) != null)
-			{
-				$selecteds = $this->input->get("selected");
-				$this->db->where_not_in("id",$this->db->escape($selecteds) );
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
-	
+			
+			if(strlen($s) == 0){
+				$query=$this->db->select("id, urlid, title AS value")->where("content_type_id",$this->content_type->id)->order_by("title ASC")->get("content");
 			}else{
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->get("content");
-				
+					if($this->input->get("selected", TRUE) != null)
+					{
+						$selecteds = $this->input->get("selected");
+						$this->db->where_not_in("id",$this->db->escape($selecteds) );
+						$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit)->get("content");
+					
+					}else{
+						$query=$this->db->select("id, urlid, title AS value")->like("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->get("content");
+						
+						
+					}
 			}
 			
-			if($query->num_rows > 0) {
-				return $this->db->count_all_results();
-
-			} else {
-				if(strlen($s) > 2) {
+			
+			
+			if(strlen($s) != 0){
+				$result=$this->searchCount($content_type, $s);
+				return $result;
+					
+				/*
+if(strlen($s) > 2) {
 					$result=$this->searchCount($content_type, $s);
+					return $result;
+					
 				} else {
-					$result=$this->searchCount($content_type, $s);
+					$result=$this->count($content_type, $s);
+					return $result;		
 				}
-				return $this->count();
+*/
+				
+			}else{
+				return sizeof($query->result());
 			}
+			
+			
 			
 		  }
 

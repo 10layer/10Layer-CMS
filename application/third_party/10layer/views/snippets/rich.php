@@ -1,4 +1,5 @@
 		<?php
+
 		if ($this->exists->view("content/".$field->tablename."/select")) {
 				$this->load->view("content/".$field->tablename."/select", array("field"=>$field));
 			} else {

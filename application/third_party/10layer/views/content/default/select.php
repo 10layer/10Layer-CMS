@@ -7,7 +7,7 @@
 		$("#contentselect_<?= $field->tablename."_".$field->name ?>").dialog({
 			autoOpen: false,
 			height: 600,
-			width: 800,
+			width: 700,
 			modal: true,
 		});
 		
@@ -77,6 +77,7 @@
 		}
 		
 		$("#contentselect_<?= $field->tablename."_".$field->name ?>").delegate("#contentform","submit",function() {
+			var this_container = $(this).parent().parent();
 			$(this).ajaxSubmit({
 				iframe: true,
 				
@@ -102,7 +103,41 @@
 								}
 							}
 						});
+					}else{
+						//console.log(data);
+						$("#msgdialog").html("<div class='title'>"+data.msg+"</div> "+data.info);
+						$("#msgdialog").dialog({
+							modal: true,
+							buttons: {
+								Ok: function() {
+									$( this ).dialog( "close" );
+								}
+							}
+						});
+						
+						this_container.slideToggle("fast", function() {
+							console.log(this_container.attr("id"));
+							
+							/*
+if (this_container.parent().is(":visible")) {
+								//console.log("Visible");
+								this_container.prev().find(".ui-icon").removeClass("ui-icon-circle-triangle-e").addClass("ui-icon-circle-triangle-s");
+							} else {
+								//console.log("Invisible");
+								this_container.prev().find(".ui-icon").removeClass("ui-icon-circle-triangle-s").addClass("ui-icon-circle-triangle-e");
+							}
+*/
+						});		
+
+						
 					}
+					
+					
+					
+					
+					
+					
+					
 				}
 			});
 			return false;
@@ -147,7 +182,7 @@
 		    	.addClass("content_row")
 		    	.find(".item-select").val(doc.id).end()
 		    	.find(".content_editlink")
-		    	.html("<a href='/edit/"+contenttype+"/"+doc.urlid+"' target='_blank'>Edit</a>")
+		    	.html("<a href='/edit/"+contenttype+"/"+doc.urlid+"' target='blank'>Edit</a>")
 		    	.end()
 		    ;
 		    for (var i in doc) {

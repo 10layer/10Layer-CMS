@@ -950,8 +950,7 @@ position: fixed;
 	margin-left: 915px;
 */
 	position:fixed;
-	
-	z-index: 1001;	
+	z-index: 2000;	
 }
 
 #canvasLoader{
@@ -959,6 +958,7 @@ position: fixed;
 	padding:20px;
 	background: #fff;
 	-moz-border-radius: .5em;
+
 	
 }
 
