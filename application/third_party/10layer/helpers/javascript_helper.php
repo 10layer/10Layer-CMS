@@ -20,7 +20,7 @@
 					theme_advanced_toolbar_location: "top",
 					theme_advanced_statusbar_location: "bottom",
 					theme_advanced_resizing: "true",
-					plugins: "searchreplace, fullscreen, spellchecker, wordcount",
+					plugins: "searchreplace, fullscreen, wordcount, spellchecker",
 					
 					theme_advanced_path : false,
 					
@@ -36,8 +36,8 @@
 					oninit: function() {
 						var ed=this.activeEditor;
 						var tinymce=this;
-						ed.controlManager.setActive('spellchecker', true);
-						this.execCommand('mceSpellCheck', true);
+						//ed.controlManager.setActive('spellchecker', true);
+						//this.execCommand('mceSpellCheck', true);
 						ed.onKeyUp.add(function(ed, e) {
 							clearTimeout(spell_timer);
 							spell_timer=setTimeout(function() {updateSpelling(tinymce)}, 1000);
@@ -55,7 +55,7 @@
 				
 				function updateSpelling(tinymce) {
 					tinymce.execCommand('mceWordcountCheck');
-					tinymce.execCommand('mceActiveSpellCheck');
+					//tinymce.execCommand('mceActiveSpellCheck');
 				}
 			
 			};

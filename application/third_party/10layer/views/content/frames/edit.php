@@ -171,12 +171,62 @@
 			return false;
 		});
 		
-		$("#dyncontent").delegate("#contentform","submit",function() {
-			
+		$("#contentform").ajaxForm({
+			delegation: true,
+			dataType: "json",
+			iframe: true,
+			debug: true,
+			iframeSrc: '<?= base_url() ?>blank',
+			beforeSerialize: function(form, options) {
+				
+				//console.log(options);
+			},
+			beforeSubmit: function(form, options) {
+				//console.log("beforeSubmit");
+			},
+			success: function(data) {
+				if (data.error) {
+					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+					$("#msgdialog").dialog({
+						modal: true,
+						buttons: {
+							Ok: function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+				} else {
+					$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+					$("#msgdialog").dialog({
+						modal: true,
+						buttons: {
+							Ok: function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+				}
+			},
+			error: function(e) {
+				console.log(e);
+				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
+				$("#msgdialog").dialog({
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+			}
+		});
+		
+		/*$("#dyncontent").delegate("#contentform","submit",function(e) {
+			e.preventDefault();
 			$(this).ajaxSubmit({
 				dataType: "json",
 				iframe: true,
-				debug: true,
+				debug: false,
 				beforeSubmit: function(a,f,o) {
 					o.dataType = "json";
 				},
@@ -206,10 +256,14 @@
 							}
 						});
 					}
+				},
+				
+				error: function() {
+					console.log("Error");
 				}
 			});
 			return false;
-		});
+		});*/
 
 	});
 </script>
