@@ -176,6 +176,7 @@
 			dataType: "json",
 			iframe: true,
 			debug: true,
+			iframeSrc: '<?= base_url() ?>blank',
 			beforeSerialize: function(form, options) {
 				
 				//console.log(options);
@@ -206,8 +207,9 @@
 					});
 				}
 			},
-			error: function() {
-				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server</p></div>");
+			error: function(e) {
+				console.log(e);
+				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
 				$("#msgdialog").dialog({
 					modal: true,
 					buttons: {

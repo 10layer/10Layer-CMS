@@ -413,7 +413,7 @@ $.fn.ajaxSubmit = function(options) {
                 }
                 catch(e) {
                     log('Server abort: ' , e, ' (', e.name, ')');
-                    cb(SERVER_ABORT);
+                    //cb(SERVER_ABORT);
                     if (timeoutHandle)
                         clearTimeout(timeoutHandle);
                     timeoutHandle = undefined;
