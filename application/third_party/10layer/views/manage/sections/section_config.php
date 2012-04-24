@@ -142,7 +142,11 @@
 			<div class="zone_config">
 				
 					<label>Automatic</label>
-					<input type="checkbox" name="section_zones_automatic[]" class="zone_automatic" /><br />
+					<select name="section_zones_automatic[]" class="zone_automatic">
+						<option value="1">Yes</option>
+						<option value="0">No</option>
+					</select><br>
+					<!-- <input type="checkbox" name="section_zones_automatic[]" class="zone_automatic" /><br /> -->
 					<label>Max Items</label>
 					<input type="text" name="section_zones_max_count[]" /><br />
 					<label>Min Items</label>
@@ -176,7 +180,12 @@
 			<div class="zone_config">
 				
 					<label>Automatic</label>
-					<input type="checkbox" name="section_zones_automatic[]" class="zone_automatic" /><br />
+					
+					<select name="section_zones_auto[]" class="zone_auto">
+						<option <?php echo ($zone->auto == 1) ? "selected='selected'" : ""; ?> value="1">Yes</option>
+						<option <?php echo ($zone->auto == 0) ? "selected='selected'" : ""; ?> value="0">No</option>
+					</select>
+					<!-- <input type="checkbox" name="section_zones_automatic[]" class="zone_automatic" /> --><br />
 					<label>Max Items</label>
 					<input type="text" name="section_zones_max_count[]" value="<?= $zone->max_count ?>" /><br />
 					<label>Min Items</label>

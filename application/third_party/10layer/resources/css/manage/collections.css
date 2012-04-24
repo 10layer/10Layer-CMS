@@ -27,7 +27,7 @@
 	display: none;
 }
 
-form input {
+form input, form select {
 	width: 130px;
 	margin-top: 8px;
 }

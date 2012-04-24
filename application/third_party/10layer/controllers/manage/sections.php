@@ -17,6 +17,7 @@
 		public function __construct() {
 			parent::__construct();
 			$this->load->model("model_site_sections","sections");
+			$this->load->model("model_section");
 			$this->load->model("model_zones","zones");
 		}
 		
@@ -47,6 +48,11 @@
 			$this->load->view("templates/footer");
 		}
 		
+		
+		
+		
+		
+		
 		public function dosave($urlid) {
 			$returndata=array("error"=>false,"msg"=>"");
 			//$section=$this->sections->getByIdORM($urlid);
@@ -57,6 +63,11 @@
 			
 			
 			foreach($existing_zones as $zone) {
+					
+					//delete ranked items
+					$this->db->where("zone_urlid",$zone->urlid)->delete("ranking");
+					$this->db->where("zone_urlid",$zone->urlid)->delete("ranking_stage");
+					
 					$this->db->where("content_link_id",$zone->id)->delete("content_content");
 					$this->db->where("content_id",$zone->id)->delete("content_content");
 					$this->db->where("content_id",$zone->id)->delete("section_zones");
@@ -90,11 +101,8 @@
 					}
 				}
 				
-				
-				
 				$contentobj->transformFields();
 				$validation=$contentobj->validateFields();
-				
 				
 				if (!$validation["passed"]) {
 					$returndata["error"]=true;
@@ -104,8 +112,13 @@
 					
 					$contentobj->insert();
 					$content_ids[]=$contentobj->getData()->content_id;
-					
+					//generate auto content
+					if($contentobj->getData()->auto == 1){
+						$this->model_section->generate_zone_content($section->id, $contentobj->getData()->content_id);
+							
 					}
+					
+				}
 			}
 			
 			//print_r($contentobj);
