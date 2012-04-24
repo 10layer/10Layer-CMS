@@ -20,7 +20,7 @@
 					theme_advanced_toolbar_location: "top",
 					theme_advanced_statusbar_location: "bottom",
 					theme_advanced_resizing: "true",
-					plugins: "searchreplace, fullscreen, spellchecker, wordcount",
+					plugins: "searchreplace, fullscreen, wordcount",
 					
 					theme_advanced_path : false,
 					
@@ -36,13 +36,13 @@
 					oninit: function() {
 						var ed=this.activeEditor;
 						var tinymce=this;
-						ed.controlManager.setActive('spellchecker', true);
-						this.execCommand('mceSpellCheck', true);
-						ed.onKeyUp.add(function(ed, e) {
+						//ed.controlManager.setActive('spellchecker', true);
+						//this.execCommand('mceSpellCheck', true);
+						/*ed.onKeyUp.add(function(ed, e) {
 							clearTimeout(spell_timer);
 							spell_timer=setTimeout(function() {updateSpelling(tinymce)}, 1000);
 							markDirty(e);
-					    });
+					    });*/
 					    var found=false;
 					    $("#contentform").children().each(function() {
 					    	if (!found && ($(this).attr("type") != "hidden" && $(this).is("input") || $(this).is("textarea"))) {
