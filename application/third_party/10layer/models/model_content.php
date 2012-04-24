@@ -325,22 +325,14 @@
 			$container = array();
 			
 			foreach($results as $item){
+				//Get the last admin to work on this item and set as tl_admin. tl_admin=false if the user isn't found.
 				$urlid = $item->urlid;
-				
-				//$result=$this->mongo_db->where("urlid", $urlid)->get("tl_content_versions")->order_by("last_modified DESC")->limit(1);
 				$result = $this->mongo_db->where(array("urlid"=>$urlid))->order_by(array("last_modified"=>"DESC"))->limit(1)->get("tl_content_versions");
-				$user_id= (isset($result[0]->user_id) AND $result[0]->user_id != "") ? $result[0]->user_id : 1;
-				//$last_edit = $result[0]->last_modified;
-				$this->db->limit(1);
-				$name=$this->db->get_where("tl_users",array("id"=>$user_id))->row()->name;
-				
-				//echo $last_edit;
-				
-				$item->name = $name;
-				
-				array_push($container, $item);
-				
-				
+				$item->tl_admin=false;
+				if (isset($result[0]->user_id) AND $result[0]->user_id != "") {
+					$item->tl_admin=$this->db->get_where("tl_users",array("id"=>$result[0]->user_id))->row();
+				}
+				array_push($container, $item);				
 			}
 			
 			
@@ -512,7 +504,7 @@
 				$this->db->or_where("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).")",false, false);
 			}
 			foreach($likes as $like) {
-				$this->db->or_where($like." LIKE '%".$searchstr."%'");
+				$this->db->or_where($like." LIKE ".$this->db->escape("%".$searchstr."%"), "", false);
 			}			
 			foreach($tables as $table) {
 				if ($table!="content") {
@@ -569,7 +561,7 @@
 				//$this->db->or_where("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).")",false, false);
 			} 
 			foreach($likes as $like) {
-				$this->db->or_where($like." LIKE '%".$searchstr."%'");
+				$this->db->or_where($like." LIKE ".$this->db->escape("%".$searchstr."%"));
 			}
 		
 			foreach($tables as $table) {
