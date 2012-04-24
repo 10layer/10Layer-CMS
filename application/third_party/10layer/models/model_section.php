@@ -289,6 +289,34 @@
 			return $result;
 			
 		}
+		
+		
+		public function generate_zone_content($section_id,$zone_id){
+				$zone=$this->zones->getByIdORM($zone_id)->getData();
+				
+				//auto values
+				$limit = ($zone->auto_limit != "" || $zone->auto_limit != 0 ) ? $zone->auto_limit : 10;
+				
+				
+				$content_types= (isset($zone->content_types) AND $zone->content_types!="") ? explode(",",$zone->content_types):array();
+				if ($zone->auto == 1) {
+					//print "Auto-generating content for ".$zone->urlid."\n";
+					$articles=$this->db->select("content.id AS content_id, content_content.content_id AS parent")->from("content")->join("content_types", "content.content_type_id=content_types.id")->join("content_content","content_content.content_link_id=content.id")->where_in("content_types.name", $content_types)->where("content_content.content_id",$section_id)->where("content.live",true)->where("content.major_version",4)->order_by("content.start_date DESC")->limit($limit)->get()->result();
+					
+					$x=1;
+					$this->db->where("ranking.zone_urlid",$zone->urlid)->delete("ranking");
+					foreach($articles as $article) {
+						$data=array();
+						$data["rank"]=$x++;
+						$data["content_id"]=$article->content_id;
+						$data["zone_urlid"]=$zone->urlid;
+						$this->db->insert("ranking",$data);
+					}
+				}
+		}
+
+		
+		
 	}
 	
 
