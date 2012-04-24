@@ -616,10 +616,12 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$this->load->library("tlpicture");
 		$this->paginate();
 		$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
+		
 		$data["contenttype"]="{$this->_contenttypeurlid}";
 		if ($this->exists->view("content/{$this->_contenttypeurlid}/list")) {
 			$this->load->view("content/{$this->_contenttypeurlid}/list",$data);
 		} else {
+			
 			$this->load->view("content/default/list",$data);
 		}
 	}

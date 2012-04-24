@@ -335,7 +335,6 @@
 				array_push($container, $item);				
 			}
 			
-			
 			return $container; //$query->result();
 		}
 		

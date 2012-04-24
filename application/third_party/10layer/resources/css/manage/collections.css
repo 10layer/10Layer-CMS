@@ -1,8 +1,19 @@
 .section_choice {
 	float: left;
-	margin-right: 2px;
-	padding-right: 2px;
-	border-right: 1px #CCC solid;
+	margin: 5px;
+	padding: 5px;
+	border: 1px #CCC solid;
+	background: #fff;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.section_choice a {
+	text-decoration: none;
+}
+
+.section_choice:hover{
+	background: #A8FFAC;
 }
 
 #section_main {
