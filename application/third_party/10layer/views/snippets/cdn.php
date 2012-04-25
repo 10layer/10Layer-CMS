@@ -7,7 +7,8 @@
 	<?php
 	} else {
 	?>
-	<input type="text" value="<?= $field->value ?>" readonly="readonly" />
+	<div style="background:#fff;width:400px;float: left; overflow:hidden;clear: right; margin-top: 20px;border: 1px #757474 solid;width: 500px;padding: 5px;"><?= $field->value ?></div>
+	<input type="hidden" value="<?= $field->value ?>" name="<?= $field->name ?>" />
 	<?php
 	}
 ?>
