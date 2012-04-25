@@ -415,7 +415,10 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 						}else{
 							//echo $this->input->post($field->tablename."_".$field->name); die();
 							$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
-							$contentobj->{$field->cdn_link}=$this->input->post("cdn_link");
+							if(isset($_POST["cdn_link"])){
+								$contentobj->{$field->cdn_link}=$this->input->post("cdn_link");
+							}
+							
 						}
 					}else {
 						
