@@ -35,9 +35,16 @@ class Datatransformations {
 	}
 	
 	public function soundslide(&$sender, $value) {
+		if (!is_file(".".$value)) {
+			return $value;
+		}
 		$s=exec("/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf");
+		print "/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf\n";
+		print "$s\n";
 		$s=str_replace("./resources/uploads/files/original/","",$s);
+		print "$s\n";
 		$parts=explode(" ",$s);
+		print_r($parts);
 		return $parts[sizeof($parts)-1];
 	}
 	
