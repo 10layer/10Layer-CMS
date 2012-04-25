@@ -31,8 +31,8 @@
 	//Note: Remove dashes for aws_account_id
 	$config["aws_account_id"]="";
 	
-	//"rackspace" or "aws"
-	$config["cdn_service"]="rackspace";
+	//"rackspace" or "aws", or set to false to not use CDN
+	$config["cdn_service"]=false;
 	
 	//The default bucket or container to put your uploads in
 	$config["cdn_bucket"]="";

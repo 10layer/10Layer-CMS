@@ -100,7 +100,7 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 									$uploaddata = $this->upload->data();
 									$filename=$dir.$uploaddata["file_name"];
 									$contentobj->{$field->name}=$filename;
-									if ($field->cdn) {
+									if ($this->config->item("cdn_service") && ($field->cdn)) {
 									//Upload to CDN
 										$this->load->library("cdn");
 										$this->cdn->init();
@@ -334,102 +334,90 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				if ($field->readonly || ($field->type=="drilldown")) {
 					//Do Nothing!
 				} else {
-					
 					if($field->type=="file"){
 						//check if it is set
 						if(!empty($_FILES[$field->tablename."_".$field->name]["name"])){
-							//echo $_FILES[$field->tablename."_".$field->name]["name"]; die();
-							//=============================================================
-								$dir="/resources/uploads/files/original/".date("Y")."/".date("m")."/".date("d")."/";
-								$cachedir="/resources/uploads/pictures/cache/";
-								if (!empty($field->directory)) {
-									$dir=$field->directory;
-									if ($dir[0]!="/") {
-										$dir="/".$dir;
-									}
-									while (strpos($dir,"{")!==false) {
-										$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
-										$replace=eval("return $part;");
-										$dir=str_replace("{".$part."}", $replace, $dir);
-									}
-									if (!is_dir(".".$dir)) {
-										mkdir(".".$dir, 0755, true);
-									}
-									if (!is_dir(".".$dir)) {
-										show_error("Unable to create directory $dir");
-									}
+							$dir="/resources/uploads/files/original/".date("Y")."/".date("m")."/".date("d")."/";
+							$cachedir="/resources/uploads/pictures/cache/";
+							if (!empty($field->directory)) {
+								$dir=$field->directory;
+								if ($dir[0]!="/") {
+									$dir="/".$dir;
 								}
-								$basedir=".".$dir;
+								while (strpos($dir,"{")!==false) {
+									$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
+									$replace=eval("return $part;");
+									$dir=str_replace("{".$part."}", $replace, $dir);
+								}
+								if (!is_dir(".".$dir)) {
+									mkdir(".".$dir, 0755, true);
+								}
+								if (!is_dir(".".$dir)) {
+									show_error("Unable to create directory $dir");
+								}
+							}
+							$basedir=".".$dir;
+							if (!file_exists($basedir)) {
+								if (!mkdir($basedir, 0755, true)) {
+									$returndata["error"]=true;
+									$returndata["msg"]="Failed to create directory structure";
+									$returndata["info"]="Tried to create $dir";
+								}
+							}
 								
-								if (!file_exists($basedir)) {
-									if (!mkdir($basedir, 0755, true)) {
+							if (!$returndata["error"]) {
+								if (!empty($_FILES[$field->tablename."_".$field->name]["name"])) {
+									$config['upload_path'] = $basedir;
+									$config['allowed_types'] = implode("|",$field->filetypes);
+									$this->load->library("upload",$config);
+									if (!$this->upload->do_upload($field->tablename."_".$field->name)) {
 										$returndata["error"]=true;
-										$returndata["msg"]="Failed to create directory structure";
-										$returndata["info"]="Tried to create $dir";
-									}
-								}
-								
-								if (!$returndata["error"]) {
-										if (!empty($_FILES[$field->tablename."_".$field->name]["name"])) {
-											$config['upload_path'] = $basedir;
-											$config['allowed_types'] = implode("|",$field->filetypes);
-											$this->load->library("upload",$config);
-											if (!$this->upload->do_upload($field->tablename."_".$field->name)) {
+										$returndata["info"]=$this->upload->display_errors();
+										$returndata["msg"]="File Upload failed";
+									} else {
+										$uploaddata = $this->upload->data();
+										$filename=$dir.$uploaddata["file_name"];
+										$contentobj->{$field->name}=$filename;
+										//Clear Cache
+										exec("rm .".$cachedir.$urlid."*");
+										if ($this->config->item("cdn_service") && ($field->cdn)) {
+										//Upload to CDN
+											$this->load->library("cdn");
+											$this->cdn->init();
+											if ($this->cdn->hasError()) {
 												$returndata["error"]=true;
-												$returndata["info"]=$this->upload->display_errors();
-												$returndata["msg"]="File Upload failed";
+												$returndata["info"]=$this->cdn->lastError();
+												$returndata["msg"]="Error uploading to CDN";
 											} else {
-												$uploaddata = $this->upload->data();
-												$filename=$dir.$uploaddata["file_name"];
-												$contentobj->{$field->name}=$filename;
-												//Clear Cache
-												exec("rm .".$cachedir.$urlid."*");
-												if ($field->cdn) {
-												//Upload to CDN
-													$this->load->library("cdn");
-													$this->cdn->init();
-													if ($this->cdn->hasError()) {
-														$returndata["error"]=true;
-														$returndata["info"]=$this->cdn->lastError();
-														$returndata["msg"]="Error uploading to CDN";
-													} else {
-														$bucket=$this->config->item("cdn_bucket");
-														$this->cdn->createBucket($bucket);
-														$cdnurl=$this->cdn->uploadFile(".".$filename, $bucket,$filename);
-														if ($this->cdn->hasError()) {
-															$returndata["error"]=true;
-															$returndata["info"]=$this->cdn->lastError();
-															$returndata["msg"]="Error uploading to CDN";
-														} else {
-															if (!empty($field->cdn_link)) {
-																$contentobj->{$field->cdn_link}=$cdnurl;
-															}
-														}
+												$bucket=$this->config->item("cdn_bucket");
+												$this->cdn->createBucket($bucket);
+												$cdnurl=$this->cdn->uploadFile(".".$filename, $bucket,$filename);
+												if ($this->cdn->hasError()) {
+													$returndata["error"]=true;
+													$returndata["info"]=$this->cdn->lastError();
+													$returndata["msg"]="Error uploading to CDN";
+												} else {
+													if (!empty($field->cdn_link)) {
+														$contentobj->{$field->cdn_link}=$cdnurl;
 													}
 												}
 											}
-										}							
-									}				
-							
-							//=============================================================
-						}else{
-							//echo $this->input->post($field->tablename."_".$field->name); die();
+										}
+									}
+								}
+							}
+						} else {
 							$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
 							if(isset($_POST["cdn_link"])){
 								$contentobj->{$field->cdn_link}=$this->input->post("cdn_link");
 							}
 							
 						}
-					}else {
-						
-						//echo $field->name." -- ".$field->tablename."_".$field->name."<br >";
-						
+					} else {
 						$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
 					}
 				}
 			}
-			
-			
 			
 			$contentobj->transformFields($this->_contenttypeurlid);
 			$validation=$contentobj->validateFields($this->_contenttypeurlid);
