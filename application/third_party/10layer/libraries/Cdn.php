@@ -84,7 +84,7 @@ THE SOFTWARE.
  			$service=$args["service"];
  		}
  		if (empty($service)) {
- 			trigger_error("No 'cdn_service' config item found and 'service' not passed as parameter");
+ 			//trigger_error("No 'cdn_service' config item found and 'service' not passed as parameter");
 	 		return false;
  		}
  		switch(strtolower($service))  {
