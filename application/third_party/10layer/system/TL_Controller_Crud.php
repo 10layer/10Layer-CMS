@@ -419,6 +419,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				}
 			}
 			
+			
 			$contentobj->transformFields($this->_contenttypeurlid);
 			$validation=$contentobj->validateFields($this->_contenttypeurlid);
 			if (!$validation["passed"]) {
