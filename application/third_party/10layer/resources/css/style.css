@@ -819,6 +819,16 @@ form input.inactive[type="submit"] {
 	width: 496px;
 }
 
+.preview-image {
+	margin-left: 110px;
+	border: 2px #000 solid;
+	margin-top: 10px;
+	clear: both;
+	width: 500px;
+	height: 300px;
+	overflow: hidden;
+}
+
 /*----Workflow colours---*/
 .content-workflow-0, .content-workflow-0 a {
 	color: #951721;

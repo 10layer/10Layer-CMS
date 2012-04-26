@@ -46,8 +46,20 @@
 			}
 			if (empty($this->_filename)) {
 				foreach($fields as $field) {
-					if ($field->type=="file") {
+					if ($field->type=="file" || $field->type=="image") {
 						$this->_filename=$field->value;
+						if (!empty($field->directory)) {
+							$dir=$field->directory;
+							if ($dir[0]!="/") {
+								$dir="/".$dir;
+							}
+							while (strpos($dir,"{")!==false) {
+								$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
+								$replace=eval("return $part;");
+								$dir=str_replace("{".$part."}", $replace, $dir);
+							}
+							$this->_filename=$dir.basename($this->_filename);
+						}
 					}
 				}
 			}
