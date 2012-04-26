@@ -258,10 +258,12 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 					//Do Nothing!
 				} else {
 					if (!$this->fileupload($field, $urlid, $contentobj, $returndata)) {
+
 						$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
 					}
 				}
 			}
+			
 			
 			$contentobj->transformFields($this->_contenttypeurlid);
 			$validation=$contentobj->validateFields($this->_contenttypeurlid);
