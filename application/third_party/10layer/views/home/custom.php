@@ -928,6 +928,8 @@ defaults: function() {
     position: absolute;
     width: 248px;
     z-index: 2000;
+    height:300px;
+    overflow: auto;
 }
 	
 	
