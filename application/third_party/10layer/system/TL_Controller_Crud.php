@@ -44,6 +44,7 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$contentobj=new TLContent();
 		$contentobj->setContentType($this->_contenttypeurlid);
 		$do_action=$this->input->post("action");
+		$urlid="";
 		if (!empty($do_action)) {
 			$this->checkCallback("onBeforeAction",$contentobj);
 			foreach($contentobj->getFields() as $field) {
@@ -951,7 +952,7 @@ class TL_Controller_CRUD extends CI_Controller {
 	 * @param mixed &$returndata
 	 * @return boolean
 	 */
-	public function fileupload($field, $urlid, &$contentobj, &$returndata) {
+	public function fileupload($field, $urlid="", &$contentobj, &$returndata) {
 		if($field->type!="file" && $field->type!="image") {
 			return false;
 		}
