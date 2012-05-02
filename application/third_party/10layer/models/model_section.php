@@ -163,10 +163,7 @@
 			$this->load->model("model_zones","zones");
 			$ctids=array();
 			$zone=$this->zones->getByIdORM($zone_id)->getData();
-			
-			
-			
-			
+		
 			$published_ids=array();
 			$published_articles=array();
 			
@@ -259,7 +256,10 @@
 				$this->db->where("content.start_date >=",date("Y-m-d",strtotime(rawurldecode($startdate))));
 			}
 			if (!empty($enddate)) {
-				$this->db->where("content.start_date <=",date("Y-m-d",strtotime(rawurldecode($enddate))));
+				$time_stamp = strtotime(date("Y-m-d", strtotime($enddate)) . " +1 day");
+				$the_end_date = date('Y-m-d', $time_stamp);
+				
+				$this->db->where("content.start_date <=",date("Y-m-d 00:00:00",strtotime(rawurldecode($the_end_date))));
 			}
 			if (!empty($search)) {
 				$this->db->like("title",$search);
