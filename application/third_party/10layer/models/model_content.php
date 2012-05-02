@@ -528,7 +528,6 @@
 		 * @return object
 		 */
 		public function search($content_type, $searchstr,$limit,$start=0) {
-
 			$tables=array("content");
 			$this->setContentType($content_type);
 			$this->setPlatform($this->platforms->id());
@@ -557,7 +556,7 @@
 				foreach($this->order_by as $ob) {
 					$this->db->order_by($ob);
 				}
-				//$this->db->or_where("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).")",false, false);
+				$this->db->or_where("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).")",false, false);
 			} 
 			foreach($likes as $like) {
 				$this->db->or_where($like." LIKE ".$this->db->escape("%".$searchstr."%"));
