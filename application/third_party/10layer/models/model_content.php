@@ -890,7 +890,7 @@ if(strlen($s) > 2) {
 			$this->setContentType($content_type);
 			$content_type_id = $this->content_type->id;
 			$result=array();
-		$query=$this->db->select("content.urlid, content.title, content.id AS content_id")->from("content")->where("content_type_id", $content_type_id)->get();
+		$query=$this->db->select("content.urlid, content.title, content.id AS content_id")->from("content")->where("content_type_id", $content_type_id)->order_by("content.title", "asc")->get();
 			
 			
 			$ancestors = array();
@@ -953,7 +953,7 @@ $all=$query->result();
 		}
 		
 		public function get_children($section_id){
-			$sql = "select title,urlid,content_id,content_link_id from content_content join content on content.id = content_content.content_link_id where content_content.content_id = {$section_id} and content.content_type_id = 11;";
+			$sql = "select title,urlid,content_id,content_link_id from content_content join content on content.id = content_content.content_link_id where content_content.content_id = {$section_id} and content.content_type_id = 11 order by title asc;";
 			$children = $this->db->query($sql)->result();
 			return $children; 
 		}
@@ -961,7 +961,7 @@ $all=$query->result();
 		
 		public function is_ancestor($content_id){
 		
-			$parents = $this->db->query("select content_link_id from content_content where content_link_id = $content_id")->result();
+			$parents = $this->db->query("select content_id, title, content_link_id from content_content join content on content.id = content_content.content_id where content.content_type_id = 11 and content_link_id = $content_id")->result();
 			
 			if(sizeof($parents) > 0){
 				return false;
