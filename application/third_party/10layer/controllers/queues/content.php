@@ -5,7 +5,8 @@
 	 * @extends Controller
 	 */
 	class Content extends CI_Controller {
-
+		public $content_filters=array();
+		
 		/**
 		 * __construct function.
 		 * 
@@ -15,76 +16,98 @@
 		public function __construct() {
 			parent::__construct();
 			$this->load->library("tluserprefs");
+			$workflows=new TLContentFilter(
+				"Workflows", 
+				"tl_workflows",
+				"name",
+				array(
+					"join"=>array("tl_workflows", "content.major_version=tl_workflows.major_version"),
+					"where_in"=>array("tl_workflows.id","{values}"),
+				)
+			);
+			$content_types=new TLContentFilter(
+				"Content Types",
+				"content_types",
+				"name",
+				array(
+					"where_in"=>array("content.content_type_id","{values}"),
+				)
+			);
+			$this->content_filters=array($workflows, $content_types);
+		}
+		
+		public function contentfilters($queueid=0) {
+			$model=$this->input->post("model");
+			if (!empty($model)) { //We've recieved an update
+				try {
+					$filter=json_decode($model);
+					$this->tluserprefs->set_queue($queueid, array("filters"=>array($filter->table=>$filter->options)));
+				} catch(Exception $e) {
+					//Some error handling here maybe
+				}
+			}
+			for($x=0; $x<sizeof($this->content_filters); $x++) {
+				$this->content_filters[$x]->queueid=$queueid;
+			}
+			$queue=$this->tluserprefs->get_queue($queueid);
+			if (!isset($queue["filters"])) {
+				print json_encode($this->content_filters);
+				return true;
+			}
+			$filters=$queue["filters"];
+
+			for($x=0; $x<sizeof($this->content_filters); $x++) {
+				foreach($filters as $tablename=>$filter) {
+					if ($this->content_filters[$x]->table==$tablename) {
+						$this->content_filters[$x]->options=$filter;
+					}
+				}
+			}
+			print json_encode($this->content_filters);
 		}
 		
 		public function contentlist($queueid) {
 			$this->db->select("content.*")->from("content")->order_by("last_modified DESC")->limit(100);
+			$this->db->join("content_types","content_types.id=content.content_type_id");
 			$this->db->select("content_types.urlid AS content_type");
-			$this->db->join("content_types", "content.content_type_id=content_types.id");
 			$contentqueue=(array) $this->tluserprefs->get_queue($queueid);
-			
-			if(isset($contentqueue["personal"]) AND $contentqueue["personal"] == "personal"){
-				//print_r($contentqueue["includes"]);
-				
+			if(isset($contentqueue["personal"]) AND $contentqueue["personal"] == "personal") {
 				$include_items=array(0);
 				if (!empty($contentqueue["includes"])) {
 					$this->db->where_in("content.id",$contentqueue["includes"]);					
-				}else{
+				} else {
 					$this->db->where_in("content.id",$include_items);
 				}
-						
-
-			}else{
-					if (!empty($contentqueue["contenttypes"])) {
-						$exclude_contenttypes=array();
-						foreach($contentqueue["contenttypes"] as $contenttype) {
-							if (is_array($contenttype["checked"])) {
-								$contenttype["checked"]=array_pop($contenttype["checked"]);
-							}
-							if (is_array($contenttype["id"])) {
-								$contenttype["id"]=array_pop($contenttype["id"]);
-							}
-							if (empty($contenttype["checked"]) && isset($contenttype["id"])) {
-								$exclude_contenttypes[]=$contenttype["id"];
-							}
-						}
-						if (!empty($exclude_contenttypes)) {
-							$this->db->where_not_in("content_type_id",$exclude_contenttypes);
-						}
-					}			
-					if (!empty($contentqueue["workflow"])) {
-						$exclude_workflow=array();
-						foreach($contentqueue["workflow"] as $workflow) {
-							if (is_array($workflow["checked"])) {
-								$workflow["checked"]=array_pop($workflow["checked"]);
-							}
-							if (is_array($workflow["major_version"])) {
-								$workflow["major_version"]=array_pop($workflow["major_version"]);
-							}
-							if (empty($workflow["checked"]) && isset($workflow["major_version"])) {
-								$exclude_workflow[]=$workflow["id"];
+			} else {
+				if (isset($contentqueue["filters"]) && !empty($contentqueue["filters"])) {
+					$filters=$contentqueue["filters"];
+					foreach($filters as $tablename=>$filter) {
+						foreach($this->content_filters as $content_filter) {
+							if ($tablename==$content_filter->table) {
+							//We have a winner!
+								$values=array();
+								foreach($filter as $f) {
+									if (!empty($f["checked"])) {
+										$values[]=$f["id"];
+									}
+								}
+								if (!$content_filter->prep_db($values)) {
+									//Seems there's an empty value. Let's return nothing.
+									print "[]";
+									return false;
+								}
 							}
 						}
-						if (!empty($exclude_workflow)) {
-							$this->db->where_not_in("major_version", $exclude_workflow);
-						}
-					}			
+					}
+				}
 			}
-						
-			
-			
 			$query=$this->db->get();
-			//echo $this->db->last_query();
-						
+			//print $this->db->last_query();
 			print json_encode($query->result());
 		}
 		
 		public function queues($queueid=false) {
-			
-			//$json = file_get_contents('php://input');
 			$json=$this->input->post("model", true);
-			
-						
 			$method=$this->input->post("_method");
 			if ($method=="DELETE") {
 				$this->tluserprefs->delete_queue($queueid);
@@ -112,9 +135,7 @@
 				array_push($holder, $q);
 			}
 			$queues = $holder;
-			
 			usort($queues,array($this,"cmp"));		
-			
 			print json_encode(array_values($queues));
 		}
 		
@@ -140,24 +161,16 @@
 			$this->tluserprefs->remove_from($user_id, $item_id);
 		}
 		
-		
 		function set_queue_order(){
-			
 			$sequence = $this->input->post("selecteds");
 			for($i = 0; $i < sizeof($sequence); $i++){
 				$this->tluserprefs->save_queue_order($sequence[$i], $i);
 			}
-			
 			echo "Queues reordered successfully";
-			
 		}
 		
 		function set_queue_size(){
-		
 			$sequence = $this->input->post("selecteds");
-			
-			//print_r(json_decode($sequence));
-			
 			foreach($sequence as $item){
 				$the_item = explode("|",$item);
 				$id = $the_item[0];
@@ -165,67 +178,11 @@
 				$width = $the_item[2];	
 				$this->tluserprefs->save_queue_size($id, $height, $width);
 			}
-		
 			echo "Queues resized successfully";
 		}
 		
-		
-		
-		function cmp($a, $b)
-		{
+		function cmp($a, $b) {
     		return strcmp($a["order"], $b["order"]);
-		}
-		
-		public function contenttypes($queueid) {
-			$json=$this->input->post("model", true);
-			
-			if (!empty($json)) {
-				$data=json_decode($json);
-				$this->tluserprefs->set_queue($data->queueid, array("contenttypes"=>array($data->urlid=>$data)));
-			}
-			$queue=json_decode(json_encode($this->tluserprefs->get_queue($queueid))); //Make everything an object
-			
-			if (isset($queue->contenttypes)) {
-				$contentqueue=$queue->contenttypes;
-			} else {
-				$contentqueue=new stdClass;
-			}
-			$contenttypes=$this->model_content->get_content_types();
-			$returndata=array();
-			foreach($contenttypes as $contenttype) {
-				$checked=true;
-				$urlid=$contenttype->urlid;
-				if (isset($contentqueue->$urlid->checked)) {
-					$checked=$contentqueue->$urlid->checked;
-				}
-				$returndata[]=array("urlid"=>$urlid, "name"=>$contenttype->name, "checked"=>$checked, "id"=>$contenttype->id);
-			}
-			print json_encode($returndata);
-		}
-		
-		public function workflows($queueid) {
-			$json=$this->input->post("model", true);
-			
-			if (!empty($json)) {
-				$data=json_decode($json);
-				$this->tluserprefs->set_queue($data->queueid, array("workflow"=>array($data->urlid=>$data)));	
-			}
-			$queue=json_decode(json_encode($this->tluserprefs->get_queue($queueid))); //Make everything an object
-			if (isset($queue->workflow)) {
-				$contentqueue=$queue->workflow;
-			} else {
-				$contentqueue=new stdClass;
-			}
-			$workflows=$this->model_workflow->getAll();
-			foreach($workflows as $workflow) {
-				$checked=true;
-				$urlid=$workflow->urlid;
-				if (isset($contentqueue->$urlid->checked)) {
-					$checked=$contentqueue->$urlid->checked;
-				}
-				$returndata[]=array("urlid"=>$urlid, "name"=>$workflow->name, "id"=>$workflow->id, "major_version"=>$workflow->major_version, "checked"=>$checked);
-			}
-			print json_encode($returndata);
 		}
 		
 		public function update($queueid) {
@@ -237,14 +194,60 @@
 				}
 			}
 		}
+	}
+	
+	class TLContentFilter {
+		public $label;
+		public $table;
+		public $dbinfo;
+		public $options;
 		
-		/*public function _remap() {
-			$vals=$this->uri->uri_to_assoc();
-			if (sizeof($vals)==0) {
-				return $this->index();
+		public function __construct($label, $table, $field, $dbinfo) {
+			$this->label=$label;
+			$this->table=$table;
+			$this->field=$field;
+			$this->dbinfo=$dbinfo;
+			$this->populate_options();
+		}
+		
+		public function populate_options() {
+			$ci=&get_instance();
+			$result=$ci->db->get($this->table)->result();
+			foreach($result as $item) {
+				$option=new stdClass();
+				$option->id=$item->id;
+				$option->urlid=$item->urlid;
+				$option->value=$item->{$this->field};
+				$option->checked=true;
+				$this->options[]=$option;
 			}
-			print_r($vals);
-		}*/
+			return $this;
+		}
+		
+		public function get_options() {
+			return $this->options;
+		}
+		
+		public function prep_db($values) {
+			if (empty($values)) {
+			//This probably means that we won't get any results. Return false so that our caller function knows this.
+				return false;
+			}
+			$ci=&get_instance();
+			if (is_array($this->dbinfo)) {
+				foreach($this->dbinfo as $key=>$dbitem) {
+					if (is_array($dbitem)) {
+						for($x=0; $x<sizeof($dbitem); $x++) {
+							if ($dbitem[$x]=="{values}") {
+								$dbitem[$x]=$values;
+							}
+						}
+					}
+					call_user_func_array(array($ci->db, $key), $dbitem);
+				}
+			}
+			return true;
+		}
 	}
 
 /* End of file content.php */

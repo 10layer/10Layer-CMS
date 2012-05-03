@@ -1,0 +1,212 @@
+#queues{
+		background: #fff;
+		padding: 5px;
+		min-height: 500px;
+	}
+	
+	.filter {
+		width: 100px;
+		float: left;
+		height: 60px;
+		border-right: 1px #CCC solid;
+		padding-left: 10px;
+	}
+	
+		
+	.queue {
+		float: left;
+		margin: 5px;
+		margin-bottom: 10px;
+		border:1px solid #ccc;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		background: #fff;
+		
+	}
+	
+	.queue_formatter{
+		overflow: auto;
+		padding:5px;
+	}
+	
+	
+	.queue_header{
+		    background-color: #CCCCCC;
+    		color: #FFFFFF;
+    		cursor: pointer;
+    		height: 20px;
+    		padding: 5px;
+    		-moz-border-radius: 5px;
+			border-radius: 5px;
+	}
+	
+	.queue-name {
+		width: 180px;
+		float: left;
+	}
+
+	
+	.options_close, .options_dropdown, .options_personalise{
+		height: 14px;
+		width:14px;
+		float:right;
+	}
+	
+	.options_icons {
+		height: 20px;
+		background-color: #ccc;
+		color: #FFF;
+		cursor: pointer;
+		padding: 5px;
+	}
+	
+	.options_icons input {
+		border:1px solid #999;
+		color: #999;
+		padding: 2px;
+		
+	}
+	
+	.options_close, .options_dropdown{
+		height: 14px;
+		width:14px;
+		float:right;
+	}
+	
+	.options {
+    	background-color: #FFFFFF;
+    	border: 1px solid #CCCCCC;
+    	border-radius: 5px 5px 5px 5px;
+    	cursor: pointer;
+    	display: none;
+    	margin-top: 5px;
+    	padding: 10px;
+    	/* position: absolute; */
+    	/* right: 41px; */
+    	/* top: -15px; */
+    	width: 600px;
+    	z-index: 999;
+	}
+	
+	.option_header {
+    	background: none repeat scroll 0 0 #999999;
+    	border: 1px solid #CCCCCC;
+    	border-radius: 5px 5px 5px 5px;
+    	clear: both;
+    	color: #FFFFFF;
+    	margin-top: 3px;
+    	padding: 10px;
+	}		
+	
+	.contenttype, .workflow {
+    	border-bottom: 1px solid #CCCCCC;
+    	float: left;
+    	height: 16px;
+    	line-height: 17px;
+    	margin: 5px;
+    	padding: 5px;
+    	width: 177px;
+	}
+	
+	.config_close {
+		float: right;
+		height:12px;
+		width:12px;
+	}
+	
+	.select-all, .select-none{
+		margin: 0 5px;
+		
+	}
+	
+	.select-all:hover, .select-none:hover{
+		text-decoration: underline;
+	}
+	
+	.allnone {
+    	background: none repeat scroll 0 0 #CCCCCC;
+    	border: 1px solid #CCCCCC;
+    	color: #FFFFFF;
+    	margin-top: 5px;
+    	padding: 5px;
+    	text-align: center;
+    	width: 100px;
+	}
+		
+	.content-tools div {
+		width: 12px;
+		height: 12px;
+	}
+	
+	
+	.queue-content {
+		padding:3px;
+	}
+	.queue-content li{
+		list-style: none;
+	}
+	
+	.queue-content li .content{
+		border:1px solid #ccc;
+		padding:2px;
+		margin-top: 3px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		background: #f1fcf8;
+	}
+	
+	.queue-content li .content:hover{
+		background: #c9f8e6;
+	}
+	
+	.personal{
+		background: #ffd9a2;
+	}
+	
+	/*
+.directory_container{
+		border:1px solid #ffd9a2;
+		padding: 5px;
+		display: none;
+		margin-bottom: 5px;
+		background: #fff;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+*/
+	
+.directory_container {
+    background: none repeat scroll 0 0 #999;
+    border: 1px solid #ccc;
+    border-radius: 5px 5px 5px 5px;
+    display: none;
+    left: -5px;
+    margin-top: -1px;
+    min-height: 50px;
+    padding: 5px;
+    position: absolute;
+    width: 248px;
+    z-index: 2000;
+    height:300px;
+    overflow: auto;
+}
+	
+	
+	.user_item{
+		padding: 5px;
+		background: #fff;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		margin-top: 3px;
+	}
+	.user_item:hover{
+		background: #70C046;
+		cursor: pointer;
+		color: #fff;
+	}
+	
+	.user_item span{
+		width:15px;
+		height: 15px;
+		float: right;
+	}
