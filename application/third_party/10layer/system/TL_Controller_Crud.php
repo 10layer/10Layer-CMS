@@ -234,6 +234,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function submit($type,$urlid) {
+	
 		$contentobj=$this->content->getByIdORM($urlid, $this->_contenttype->id);
 		$contentobj->clearData();
 		if (empty($contentobj->content_id)) {
@@ -247,6 +248,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$do_action=$this->input->post("action");
 		
 		
+		
 		if (!empty($do_action)) {
 			$this->checkCallback("onBeforeAction",$contentobj);
 			$dbdata=array();
@@ -258,8 +260,8 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				if ($field->readonly || ($field->type=="drilldown")) {
 					//Do Nothing!
 				} else {
+					
 					if (!$this->fileupload($field, $urlid, $contentobj, $returndata)) {
-
 						$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
 					}
 				}
@@ -268,6 +270,9 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			
 			$contentobj->transformFields($this->_contenttypeurlid);
 			$validation=$contentobj->validateFields($this->_contenttypeurlid);
+			
+			
+			
 			if (!$validation["passed"]) {
 				$returndata["error"]=true;
 				$returndata["msg"]="Failed to update {$this->_contenttypeurlid}";
@@ -281,6 +286,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				$this->clear_autosave($type, $urlid);
 				$returndata["msg"]="Successfully updated {$this->_contenttypeurlid}";
 				$this->checkCallback("onAfterSubmit",$contentobj);
+				
 			}
 			
 			if (!$returndata["error"]) { //Memcached submission
@@ -309,6 +315,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function ajaxsubmit($type,$urlid) {
+	
 		$result=$this->submit($type,$urlid);
 		print "<script>document.domain=document.domain;</script><textarea>";
 		print json_encode($result); 
@@ -821,6 +828,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 				$string .= "<li class='main_section'><div id='".$section->content_id."' class='small_item'>".$section->title."</div>";
 						if(isset($section->children) && is_array($section->children))
 						{
+							
 							$string .= $this->nested_children($section->children, $contenttype);
 						}
 						$string .= "</li>";
@@ -838,7 +846,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		
 		foreach($children as $item){
 			if($item->title != "Home Page"){
-				$string .= "<li class='nested_section'><div id='".$item->content_id."' class='small_item'>".$item->title."</div></li>";
+				$string .= "<li class='nested_section'><div id='".$item->content_link_id."' class='small_item'>".$item->title."</div></li>";
 			}
 			
 		}
