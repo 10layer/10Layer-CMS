@@ -8,7 +8,7 @@
 	<div class="content">
 		<div class="content-tools">
 			<div class="btn-send" id="<%= id %>">Send to</div>
-			<div class="btn-edit">Edit</div>
+			<a href="/edit/<%= content_type %>/<%= urlid %>" target="_blank"><div class="btn-edit">Edit</div></a>
 			<div class="btn-workflowprev">Revert Workflow</div>
 			<div class="btn-workflownext">Advance Workflow</div>
 			<div class="btn-live"><%= live ? 'Make unlive' : 'Make live' %></div>
@@ -47,14 +47,16 @@
 			<div class="options_personalise">Make this queue personal</div>
 		</div>
 		
-		<div class="options shadow" style="z-index:100000">
-			<a class="config_close">close</a>
-			<h4><%= name %> Configuarations...</h4>
-			<div class="filters">
-			</div>
-		</div>
+		
 		<div class="queue_formatter" style="height:<%= height %>px; width:<%= width %>px">
 		<div class="queue-content"></div>
+		
+	</div>
+	<div class="options shadow" style="z-index:100000">
+		<a class="config_close">close</a>
+		<h4><%= name %> Configuarations...</h4>
+		<div class="filters">
+		</div>
 	</div>
 </script>
 

@@ -1,9 +1,10 @@
+var dispatcher;
 $(function() {
 		Backbone.emulateJSON = true;
 		Backbone.emulateHTTP = true;
 		
 		//Events dispatcher
-		var dispatcher = _.clone(Backbone.Events);
+		dispatcher = _.clone(Backbone.Events);
 		
 		/*----------
 		/ FILTERS   /
@@ -66,7 +67,6 @@ $(function() {
 				for(var x=0; x<options.length; x++) {
 					options[x].checked=$(this.el).find('.filter_check[value="'+options[x].urlid+'"]').is(":checked");
 				}
-				console.log(options);
 				this.model.save({options:options}, { success: function() { 
 					dispatcher.trigger("filters:saved:"+root.model.get("queueid"));
 				} });
@@ -95,10 +95,10 @@ $(function() {
 			render: function() {
 				var root=this;
 				this.queueid=this.model.get("id");
-				var preffered_width = (this.model.get("width") > 950 ) ? 950 : this.model.get("width");
-				preffered_width = (this.model.get("width") <= 220 ) ? 220 : this.model.get("width");
+				//var preffered_width = (this.model.get("width") > 950 ) ? 950 : this.model.get("width");
+				var width = (this.model.get("width") <= 220 ) ? 220 : this.model.get("width");
 				
-    			this.model.set({"width":preffered_width});
+    			this.model.set({"width":width});
     			
 				$(this.el).html(this.template(this.model.toJSON()));
 				this.nameinput=this.$(".queuename-edit");
@@ -112,16 +112,9 @@ $(function() {
 		        .click(
         			function() {
         				//needed to hack this here in order to center the popup
-        				var container = $(this).parent().parent().parent();
-        				var displayer = $(this).parent().next();
-        				
-        				if (displayer.css('display') == 'none'){
-   							container.removeClass("ui-resizable");
-   							displayer.toggle().center();
-						}else{
-							container.addClass("ui-resizable");
-   							displayer.toggle();
-						}
+        				//var container = $(this).parent().parent().parent();
+        				var displayer = $(this).parent().parent().find(".options");
+        				displayer.toggle();
     	    		}
 		        );
 		        
@@ -159,7 +152,6 @@ $(function() {
 						});
 						this_queue.removeClass("personal");
 					}
-					
         		});
 		        
 		        this.$(".options_close").button({
@@ -194,12 +186,15 @@ $(function() {
 		        this.filters.queueid=this.queueid;
 		        this.filters.bind("reset", this.filterSetup, this);
 		        this.filters.fetch();
-		        dispatcher.on("filters:saved:"+this.queueid, function(e) { this.content.fetch() }, this);
+		        
 		        
 		        this.content=new contentCollection;
 		        this.content.queueid=this.queueid;
 		        this.content.bind("reset", this.contentRender, this);
 		        this.content.fetch();
+				
+				dispatcher.on("filters:saved:"+this.queueid, function(e) { this.content.fetch() }, this);
+				dispatcher.on("contentchange:edit contentchange:create contentchange:workflow", function(e) { this.content.fetch() }, this);
 				
 				return this;
 			},
@@ -362,12 +357,10 @@ $(function() {
 					},
 					text: false,
 				});
-				//this.bind("all", function(e) { console.log(e); });
 				return this;
 			},
 			events: {
 				"dblclick .content": "edit",
-				"click .btn-edit": "edit",
 				"click .btn-workflownext": "workflownext",
 				"click .btn-workflowprev": "workflowprev",
 				"click .btn-live": "live",
@@ -416,7 +409,6 @@ $(function() {
 			initialize: function() {
 				queues.bind("reset", this.init, this);
 				queues.fetch();
-				queues.bind("edited", this.edited, this);
 			},
 			
 			events: {
@@ -486,7 +478,7 @@ $(function() {
 			},
 			
 			addBehaviour:function(){
-				$(".options").draggable();
+				$(".options").draggable().css("position","absolute").css("top",0);
 				$('#queues').sortable({
 					
 					stop: function(event,ui){
@@ -558,9 +550,6 @@ $(function() {
       			
 			},
 			
-			edited: function() {
-				//console.log("Caught edit");
-			},
 			resize: function(){
 				the_queues = [];
       				var items = $("#queues").children("div");
@@ -587,7 +576,6 @@ $(function() {
       					the_model = queues.get(the_id);
       					updates = {order:number,height:160, width:220};
       					the_model.set(updates);
-      					//the_model.save();      					//console.log(index);
       				});
       				
       				 				
@@ -636,12 +624,18 @@ $(function() {
 	
 	function edit(contenttype, urlid) {
 		$(".queue").each(function() {
-			$(this).trigger("contentchange");
+			dispatcher.trigger("contentchange:edit");
 		});
 	}
 	
 	function create(contenttype, urlid) {
 		$(".queue").each(function() {
-			$(this).trigger("contentchange");
+			dispatcher.trigger("contentchange:create");
+		});
+	}
+	
+	function update_content(contenttype, urlid) {
+		$(".queue").each(function() {
+			dispatcher.trigger("contentchange:workflow");
 		});
 	}
