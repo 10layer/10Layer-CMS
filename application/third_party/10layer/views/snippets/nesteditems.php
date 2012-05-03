@@ -17,10 +17,11 @@
 		});
 		
 		$(".small_item").live("click", function(){
+			var value = $(this).attr("id");
 			var display_term = $(this).parentsUntil(".section_list").parent().prev().prev();
 			display_term.html($(this).html());
 			var value_holder = display_term.prev();
-			value_holder.val($(this).attr("id"));
+			value_holder.val(value);
 			display_term.next().next().hide();
 			
 		});
