@@ -297,7 +297,6 @@
 				//auto values
 				$limit = ($zone->auto_limit != "" || $zone->auto_limit != 0 ) ? $zone->auto_limit : 10;
 				
-				
 				$content_types= (isset($zone->content_types) AND $zone->content_types!="") ? explode(",",$zone->content_types):array();
 				if ($zone->auto == 1) {
 					//print "Auto-generating content for ".$zone->urlid."\n";

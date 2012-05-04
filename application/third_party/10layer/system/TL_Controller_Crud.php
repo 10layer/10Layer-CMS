@@ -441,6 +441,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 									$contentobj->fields[$key]->data[$x++]=$this->content->getByIdORM($cid);
 								}
 							} else {
+								echo $val; die();
 								$contentobj->fields[$key]->data[0]=$this->content->getByIdORM($val);
 							}
 						}
