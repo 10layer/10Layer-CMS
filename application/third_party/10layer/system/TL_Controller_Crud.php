@@ -441,8 +441,11 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 								foreach($val as $cid) {
 									$contentobj->fields[$key]->data[$x++]=$this->content->getByIdORM($cid);
 								}
-							} else {
+							}
+							if (!is_array($val) AND $val != "") {
 								$contentobj->fields[$key]->data[0]=$this->content->getByIdORM($val);
+							} else {
+								//
 							}
 						}
 						//$autosaved=true;
