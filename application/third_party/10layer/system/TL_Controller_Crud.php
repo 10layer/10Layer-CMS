@@ -429,6 +429,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			$checkautosave=$this->check_change($result[0]->autosave, $urlid);
 			$autosaved=$checkautosave["changed"];
 			$autosave=$result[0]->autosave;
+			print_r($autosave);
 			foreach($autosave as $key=>$val) {
 				$key=substr($key, strpos($key, "_")+1, strlen($key));
 				if (isset($contentobj->fields[$key])) {
@@ -441,7 +442,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 									$contentobj->fields[$key]->data[$x++]=$this->content->getByIdORM($cid);
 								}
 							} else {
-								echo $val; die();
 								$contentobj->fields[$key]->data[0]=$this->content->getByIdORM($val);
 							}
 						}
