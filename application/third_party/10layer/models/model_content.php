@@ -335,6 +335,7 @@
 				array_push($container, $item);				
 			}
 			
+			
 			return $container; //$query->result();
 		}
 		
@@ -460,6 +461,14 @@
 		
 		protected function _prepGetAllQuery() {
 			$this->_prepQuery();
+			
+			$time = date("Y-m-d");
+			
+			$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
+			$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
+			
+			$this->db->where("content.start_date <=", $now);
+			$this->db->where("content.start_date >=", $start);
 			$this->db->select("content.*");
 			foreach($this->order_by as $ob) {
 				$this->db->order_by($ob);

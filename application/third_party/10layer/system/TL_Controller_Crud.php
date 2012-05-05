@@ -807,6 +807,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 			$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
 		}
 		//$data["action"]=$this->uri->segment(3);
+		
 		$data["contenttype"]="{$this->_contenttypeurlid}";
 		$this->load->view("content/default/simplelist",$data);
 	}
