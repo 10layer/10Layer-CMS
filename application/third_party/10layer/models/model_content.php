@@ -306,7 +306,7 @@
 		 * @param int $start. (default: false)
 		 * @return object
 		 */
-		public function getAll($limit=false, $start=false) {
+		public function getAll($limit=false, $start=false, $all=false) {
 			
 			$selecteds=$this->input->get("selected");		
 			if(!empty($selecteds))
@@ -317,7 +317,7 @@
 				$this->db->where_not_in("content.id",$selecteds);
 			}
 			$this->limit($limit, $start);
-			$this->_prepGetAllQuery();
+			$this->_prepGetAllQuery($all);
 			$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
 			
@@ -334,7 +334,6 @@
 				}
 				array_push($container, $item);				
 			}
-			
 			
 			return $container; //$query->result();
 		}
@@ -389,11 +388,20 @@
 		public function count($extensions=false) {
 			$this->_prepQuery();
 			if ($extensions) {
+				echo $extensions;
 				$this->db->join($this->content_type->table_name, "content.id={$this->content_type->table_name}.content_id");
 			}
+			
+			$time = date("Y-m-d");
+			$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
+			$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
+			$this->db->where("content.start_date <=", $now);
+			$this->db->where("content.start_date >=", $start);
+
+			
 			$this->db->select("COUNT(*) AS count",false);
 			$query=$this->db->get("content");
-		
+			
 			return $query->row()->count;
 		}
 		
@@ -459,17 +467,17 @@
 			}
 		}
 		
-		protected function _prepGetAllQuery() {
+		protected function _prepGetAllQuery($all=false) {
 			$this->_prepQuery();
+			if($all != 1){
+				$time = date("Y-m-d");
+				$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
+				$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
+				$this->db->where("content.start_date <=", $now);
+				$this->db->where("content.start_date >=", $start);
+				$this->db->select("content.*");
+			}
 			
-			$time = date("Y-m-d");
-			
-			$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
-			$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
-			
-			$this->db->where("content.start_date <=", $now);
-			$this->db->where("content.start_date >=", $start);
-			$this->db->select("content.*");
 			foreach($this->order_by as $ob) {
 				$this->db->order_by($ob);
 			}
