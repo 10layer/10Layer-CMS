@@ -79,7 +79,7 @@ if(isset($zones[0])){
 		<div id="date_slider"></div>
 	</div>
 	<div id="search">
-		<input style="padding-left:3px;float:left;border: 1px solid #757474;height:20px;" type="text" id="publishSearch" value="Search..." />
+		<input style="padding-left:3px;float:left;border: 1px solid #757474;height:20px;" type="text" id="publishSearch" value="Search..." title="Hit Enter key to search" />
 		<span id="loading_icon" style="float:left; margin:5px 10px; display:none;">
 			<img src="/tlresources/file/images/loader.gif" />
 		</span>
