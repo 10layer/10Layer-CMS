@@ -523,6 +523,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$config['base_url'] = "/edit/".$this->uri->segment(2)."/".$this->uri->segment(3)."/pg/";
 		//$config['total_rows'] = $this->{$this->_model}->count();
 		$config['total_rows'] = $this->content->count();
+		
 		$config['per_page'] = $this->_pg_perpage;
 		$this->pagination->initialize($config);
 	}

@@ -266,7 +266,7 @@ $(function() {
 	
 	
 	$(".btn-edit").live("click", function(){
-		location.href="/edit/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid");
+		window.open("/edit/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"));
 	});
 	
 	$(".btn-workflowprev").live("click", function(){
