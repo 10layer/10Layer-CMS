@@ -275,7 +275,7 @@
 			if (!empty($published_ids)) {
 				$this->db->where_not_in("content.id",$published_ids);
 			}
-			$this->db->order_by("content.last_modified","DESC");
+			$this->db->order_by("content.start_date","DESC");
 			$query=$this->db->get();
 			
 			//echo date("Y-m-d",strtotime(rawurldecode($startdate))). rawurldecode($startdate);
