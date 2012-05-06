@@ -1072,3 +1072,12 @@ ul.nested_tree li, ul.small_section li{
 .red {
 	color: #D40D0D;
 }
+
+.go_for_it{
+	margin-top: 20px;
+	float: left;
+	margin-left: 20px;
+	padding: 8px;
+	border: 1px solid;
+	cursor: pointer;
+}

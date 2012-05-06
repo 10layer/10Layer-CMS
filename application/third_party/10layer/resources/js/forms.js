@@ -66,6 +66,7 @@ $(function() {
 	
 	
 	$(".autocomplete").each(function() {
+		
 		var contenttype=$(this).attr("contenttype");
 		var contenttypes=false;
 		var source="/list/"+contenttype+"/suggest";
@@ -140,7 +141,7 @@ $(function() {
 		alert(viewfield.val());
 		return false;
 	});
-			
+		
 	
 			
 	$(".remover").live("click", function() {

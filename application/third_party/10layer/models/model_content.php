@@ -570,6 +570,7 @@
 			if (!empty($matches)) {
 				$this->db->select("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).") AS score",false, false);
 				$this->db->order_by("score","DESC");
+				$this->db->order_by("last_modified","DESC");
 				foreach($this->order_by as $ob) {
 					$this->db->order_by($ob);
 				}
@@ -754,6 +755,7 @@
 				} else {
 					$result=$this->suggest($content_type, $s, $limit, $offset);
 				}
+				//echo $this->db->last_query(); die();
 				return $result;
 			}
 			return $this->count();
