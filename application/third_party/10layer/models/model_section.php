@@ -262,7 +262,8 @@
 				$this->db->where("content.start_date <=",date("Y-m-d 00:00:00",strtotime(rawurldecode($the_end_date))));
 			}
 			if (!empty($search)) {
-				$this->db->like("title",$search);
+				$the_search = urldecode($search);
+				$this->db->like("title",$the_search);
 			}
 
 			$this->db->join("content_platforms","content_platforms.content_id=content.id");
