@@ -26,7 +26,7 @@ client.connect();
 
 client.on('connected', function() {
 	client.subscribe(headers);
-	console.log('Connected');
+	//console.log('Connected');
 });
 
 var queue=new Array();
@@ -35,13 +35,13 @@ client.on('message', function(message) {
 	//client.ack(message.headers['message-id']);
 	//console.log(message);
 	var obj={ id: message.headers['message-id'], data: message.body };
-	console.log(message.body);
+	//console.log(message.body);
 	queue.unshift(obj);
 	messages++;
 });
 
 client.on('error', function(error_frame) {
-	console.log(error_frame.body);
+	//console.log(error_frame.body);
 	//client.disconnect();
 });
 
