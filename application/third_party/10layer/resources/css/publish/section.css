@@ -209,15 +209,13 @@ ul.simple_sortable_items li .content_tools div{
 	background-color: #FFE4E1;
 }
 
-#message_box{
 
-}
 
 .message_box{
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	border:1px solid #ccc;
-	width: 780px;
+	width: 745px;
 	float:left;
 	height:20px;
 	margin-top: 5px;

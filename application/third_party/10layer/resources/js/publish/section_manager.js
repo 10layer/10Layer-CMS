@@ -267,6 +267,18 @@ $(function() {
 		});
 	});
 	
+	$("#doRevert").click(function() {
+		
+		var post_data = {"zone_name":$("#zone_name").val(), "zone_id":$("#zone_id").val(),}
+		
+		$.post("/publish/worker/revert",post_data,function(data) {
+				$("#selected_items").html(data).delay(2400).html();
+				$("#selected_items").parent().removeClass("staged");
+				$("#message_box").html('You have reverted this zone to the old list').delay(2400).html();
+					
+		});
+	});
+	
 	
 	$(".btn-edit").live("click", function(){
 		window.open("/edit/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"));

@@ -100,7 +100,9 @@ if(isset($zones[0])){
 <div class="message_box" id="message_box">  </div>
 
 <div id="btn_submit">
-		<button aria-disabled="false" role="button" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " id="doUpdate"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-check"></span>Update Content</span></button>
+		<button aria-disabled="false" role="button" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " id="doRevert"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowreturnthick-1-w"></span>Revert</span></button>
+		
+		<button aria-disabled="false" role="button" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " id="doUpdate"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-check"></span>Update</span></button>
 	</div>
 
 <form method="post" id="update_form">

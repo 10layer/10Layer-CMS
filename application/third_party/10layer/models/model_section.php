@@ -117,6 +117,40 @@
 			return true;
 		}
 		
+		public function revertContent($zone_id) {
+			$this->db->select("ranking.*");
+			//$this->db->select("ranking.subsection_id");
+			$this->db->select("content_types.urlid AS content_type_urlid");
+			$this->db->select("content.title AS title");
+			$this->db->select("content.urlid");
+			$this->db->select("content.live");
+			$this->db->select("content.major_version");
+			$this->db->select("content.id");
+			$this->db->from("ranking");
+			//$this->db->join("sections","ranking.section_id=sections.id");
+			//$this->db->join("subsections","ranking.subsection_id=subsections.id");
+			$this->db->join("content","content.id = ranking.content_id");
+			$this->db->join("content_types","content_types.id=content.content_type_id");
+			$this->db->order_by("rank ASC");
+			$this->db->where("ranking.zone_urlid",$zone_id);
+			
+			$old_items = $this->db->get()->result();
+			
+			//echo $this->db->last_query(); die();
+			
+			$this->db->where("zone_urlid",$zone_id);
+			$this->db->delete("ranking_stage");
+			
+			foreach($old_items as $item){
+				$object["content_id"] = $item->id;
+				$object["zone_urlid"] = $item->zone_urlid;
+				$object["rank"] = $item->rank;
+				$this->db->insert("ranking_stage",$object);
+			}
+			
+			return $old_items;
+		}
+		
 		public function stage_changes($zone_id,$data) {
 			$this->db->where("zone_urlid",$zone_id);
 			$this->db->delete("ranking_stage");
