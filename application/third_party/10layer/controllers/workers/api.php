@@ -56,7 +56,7 @@
 			$this->load->model("model_site_sections");
 			$section=$this->model_site_sections->getByIdORM($section_urlid);
 			$sectiondata=$section->getData();
-			if(!is_array($sectiondata->zones)) {
+			if((!isset($sectiondata->zones)) || (!is_array($sectiondata->zones))) {
 				$this->data["error"]=true;
 				$this->data["msg"]="No zones found for section $section_urlid";
 				$this->returndata();
@@ -76,7 +76,7 @@
 		public function zone($zone_urlid) {
 			$this->load->model("model_zones");
 			$zonedata=$this->model_zones->getByIdORM($zone_urlid)->getData();
-			$result=$this->db->select("content_types.urlid AS contenttype, content.urlid, content.title")->where("zone_urlid",$zonedata->urlid)->order_by("rank ASC")->where("live",true)->join("content","content.id=ranking.content_id")->join("content_types","content_types.id=content.content_type_id")->get("ranking");
+			$result=$this->db->select("content_types.urlid AS content_type, content.urlid, content.title")->where("zone_urlid",$zonedata->urlid)->order_by("rank ASC")->where("live",true)->join("content","content.id=ranking.content_id")->join("content_types","content_types.id=content.content_type_id")->get("ranking");
 			$this->data["data"]=$result->result();
 			$this->data["zone"]=$zonedata->urlid;
 			$this->returndata();
