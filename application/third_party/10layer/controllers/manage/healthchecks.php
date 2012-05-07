@@ -163,10 +163,15 @@
 			if ($this->messaging->error) {
 				$error_services["Orbited"][]=$this->messaging->errormsg;
 			}
-			$this->load->library("cdn");
-			$this->cdn->init();
-			if ($this->cdn->hasError()) {
-				$error_services["CDN"][]=$this->cdn->lastError();
+			$cdn_service=$this->config->item("cdn_service");
+			if (empty($cdn_service)) {
+				$error_services["CDN"][]="CDN is turned off";
+			} else {
+				$this->load->library("cdn");
+				$this->cdn->init();
+				if ($this->cdn->hasError()) {
+					$error_services["CDN"][]=$this->cdn->lastError();
+				}
 			}
 			if ($this->mongo_db->error) {
 				$error_services["MongoDB"][]=$this->mongo_db->errormsg;
