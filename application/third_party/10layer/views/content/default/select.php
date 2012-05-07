@@ -116,7 +116,7 @@
 						});
 						
 						this_container.slideToggle("fast", function() {
-							console.log(this_container.attr("id"));
+							//console.log(this_container.attr("id"));
 							
 							/*
 if (this_container.parent().is(":visible")) {
