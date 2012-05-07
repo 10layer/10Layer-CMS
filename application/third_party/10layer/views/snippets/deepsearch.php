@@ -1,11 +1,26 @@
 <script>
 	$(function() {
+	
+		
+  		
+  		//deactivate the default enter method
+		$(".multiple").live("keypress",function(e) { 
+    		if (e.which == 13) { 
+      			return false; 
+    		} 
+  		});
+
+  		
+  		 
+		
+		
 		$(".deepsearch_input").each(function() {
 			$(this).css("width","200px");
 		});
 		
 		var t;
-		$(".deepsearch_input").live("keyup",function() {
+		$(".deepsearch_input").live("keypress",function(e) {
+			
 			var resultdiv=$(this).next().next();
 			var selected_container = resultdiv.next();
 			
@@ -19,19 +34,18 @@
 			selected_items.each(function(index) {
 				items[index] = $(this).children(":first").val();
 			});
-								
-	
-			var val=$(this).val();
-			clearTimeout(t);
-			t=setTimeout(function() {
-				$.getJSON("/list/<?= $field->contenttype ?>/deepsearch?term="+escape(val), {"selected[]":items}, function(result) {
+			
+			
+			if (e.which == 13) { 
+				var val = $(this).val();
+      			$.getJSON("/list/<?= $field->contenttype ?>/deepsearch?term="+escape(val), {"selected[]":items}, function(result) {
 					resultdiv.html("");
 					for(x=0; x<result.length; x++) {
 						resultdiv.append("<div class='deepsearch_item' id='"+result[x].id+"'>"+result[x].value+"</div>");
 					}
-				});
-			}, 1000);
-			
+				});	
+    		} 
+						
 		});
 	
 		$(".deepsearch_item").live("click", function(){
@@ -72,7 +86,7 @@
 </script>
 <div class="deepsearch">
 	<input id="deepsearch_view_<?= $field->tablename ?>_<?= $field->name ?>" type="text" tablename="<?= $field->tablename ?>" contenttype="<?= $field->contenttype ?>" fieldname="<?= $field->name ?>" class="deepsearch_input <?php if ($field->multiple) { ?>multiple<?php } ?> <?= $field->class ?>" value="<?php if (!$field->multiple) { print $field->data->fields["title"]->value; } ?>" <?php if ($field->contenttype=='mixed') { ?> mixed='mixed' contenttypes='<?= implode(",",$field->contenttypes) ?>' <?php } ?> />
-	
+
 	<br clear="both" />
 	
 	<div class="deepsearch_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:left;">

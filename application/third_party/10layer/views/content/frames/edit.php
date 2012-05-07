@@ -104,10 +104,15 @@
 			}
 		});
 		
-		$("#dyncontent").delegate("#listSearch","keypress",function() {
-			clearTimeout($.data(this, 'timer'));
-			var wait = setTimeout(search, 1000);
-			$(this).data('timer', wait);
+		$("#dyncontent").delegate("#listSearch","keypress",function(e) {
+			
+			if(e.keyCode == '13'){
+				search();
+			}
+			
+			//clearTimeout($.data(this, 'timer'));
+			//var wait = setTimeout(search, 1000);
+			//$(this).data('timer', wait);
 		});
 		
 		$("#dyncontent").delegate(".add-relation","click",function() {

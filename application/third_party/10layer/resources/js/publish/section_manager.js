@@ -151,8 +151,11 @@ $(function() {
 	update_panel(true);
 		
 	
-	$("#publishSearch").live("keyup", function(){
-		var wait = setTimeout(search, 1000);
+	$("#publishSearch").live("keyup", function(e){
+		if(e.keyCode == '13'){
+			search();
+		}
+		//var wait = setTimeout(search, 1000);
 	});
 	
 	$("#publishSearch").live("focus", function(){
@@ -266,7 +269,7 @@ $(function() {
 	
 	
 	$(".btn-edit").live("click", function(){
-		location.href="/edit/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid");
+		window.open("/edit/"+$(this).parent().parent().attr("contenttype")+"/"+$(this).parent().parent().attr("urlid"));
 	});
 	
 	$(".btn-workflowprev").live("click", function(){

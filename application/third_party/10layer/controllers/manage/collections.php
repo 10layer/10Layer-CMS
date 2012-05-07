@@ -31,7 +31,7 @@
 		public function collection($urlid) {
 			$collection=$this->model_collections->get($urlid);
 			$this->load->model($collection->model,"collection");
-			$data["sections"]=$this->collection->getAll();
+			$data["sections"]=$this->collection->getAll(false,false,true);
 			$data["collectionurlid"]=$collection->urlid;
 			$data["menu1_active"]="manage";
 			$data["menu2_active"]="manage/collections";

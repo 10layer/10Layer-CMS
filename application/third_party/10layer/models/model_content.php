@@ -306,7 +306,7 @@
 		 * @param int $start. (default: false)
 		 * @return object
 		 */
-		public function getAll($limit=false, $start=false) {
+		public function getAll($limit=false, $start=false, $all=false) {
 			
 			$selecteds=$this->input->get("selected");		
 			if(!empty($selecteds))
@@ -317,7 +317,7 @@
 				$this->db->where_not_in("content.id",$selecteds);
 			}
 			$this->limit($limit, $start);
-			$this->_prepGetAllQuery();
+			$this->_prepGetAllQuery($all);
 			$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
 			
@@ -388,11 +388,20 @@
 		public function count($extensions=false) {
 			$this->_prepQuery();
 			if ($extensions) {
+				echo $extensions;
 				$this->db->join($this->content_type->table_name, "content.id={$this->content_type->table_name}.content_id");
 			}
+			
+			$time = date("Y-m-d");
+			$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
+			$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
+			$this->db->where("content.start_date <=", $now);
+			$this->db->where("content.start_date >=", $start);
+
+			
 			$this->db->select("COUNT(*) AS count",false);
 			$query=$this->db->get("content");
-		
+			
 			return $query->row()->count;
 		}
 		
@@ -458,9 +467,17 @@
 			}
 		}
 		
-		protected function _prepGetAllQuery() {
+		protected function _prepGetAllQuery($all=false) {
 			$this->_prepQuery();
-			$this->db->select("content.*");
+			if($all != 1){
+				$time = date("Y-m-d");
+				$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
+				$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
+				$this->db->where("content.start_date <=", $now);
+				$this->db->where("content.start_date >=", $start);
+				$this->db->select("content.*");
+			}
+			
 			foreach($this->order_by as $ob) {
 				$this->db->order_by($ob);
 			}
@@ -553,6 +570,7 @@
 			if (!empty($matches)) {
 				$this->db->select("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).") AS score",false, false);
 				$this->db->order_by("score","DESC");
+				$this->db->order_by("last_modified","DESC");
 				foreach($this->order_by as $ob) {
 					$this->db->order_by($ob);
 				}
@@ -737,6 +755,7 @@
 				} else {
 					$result=$this->suggest($content_type, $s, $limit, $offset);
 				}
+				//echo $this->db->last_query(); die();
 				return $result;
 			}
 			return $this->count();

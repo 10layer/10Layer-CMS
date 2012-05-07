@@ -262,7 +262,8 @@
 				$this->db->where("content.start_date <=",date("Y-m-d 00:00:00",strtotime(rawurldecode($the_end_date))));
 			}
 			if (!empty($search)) {
-				$this->db->like("title",$search);
+				$the_search = urldecode($search);
+				$this->db->like("title",$the_search);
 			}
 
 			$this->db->join("content_platforms","content_platforms.content_id=content.id");
@@ -274,7 +275,7 @@
 			if (!empty($published_ids)) {
 				$this->db->where_not_in("content.id",$published_ids);
 			}
-			$this->db->order_by("content.last_modified","DESC");
+			$this->db->order_by("content.start_date","DESC");
 			$query=$this->db->get();
 			
 			//echo date("Y-m-d",strtotime(rawurldecode($startdate))). rawurldecode($startdate);
@@ -296,7 +297,6 @@
 				
 				//auto values
 				$limit = ($zone->auto_limit != "" || $zone->auto_limit != 0 ) ? $zone->auto_limit : 10;
-				
 				
 				$content_types= (isset($zone->content_types) AND $zone->content_types!="") ? explode(",",$zone->content_types):array();
 				if ($zone->auto == 1) {

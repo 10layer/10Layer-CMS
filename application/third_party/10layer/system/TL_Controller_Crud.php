@@ -440,8 +440,11 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 								foreach($val as $cid) {
 									$contentobj->fields[$key]->data[$x++]=$this->content->getByIdORM($cid);
 								}
-							} else {
+							}
+							if (!is_array($val) AND $val != "") {
 								$contentobj->fields[$key]->data[0]=$this->content->getByIdORM($val);
+							} else {
+								//
 							}
 						}
 						//$autosaved=true;
@@ -520,6 +523,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$config['base_url'] = "/edit/".$this->uri->segment(2)."/".$this->uri->segment(3)."/pg/";
 		//$config['total_rows'] = $this->{$this->_model}->count();
 		$config['total_rows'] = $this->content->count();
+		
 		$config['per_page'] = $this->_pg_perpage;
 		$this->pagination->initialize($config);
 	}
@@ -804,6 +808,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 			$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
 		}
 		//$data["action"]=$this->uri->segment(3);
+		
 		$data["contenttype"]="{$this->_contenttypeurlid}";
 		$this->load->view("content/default/simplelist",$data);
 	}
