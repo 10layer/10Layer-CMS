@@ -101,6 +101,20 @@
 			$this->load->view("publish/subsection",$data);
 		}
 		
+		
+		public function revert(){
+			//print_r($this->input->post());
+			
+			$zone_id=$this->input->post("zone_id");
+			$zone_name=$this->input->post("zone_name");
+			$zone = $this->zones->getByIdORM($zone_id)->getData();
+			$data["zone"] = $zone;
+			$data["items"] = $this->model_section->revertContent($zone->urlid);
+			$this->load->view("publish/revert_list",$data);
+			
+		}
+		
+		
 		public function automate_section($section_id){
 			//get the section zones
 			$zones=$this->db->select("content2.id")->from("content")->join("content_content","content.id=content_content.content_id")->join("content AS content2", "content_content.content_link_id=content2.id")->where("content.id",$section_id)->where("content2.content_type_id",21)->get()->result();
