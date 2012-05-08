@@ -16,23 +16,29 @@
 		public function __construct() {
 			parent::__construct();
 			$this->load->library("tluserprefs");
-			$workflows=new TLContentFilter(
-				"Workflows", 
-				"tl_workflows",
-				"name",
+			$workflows=new TLContentFilter();
+			$workflows->config(
 				array(
-					"join"=>array("tl_workflows", "content.major_version=tl_workflows.major_version"),
-					"where_in"=>array("tl_workflows.id","{values}"),
+					"label"=>"Workflows", 
+					"tablename"=>"tl_workflows",
+					"field"=>"name",
+					"query"=>array(
+						"join"=>array("tl_workflows", "content.major_version=tl_workflows.major_version"),
+						"where_in"=>array("tl_workflows.id","{values}"),
+					)
 				)
-			);
-			$content_types=new TLContentFilter(
-				"Content Types",
-				"content_types",
-				"name",
+			)->populate();
+			$content_types=new TLContentFilter();
+			$content_types->config(
 				array(
-					"where_in"=>array("content.content_type_id","{values}"),
+					"label"=>"Content Types",
+					"tablename"=>"content_types",
+					"field"=>"name",
+					"query"=>array(
+						"where_in"=>array("content.content_type_id","{values}"),
+					)
 				)
-			);
+			)->populate();
 			$this->content_filters=array($workflows, $content_types);
 		}
 		
@@ -41,7 +47,7 @@
 			if (!empty($model)) { //We've recieved an update
 				try {
 					$filter=json_decode($model);
-					$this->tluserprefs->set_queue($queueid, array("filters"=>array($filter->table=>$filter->options)));
+					$this->tluserprefs->set_queue($queueid, array("filters"=>array($filter->tablename=>$filter->options)));
 				} catch(Exception $e) {
 					//Some error handling here maybe
 				}
@@ -49,21 +55,32 @@
 			for($x=0; $x<sizeof($this->content_filters); $x++) {
 				$this->content_filters[$x]->queueid=$queueid;
 			}
+			//$result=array("queueid"=>$queueid);
 			$queue=$this->tluserprefs->get_queue($queueid);
+			$x=0;
+			foreach($this->content_filters as $filter) {
+				$result[$x]["options"]=$filter->options;
+				$result[$x]["queueid"]=$queueid;
+				$result[$x]["label"]=$filter->label;
+				$result[$x]["tablename"]=$filter->tablename;
+				$x++;
+			}
 			if (!isset($queue["filters"])) {
-				print json_encode($this->content_filters);
+				print json_encode($result);
 				return true;
 			}
+			
 			$filters=$queue["filters"];
-
-			for($x=0; $x<sizeof($this->content_filters); $x++) {
-				foreach($filters as $tablename=>$filter) {
-					if ($this->content_filters[$x]->table==$tablename) {
-						$this->content_filters[$x]->options=$filter;
+			foreach($filters as $tablename=>$filter) {
+				for($x=0; $x<sizeof($result); $x++) {
+					if ($result[$x]["tablename"]==$tablename) {
+						$result[$x]["options"]=$filter;
 					}
 				}
+				
 			}
-			print json_encode($this->content_filters);
+			print json_encode($result);
+			return true;
 		}
 		
 		public function contentlist($queueid) {
@@ -83,7 +100,7 @@
 					$filters=$contentqueue["filters"];
 					foreach($filters as $tablename=>$filter) {
 						foreach($this->content_filters as $content_filter) {
-							if ($tablename==$content_filter->table) {
+							if ($tablename==$content_filter->tablename) {
 							//We have a winner!
 								$values=array();
 								foreach($filter as $f) {
@@ -198,21 +215,30 @@
 	
 	class TLContentFilter {
 		public $label;
-		public $table;
-		public $dbinfo;
+		public $tablename;
+		public $query;
+		public $where;
 		public $options;
 		
-		public function __construct($label, $table, $field, $dbinfo) {
-			$this->label=$label;
-			$this->table=$table;
-			$this->field=$field;
-			$this->dbinfo=$dbinfo;
-			$this->populate_options();
+		public function __construct($settings=false) {
+			$this->config($settings);
 		}
 		
-		public function populate_options() {
+		public function config($settings) {
+			if (is_array($settings)) {
+				foreach($settings as $key=>$setting) {
+					$this->{$key}=$setting;
+				}
+			}
+			return $this;
+		}
+		
+		public function populate() {
 			$ci=&get_instance();
-			$result=$ci->db->get($this->table)->result();
+			if (!empty($where)) {
+				$ci->db->where($this->where);
+			}
+			$result=$ci->db->get($this->tablename)->result();
 			foreach($result as $item) {
 				$option=new stdClass();
 				$option->id=$item->id;
@@ -234,8 +260,8 @@
 				return false;
 			}
 			$ci=&get_instance();
-			if (is_array($this->dbinfo)) {
-				foreach($this->dbinfo as $key=>$dbitem) {
+			if (is_array($this->query)) {
+				foreach($this->query as $key=>$dbitem) {
 					if (is_array($dbitem)) {
 						for($x=0; $x<sizeof($dbitem); $x++) {
 							if ($dbitem[$x]=="{values}") {

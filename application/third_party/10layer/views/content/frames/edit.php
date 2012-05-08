@@ -104,15 +104,15 @@
 			}
 		});
 		
-		$("#dyncontent").delegate("#listSearch","keypress",function(e) {
+		$("#dyncontent").delegate("#listSearch","keyup",function(e) {
 			
-			if(e.keyCode == '13'){
+			/*if(e.keyCode == '13'){
 				search();
-			}
+			}*/
 			
-			//clearTimeout($.data(this, 'timer'));
-			//var wait = setTimeout(search, 1000);
-			//$(this).data('timer', wait);
+			clearTimeout($.data(this, 'timer'));
+			var wait = setTimeout(search, 1500);
+			$(this).data('timer', wait);
 		});
 		
 		$("#dyncontent").delegate(".add-relation","click",function() {

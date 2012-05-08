@@ -308,12 +308,8 @@
 		 */
 		public function getAll($limit=false, $start=false, $all=false) {
 			
-			$selecteds=$this->input->get("selected");		
-			if(!empty($selecteds))
-			{
-				
-				//$selecteds = $this->input->get("selected",TRUE);
-				//print_r($selecteds);
+			$selecteds=$this->input->get("selected"); //This needs to change. We shouldn't be reading inputs on the model
+			if(!empty($selecteds)) {
 				$this->db->where_not_in("content.id",$selecteds);
 			}
 			$this->limit($limit, $start);
@@ -322,6 +318,7 @@
 			$query=$this->db->get("content");
 			
 			$results = $query->result();
+
 			$container = array();
 			
 			foreach($results as $item){
@@ -469,14 +466,15 @@
 		
 		protected function _prepGetAllQuery($all=false) {
 			$this->_prepQuery();
-			if($all != 1){
+			//This breaks all the other sites
+			/*if($all != 1){
 				$time = date("Y-m-d");
 				$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
 				$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
 				$this->db->where("content.start_date <=", $now);
 				$this->db->where("content.start_date >=", $start);
 				$this->db->select("content.*");
-			}
+			}*/
 			
 			foreach($this->order_by as $ob) {
 				$this->db->order_by($ob);
