@@ -201,7 +201,6 @@
 		 * @return object this
 		 */
 		public function setContentType($content_type) {
-			
 			if (is_numeric($content_type)) {
 				$query=$this->db->get_where("content_types",array("id"=>$content_type));
 			} else {
@@ -439,6 +438,39 @@
 				$pivot_table=implode("_",$tmptables);
 				$this->join_tables[]=array("tablename"=>$table,"field"=>$field,"pivot"=>$pivot_table);
 			}
+			return $this;
+		}
+		
+		/**
+		 * create function.
+		 * 
+		 * Super-useful function to create a new object.
+		 *
+		 * @access public
+		 * @return void
+		 */
+		public function create($data) {
+			$contentobj=new TLContent();
+			$contentobj->setContentType($this->content_type->id);
+			foreach($contentobj->getFields() as $field) {
+				if ($field->readonly) {
+					//Do NOTHING
+				} else {
+					if (isset($data[$field->tablename."_".$field->name])) {
+						$fieldval=$data[$field->tablename."_".$field->name];
+						$contentobj->{$field->name}=$fieldval;
+					} else {
+						$contentobj->{$field->name}="";
+					}
+				}
+			}
+			$contentobj->transformFields();
+			$validation=$contentobj->validateFields();
+			if (!$validation["passed"]) {
+				show_error($validation["failed_messages"]);
+				return false;
+			}
+			$contentobj->insert();
 			return $this;
 		}
 		
