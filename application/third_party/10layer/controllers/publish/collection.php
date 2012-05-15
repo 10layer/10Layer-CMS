@@ -57,21 +57,14 @@
 			$data["menu2_active"]="publish/collection/$cturlid";
 			$section=$this->sections->getByIdORM($urlid);
 			$sectiondata=$section->getData();
-			
-			//print_r($section); die();
-			
-			
-			$the_zones = $this->db->query("select c.id, c.title, c.urlid from content c join content_content cc on c.id = cc.content_link_id where  c.content_type_id = 21 and cc.content_id = ". $section->content_id)->result();
-			
-			//echo $this->db->last_query();
-			
+			$zone_content_type_id=$this->db->where("urlid","zones")->get("content_types")->row()->id;
+			$the_zones = $this->db->query("select c.id, c.title, c.urlid from content c join content_content cc on c.id = cc.content_link_id where  c.content_type_id = $zone_content_type_id and cc.content_id = ". $section->content_id)->result();
 			$zones=array();
 			if(sizeof($the_zones) > 0){
 				foreach($the_zones as $zone){
 					$zones[]=$this->zones->getByIdORM($zone->id)->getData();
 				}
 			}
-
 			
 			//print_r($sectiondata); die();
 			
