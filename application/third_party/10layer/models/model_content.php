@@ -315,7 +315,7 @@
 			$this->_prepGetAllQuery($all);
 			$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
-			
+			//print $this->db->last_query();
 			$results = $query->result();
 
 			$container = array();
@@ -584,7 +584,7 @@
 			$matches=array();
 			$likes=array();
 			$fields=$contentobj->getFields();
-			$this->db->select("*, title AS value");
+			$this->db->select("content.*, title AS value");
 			foreach($fields as $field) {
 				if (isset($field->libraries["search"])) {
 					if ($field->libraries["search"]=="fulltext") {
