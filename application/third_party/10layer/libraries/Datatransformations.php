@@ -43,7 +43,7 @@ class Datatransformations {
 		
 		$dir = dirname($value);
 		
-		$s=exec("/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf");
+		$s=exec("/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf | head -n 1");
 		print "/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf\n";
 		print "$s\n";
 		$s=str_replace("./resources/uploads/files/original/","",$s);
