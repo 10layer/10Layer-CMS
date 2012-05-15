@@ -38,14 +38,23 @@ class Datatransformations {
 		if (!is_file(".".$value)) {
 			return $value;
 		}
+		
+		//echo print "/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf\n"; 
+		
+		$dir = dirname($value);
+		
 		$s=exec("/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf");
 		print "/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf\n";
 		print "$s\n";
 		$s=str_replace("./resources/uploads/files/original/","",$s);
 		print "$s\n";
 		$parts=explode(" ",$s);
-		print_r($parts);
-		return $parts[sizeof($parts)-1];
+
+		$the_parts = explode("/",$parts[sizeof($parts)-1]);
+		
+		$the_dir = $the_parts[3]."/".$the_parts[4]."/".$the_parts[5]."/".$the_parts[6]."";
+		
+		return $the_dir; // $parts[sizeof($parts)-1];
 	}
 	
 	public function safe_urlid($urlid, $tablename, $field) {
