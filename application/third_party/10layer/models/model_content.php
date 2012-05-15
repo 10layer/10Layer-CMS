@@ -201,7 +201,6 @@
 		 * @return object this
 		 */
 		public function setContentType($content_type) {
-			
 			if (is_numeric($content_type)) {
 				$query=$this->db->get_where("content_types",array("id"=>$content_type));
 			} else {
@@ -316,7 +315,7 @@
 			$this->_prepGetAllQuery($all);
 			$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
-			
+			//print $this->db->last_query();
 			$results = $query->result();
 
 			$container = array();
@@ -443,6 +442,39 @@
 		}
 		
 		/**
+		 * create function.
+		 * 
+		 * Super-useful function to create a new object.
+		 *
+		 * @access public
+		 * @return void
+		 */
+		public function create($data) {
+			$contentobj=new TLContent();
+			$contentobj->setContentType($this->content_type->id);
+			foreach($contentobj->getFields() as $field) {
+				if ($field->readonly) {
+					//Do NOTHING
+				} else {
+					if (isset($data[$field->tablename."_".$field->name])) {
+						$fieldval=$data[$field->tablename."_".$field->name];
+						$contentobj->{$field->name}=$fieldval;
+					} else {
+						$contentobj->{$field->name}="";
+					}
+				}
+			}
+			$contentobj->transformFields();
+			$validation=$contentobj->validateFields();
+			if (!$validation["passed"]) {
+				show_error($validation["failed_messages"]);
+				return false;
+			}
+			$contentobj->insert();
+			return $this;
+		}
+		
+		/**
 		 * clearJoins function.
 		 * 
 		 * DEPRECATED
@@ -552,7 +584,7 @@
 			$matches=array();
 			$likes=array();
 			$fields=$contentobj->getFields();
-			$this->db->select("*, title AS value");
+			$this->db->select("content.*, title AS value");
 			foreach($fields as $field) {
 				if (isset($field->libraries["search"])) {
 					if ($field->libraries["search"]=="fulltext") {
