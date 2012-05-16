@@ -108,6 +108,24 @@ class Datatransformations {
 		return $s;
 	}
 	
+	function cleanhtml(&$sender, $html) {
+		/// <summary>
+		/// Removes all FONT and SPAN tags, and all Class and Style attributes.
+		/// Designed to get rid of non-standard Microsoft Word HTML tags.
+		/// </summary>
+		// start by completely removing all unwanted tags
+		
+		$html = ereg_replace("<(/)?(font|span|del|ins)[^>]*>","",$html);
+		
+		$html = preg_replace("/<!(--)?(?=\[)(?:(?!<!\[endif\]\\1>).)*<!\[endif\]\\1>/s",'',$html)
+		// then run another pass over the html (twice), removing unwanted attributes
+		
+		$html = ereg_replace("<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>","<\\1>",$html);
+		$html = ereg_replace("<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>","<\\1>",$html);
+		
+		return $html;
+	}
+	
 	/**
 	 * Remove any non-ASCII characters and convert known non-ASCII characters 
 	 * to their ASCII equivalents, if possible.
