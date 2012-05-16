@@ -305,10 +305,6 @@
 			$this->db->order_by("content.start_date","DESC");
 			$query=$this->db->get();
 			
-			//echo date("Y-m-d",strtotime(rawurldecode($startdate))). rawurldecode($startdate);
-			$this->load->helper('file');
-			$msg = $this->db->last_query();
-			write_file("pages/10layer.log", date("c")."\t$msg\n", "a+");
 			
 			$result=array();
 			
