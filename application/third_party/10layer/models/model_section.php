@@ -193,21 +193,19 @@
 		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $limit=100, $start=0) {
 			//check if our zone are staged
 			$staged = ($this->staged_zone($zone_id)) ? "staged" : "";
-
+			$table = ($staged == "staged") ? "ranking_stage" : "ranking";
 			$this->load->model("model_zones","zones");
 			$ctids=array();
 			$zone=$this->zones->getByIdORM($zone_id)->getData();
-		
 			$published_ids=array();
 			$published_articles=array();
+			$selecteds = $this->input->get('selecteds', TRUE);
 			
-	
-			if($this->input->get('selecteds', TRUE) == ""){
-				 
-				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
-				
-								
+			//when the frontend hasnt given us a list of selecteds, we find our own
+			if(sizeof($selecteds) == 1){
+				$published_list = $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get($table)->result();			
 				//$published_articles=$this->zones->content;
+				
 				foreach($published_list as $article) {
 					//We need to make sure the ID exists
 					if (isset($article->content_id)) {
@@ -224,10 +222,9 @@
 					}
 				}
 			}else{
-				$published_list= ($this->staged_zone($zone_id)) ? $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking_stage")->result() : $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get("ranking")->result();
-				//$published_articles=$this->zones->content;
 				
-				
+					
+				$published_list = $this->db->where("zone_urlid",$zone_id)->order_by("rank ASC")->get($table)->result(); 
 				foreach($published_list as $article) {
 					//We need to make sure the ID exists
 					if (isset($article->content_id)) {
@@ -249,11 +246,7 @@
 					
 			}
 			
-
 			$contenttypes=explode(",",$zone->content_types);
-			
-			
-			
 			if (is_array($contenttypes)) {
 				foreach($contenttypes as $ct) {
 					$query=$this->db->get_where("content_types",array("urlid"=>$ct));
@@ -313,7 +306,9 @@
 			$query=$this->db->get();
 			
 			//echo date("Y-m-d",strtotime(rawurldecode($startdate))). rawurldecode($startdate);
-			//print $this->db->last_query();
+			$this->load->helper('file');
+			$msg = $this->db->last_query();
+			write_file("pages/10layer.log", date("c")."\t$msg\n", "a+");
 			
 			$result=array();
 			
