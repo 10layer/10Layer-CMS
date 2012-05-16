@@ -115,13 +115,13 @@ class Datatransformations {
 		/// </summary>
 		// start by completely removing all unwanted tags
 		
-		$html = ereg_replace("<(/)?(font|span|del|ins)[^>]*>","",$html);
+		$html = preg_replace("<(/)?(font|span|del|ins)[^>]*>","",$html);
 		
 		$html = preg_replace("/<!(--)?(?=\[)(?:(?!<!\[endif\]\\1>).)*<!\[endif\]\\1>/s",'',$html);
 		// then run another pass over the html (twice), removing unwanted attributes
 		
-		$html = ereg_replace("<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>","<\\1>",$html);
-		$html = ereg_replace("<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>","<\\1>",$html);
+		$html = preg_replace("<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>","<\\1>",$html);
+		$html = preg_replace("<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>","<\\1>",$html);
 		
 		return $html;
 	}
