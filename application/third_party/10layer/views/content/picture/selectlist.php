@@ -14,7 +14,6 @@
 	<?php
 		$class="odd";
 		foreach($content as $item) {
-
 	?>
 	<tr class="<?= $class ?> <?= $contenttype ?>-item content-item">
 		<td>

@@ -1,3 +1,4 @@
+<script>document.domain=document.domain;</script>
 <script language="javascript">
 	$(function() {
 		$( ".rich_overlay_remove" ).button({
