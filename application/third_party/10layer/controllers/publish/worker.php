@@ -40,7 +40,10 @@
 			//$this->checkCallback("onAfterUpdate", $zone_id);
 			$this->messaging->post_action("publish",$zone_id);
 			//$subsection=$this->model_section->getSubSection($subsection_id);
-			print "Updated ".$zone_name;
+			$the_result["error"] = false;
+			$the_result["msg"] = "$zone_id Successfuly ranked...";
+			print $the_result["msg"];
+			
 		}
 		
 		public function validate($content_type, $content_id){
