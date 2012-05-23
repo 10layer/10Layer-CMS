@@ -599,8 +599,9 @@
 			}
 			if (!empty($matches)) {
 				$this->db->select("MATCH (".implode(",",$matches).") AGAINST (".$this->db->escape($searchstr).") AS score",false, false);
-				$this->db->order_by("score","DESC");
 				$this->db->order_by("last_modified","DESC");
+				$this->db->order_by("score","DESC");
+				
 				foreach($this->order_by as $ob) {
 					$this->db->order_by($ob);
 				}
@@ -632,7 +633,7 @@
 		 */
 		public function suggest($content_type, $s, $limit) {
 			$this->setContentType($content_type);
-			$this->db->select("id, urlid, title AS value");
+			$this->db->select("content.*, title AS value");
 			$this->db->from("content");
 			$this->db->like("title",$s,"after");
 			$this->db->limit($limit);
@@ -701,7 +702,7 @@
 		 */
 		public function deep_suggest($content_type, $s, $limit) {
 			$this->setContentType($content_type);
-			$this->db->select("id, urlid, title AS value");
+			$this->db->select("content.*, title AS value");
 			$this->db->from("content");
 			$this->db->like("title",$s);
 			$this->db->limit($limit);
@@ -773,9 +774,9 @@
 			if($this->input->get("selected", TRUE) != null) {
 				$selecteds = $this->input->get("selected");
 				$this->db->where_not_in("id",$this->db->escape($selecteds) );
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
+				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
 			} else {
-				$query=$this->db->select("id, urlid, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
+				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
 			}
 			if($query->num_rows > 0) {
 				return $query->result();
