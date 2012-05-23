@@ -279,14 +279,14 @@
 			$this->db->from("content");
 			$this->db->join("content_types","content_types.id=content.content_type_id");
 			
+			$time_stamp = strtotime(rawurldecode($enddate));
+			echo rawurldecode($enddate)." - ".date("Y-m-d H:i:s",$time_stamp);
+			
 			if (!empty($startdate)) {
-				$this->db->where("content.start_date >=",date("Y-m-d",strtotime(rawurldecode($startdate))));
+				$this->db->where("content.start_date >=",date("Y-m-d H:i:s",strtotime(rawurldecode($startdate))));
 			}
 			if (!empty($enddate)) {
-				$time_stamp = strtotime(date("Y-m-d", strtotime($enddate)) . " +1 day");
-				$the_end_date = date('Y-m-d', $time_stamp);
-				
-				$this->db->where("content.start_date <=",date("Y-m-d 00:00:00",strtotime(rawurldecode($the_end_date))));
+				$this->db->where("content.start_date <=",date("Y-m-d H:i:s",strtotime(rawurldecode($enddate))));
 			}
 			if (!empty($search)) {
 				$the_search = urldecode($search);
@@ -305,6 +305,7 @@
 			$this->db->order_by("content.start_date","DESC");
 			$query=$this->db->get();
 			
+			echo $this->db->last_query();
 			
 			$result=array();
 			
