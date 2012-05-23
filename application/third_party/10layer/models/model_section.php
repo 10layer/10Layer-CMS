@@ -305,8 +305,6 @@
 			$this->db->order_by("content.start_date","DESC");
 			$query=$this->db->get();
 			
-			echo $this->db->last_query();
-			
 			$result=array();
 			
 			$result["staged"]=$staged;
