@@ -1,18 +1,11 @@
 <script>
 	$(function() {
-	
-		
-  		
   		//deactivate the default enter method
 		$(".multiple").live("keypress",function(e) { 
     		if (e.which == 13) { 
       			return false; 
     		} 
   		});
-
-  		
-  		 
-		
 		
 		$(".deepsearch_input").each(function() {
 			$(this).css("width","200px");
@@ -34,18 +27,15 @@
 			selected_items.each(function(index) {
 				items[index] = $(this).children(":first").val();
 			});
-			
-			
 			if (e.which == 13) { 
 				var val = $(this).val();
       			$.getJSON("/list/<?= $field->contenttype ?>/deepsearch?term="+escape(val), {"selected[]":items}, function(result) {
 					resultdiv.html("");
 					for(x=0; x<result.length; x++) {
-						resultdiv.append("<div class='deepsearch_item' id='"+result[x].id+"'>"+result[x].value+"</div>");
+						resultdiv.append("<div class='deepsearch_item' id='"+result[x].id+"'>"+result[x].value+" ("+result[x].start_date+")</div>");
 					}
 				});	
-    		} 
-						
+    		}		
 		});
 	
 		$(".deepsearch_item").live("click", function(){
@@ -101,11 +91,12 @@
 			foreach($field->data as $data) {
 				$value=$data->content_id;
 				$title=$data->fields["title"]->value;
+				$start_date=$data->fields["start_date"]->value;
 	?>
 	
 		<div class='deepsearch_selected_item'>
 		<input id="deepsearch_<?= $field->contenttype ?>_<?= $field->name ?>_<?= $value ?>" type="hidden" name="<?= $field->tablename ?>_<?= $field->name ?><?php if ($field->multiple) { ?>[]<?php } ?>" value="<?= $value ?>"  />
-		<span><?= $title ?></span>
+		<span><?= $title ?> (<?= date("Y-m-d", strtotime($start_date)) ?>)</span>
 		</div>
 	
 <?php
