@@ -1,7 +1,7 @@
 var date_slider_options=new Array("Forever","2 years ago","1 year ago","6 months ago","2 months ago","1 month ago","2 weeks ago","1 week ago","2 days ago","1 day ago","8 hours ago","1 hour ago","Now");
-var max_slider=11;
+var max_slider=12;
 var min_slider=0;
-var def_max_slider=11;
+var def_max_slider=12;
 var def_min_slider=8;
 
 
@@ -261,8 +261,14 @@ $(function() {
 		var post_data = {"content":get_selected(), "zone_name":$("#zone_name").val(), "zone_id":$("#zone_id").val(),}
 		
 		$.post("/publish/worker/rank_section",post_data,function(data) {
-				
-					content = '<div style="padding: 5px" class=""><p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-alert"></span><strong>Publish Results...</strong></p><p>'+data+'</p></div>';
+					content = "";
+					console.log(data.indexOf('Updated'));
+					if(data.indexOf('Updated') == -1){
+						content = '<div style="padding: 5px" class="ui-state-error"><p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-alert"></span><strong>Publish Results...</strong></p><p>'+data+'</p></div>';
+					}else{
+						content = '<div style="padding: 5px" class=""><p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-alert"></span><strong>Publish Results...</strong></p><p>'+data+'</p></div>';
+					}
+					
 					
 					
 					$("#msgdialog").html(content);
