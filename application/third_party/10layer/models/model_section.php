@@ -278,10 +278,7 @@
 			$this->db->select("content_types.urlid AS contenttype");
 			$this->db->from("content");
 			$this->db->join("content_types","content_types.id=content.content_type_id");
-			
-			$time_stamp = strtotime(rawurldecode($enddate));
-			echo rawurldecode($enddate)." - ".date("Y-m-d H:i:s",$time_stamp);
-			
+						
 			if (!empty($startdate)) {
 				$this->db->where("content.start_date >=",date("Y-m-d H:i:s",strtotime(rawurldecode($startdate))));
 			}
