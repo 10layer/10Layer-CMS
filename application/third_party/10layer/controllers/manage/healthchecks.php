@@ -198,9 +198,6 @@
 			$this->db->save_queries=false;
 			$count=$this->db->select("COUNT(*) AS count")->get("content_content")->row()->count;
 			$chunk_size=500;
-			//$this->db->queries=array();
-			//print_r($this->db);
-			//die();
 			$offset=0;
 			$parts=ceil($count/$chunk_size);
 			//$parts=10;
@@ -214,7 +211,7 @@
 						$found=$this->db->where("id", $row->content_link_id)->get("content")->num_rows();
 					}
 					if (!$found) {
-						$problem_rows[]=$row->id;
+						$problem_rows[]=$row;
 					}
 				}
 				print "Checked ".($x)*$chunk_size." to ".(($x+1)*$chunk_size-1)."<br />\n";
@@ -223,6 +220,12 @@
 			$endtime=microtime(true);
 			print "Operation took ".($endtime-$starttime)." seconds (".round($count/($endtime-$starttime))." per second)<br />";
 			print "Problems found: ".sizeof($problem_rows)."<br />";
+			if (sizeof($problem_rows)>0) {
+				$this->db->query("CREATE TABLE IF NOT EXISTS `content_content_orphans` ( `id` int(11) NOT NULL AUTO_INCREMENT, `content_id` int(11) NOT NULL, `content_link_id` int(11) NOT NULL, `fieldname` varchar(255) COLLATE utf8_unicode_ci NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `content_id` (`content_id`,`content_link_id`), KEY `content_fieldname` (`content_id`,`fieldname`), KEY `content_index` (`content_id`), KEY `link_index` (`content_link_id`))");
+				foreach($problem_rows as $row) {
+					$this->db->insert("content_content_orphans", $row);
+				}
+			}
 		}
 		
 		protected function _relationship_chunk($chunk_size, $offset) {
