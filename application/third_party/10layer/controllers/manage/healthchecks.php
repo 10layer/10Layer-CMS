@@ -224,6 +224,7 @@
 				$this->db->query("CREATE TABLE IF NOT EXISTS `content_content_orphans` ( `id` int(11) NOT NULL AUTO_INCREMENT, `content_id` int(11) NOT NULL, `content_link_id` int(11) NOT NULL, `fieldname` varchar(255) COLLATE utf8_unicode_ci NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `content_id` (`content_id`,`content_link_id`), KEY `content_fieldname` (`content_id`,`fieldname`), KEY `content_index` (`content_id`), KEY `link_index` (`content_link_id`))");
 				foreach($problem_rows as $row) {
 					$this->db->insert("content_content_orphans", $row);
+					$this->db->where("id", $row->id)->delete("content_content");
 				}
 			}
 		}
