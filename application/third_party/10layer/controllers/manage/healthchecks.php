@@ -191,6 +191,44 @@
 			return $error_memcache;
 		}
 		
+		//Checks for orphaned relationships
+		public function relationships() {
+			$problem_rows=array();
+			$starttime=microtime(true);
+			$this->db->save_queries=false;
+			$count=$this->db->select("COUNT(*) AS count")->get("content_content")->row()->count;
+			$chunk_size=500;
+			//$this->db->queries=array();
+			//print_r($this->db);
+			//die();
+			$offset=0;
+			$parts=ceil($count/$chunk_size);
+			//$parts=10;
+			for($x=0; $x<$parts; $x++) {
+				set_time_limit(10);
+				$chunk=$this->_relationship_chunk($chunk_size, (($x+1)*$chunk_size-1));
+				foreach($chunk as $row) {
+					$found=false;
+					$check1=$this->db->where("id", $row->content_id)->get("content")->num_rows();
+					if ($check1) {
+						$found=$this->db->where("id", $row->content_link_id)->get("content")->num_rows();
+					}
+					if (!$found) {
+						$problem_rows[]=$row->id;
+					}
+				}
+				print "Checked ".($x)*$chunk_size." to ".(($x+1)*$chunk_size-1)."<br />\n";
+				flush();
+			}
+			$endtime=microtime(true);
+			print "Operation took ".($endtime-$starttime)." seconds (".round($count/($endtime-$starttime))." per second)<br />";
+			print "Problems found: ".sizeof($problem_rows)."<br />";
+		}
+		
+		protected function _relationship_chunk($chunk_size, $offset) {
+			return $this->db->limit($chunk_size, $offset)->get("content_content")->result();
+		}
+		
 	}
 
 /* End of file healthchecks.php */
