@@ -141,7 +141,7 @@
 			<br />
 			<button id="dosubmit_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-disk"></span>Save</button><br />
 			<br />
-			<button id="dodelete_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>Delete</button><br />
+			<!--<button id="dodelete_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>Delete</button><br />-->
 			
 		</div>
 		<h3><a href="#">Versions</a></h3>
