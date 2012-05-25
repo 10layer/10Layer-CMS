@@ -1,25 +1,10 @@
 <script language="javascript">
 	var contenttype="<?= $contenttype ?>";
-	var showDragDrop=false;
-	<?php if (!empty($file_fields)) {
-	?>
-	//showDragDrop=true;
-	/*var file_field=({
-		"name": "<?= $file_fields[0]->name ?>",
-		"tablename": "<?= $file_fields[0]->tablename ?>"
-	});*/
-	
-	
-	<?php
-	}
-	?>
 </script>
 <?php
 	link_js("/tlresources/file/js/forms.js");
-	link_js("/tlresources/file/jquery/jquery.form.js?1");
+	link_js("/tlresources/file/jquery/jquery.form.js");
 	link_js("/tlresources/file/js/forms/default.js");
-	//link_js("/resources/js/dropfiles.js");
-	//ckeditor();
 ?>
 <div id="create-content" class="boxed wide">
 <h2><?php echo $heading; ?></h2>
