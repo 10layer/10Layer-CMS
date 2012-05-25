@@ -12,7 +12,7 @@
 	
 	$(function() {
 		$(document).ajaxError(function(e, xhr, settings, exception) { 
-			$("#dyncontent").html('<h1>Caught error</h1>'+xhr.responseText+'<a href="'+settings.url+'" target="_blank">Open error page</a>'); 
+			//$("#dyncontent").html('<h1>Caught error</h1>'+xhr.responseText); 
 		});
 		
 		$("#dyncontent").ajaxComplete(function() {
@@ -42,10 +42,7 @@
 					
 				},
 				success: function(data) {
-					//alert("Submitted");
-					//alert(data);
 					if (data.error) {
-						//console.log(data);
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /><br /> "+data.info+"</p></div>");
 						$("#msgdialog").dialog({
 							modal: true,
@@ -73,7 +70,6 @@
 						});
 					}
 				},
-				
 			});
 			return false;
 		});
