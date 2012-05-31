@@ -339,7 +339,6 @@ function init_form() {
 		});
 		
 		
-		
 	/*$('.file_upload').each(function() {
 		var el=$(this).parent();
 		$(this).fileupload({
