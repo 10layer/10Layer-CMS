@@ -100,7 +100,7 @@
 				var url=$(this).attr("url");
 				var el=$(this);
 				$.getJSON(url+"?jsoncallback=?", function(data) {
-					if (data) {
+					if (data.value) {
 						el.html('<input type="text" value="'+data.value+'" readonly="readonly" class="select_on_click" />');
 					}
 				});
