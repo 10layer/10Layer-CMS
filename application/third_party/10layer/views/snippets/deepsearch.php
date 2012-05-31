@@ -85,15 +85,13 @@
 	
 	<div class="selected_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:right;">
 	<?php
-			if (is_array($field->value)) {
-				
+		if (is_array($field->value)) {
 			$x=0;
 			foreach($field->data as $data) {
 				$value=$data->content_id;
 				$title=$data->fields["title"]->value;
 				$start_date=$data->fields["start_date"]->value;
 	?>
-	
 		<div class='deepsearch_selected_item'>
 		<input id="deepsearch_<?= $field->contenttype ?>_<?= $field->name ?>_<?= $value ?>" type="hidden" name="<?= $field->tablename ?>_<?= $field->name ?><?php if ($field->multiple) { ?>[]<?php } ?>" value="<?= $value ?>"  />
 		<span><?= $title ?> (<?= date("Y-m-d", strtotime($start_date)) ?>)</span>
@@ -103,20 +101,5 @@
 			}
 		}
 ?>
-<?php
-		/*if ($field->external) {
-	?>
-	
-	<div class="selected_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:right;">
-		<input id="autocomplete_<?= $field->contenttype ?>_<?= $field->name ?>_<?= $value ?>" type="hidden" name="<?= $field->tablename ?>_<?= $field->name ?><?php if ($field->multiple) { ?>[]<?php } ?>" value="<?= $value ?>"  />
-		<span><?= $title ?></span>
 	</div>
-
-	<?php
-		}*/
-	?>
-
-		
-	</div>
-		
-	</div>
+</div>
