@@ -317,21 +317,21 @@
 			$query=$this->db->get("content");
 			//print $this->db->last_query();
 			$results = $query->result();
-
-			$container = array();
+			return $results;
+			//$container = array();
 			
-			foreach($results as $item){
+			/*foreach($results as $item){
 				//Get the last admin to work on this item and set as tl_admin. tl_admin=false if the user isn't found.
 				$urlid = $item->urlid;
-				$result = $this->mongo_db->where(array("urlid"=>$urlid))->order_by(array("last_modified"=>"DESC"))->limit(1)->get("tl_content_versions");
+				$result = $this->mongo_db->where(array("urlid"=>$urlid))->order_by("last_modified"=>"DESC")->limit(1)->get("tl_content_versions");
 				$item->tl_admin=false;
 				if (isset($result[0]->user_id) AND $result[0]->user_id != "") {
 					$item->tl_admin=$this->db->get_where("tl_users",array("id"=>$result[0]->user_id))->row();
 				}
 				array_push($container, $item);
-			}
+			}*/
 			
-			return $container; //$query->result();
+			//return $container; //$query->result();
 		}
 		
 		/**
@@ -771,12 +771,15 @@
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
 			$query = "";
+			foreach($this->order_by as $ob) {
+				$this->db->order_by($ob);
+			}
 			if($this->input->get("selected", TRUE) != null) {
 				$selecteds = $this->input->get("selected");
 				$this->db->where_not_in("id",$this->db->escape($selecteds) );
-				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
+				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
 			} else {
-				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->order_by("title ASC")->limit($limit, $offset)->get("content");
+				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
 			}
 			if($query->num_rows > 0) {
 				return $query->result();
