@@ -99,10 +99,8 @@ a {
 	border-left: 1px #cd615c solid;
 }
 
-#menu2 div.active a {
-	/*background: url("/resources/images/bg_menu2.png") repeat-x 0 0;*/
-	/*background-color: #901f1b;*/
-	text-decoration: underline;
+#menu2 div.selected a {
+	text-decoration: underline !important;
 }
 
 #menu2_scrollr, #menu2_scrolll {
@@ -174,6 +172,10 @@ div#platforms_dropdown, div#publications_dropdown {
 
 .wide {
 	width: 640px;
+}
+
+.full {
+	width: 900px;
 }
 
 .narrow {
@@ -502,6 +504,10 @@ table.bordered td {
 	border: 1px #bfbfbf solid;
 	padding: 5px;
 	vertical-align: top;
+}
+
+td {
+	padding: 5px;
 }
 
 /*---- Fancy animation and stuff ----*/
@@ -972,7 +978,7 @@ position: fixed;
 	
 }
 
-.single_item_label {
+.nesteditems_item_label {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 5px 5px 5px 5px;
@@ -984,7 +990,7 @@ position: fixed;
     text-align: center;
 }
 
-.single_item_button{
+.nesteditems_item_button{
 	background: none repeat scroll 0 0 #B8FAB6;
     border: 1px solid #CCCCCC;
     border-radius: 5px 5px 5px 5px;
@@ -1013,7 +1019,6 @@ position: fixed;
 
 ul.nested_tree li, ul.small_section li{
 	list-style: none;
-	
 }
 
 
@@ -1025,7 +1030,7 @@ ul.nested_tree li, ul.small_section li{
 	margin-left: 20px !important;
 }
 
-.small_item{
+.nested_section {
 	border: 1px solid #ccc;
 	border-radius: 5px 5px 5px 5px;
 	cursor: pointer;
@@ -1080,4 +1085,18 @@ ul.nested_tree li, ul.small_section li{
 	padding: 8px;
 	border: 1px solid;
 	cursor: pointer;
+}
+
+/* Pagination */
+#pagination {
+	height: 20px;
+	margin-top: 10px;
+}
+
+#pagination a, #pagination span {
+	padding: 5px;
+}
+
+#pagination .current {
+	font-weight: bold;
 }
