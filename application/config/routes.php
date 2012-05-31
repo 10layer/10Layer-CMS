@@ -50,9 +50,12 @@ $route['create/(:any)']='create/frame/display/$1';
 $route['edit/fullview/(:any)']='edit/tldefault/view/$1';
 $route['edit/checkin/(:any)']='edit/tldefault/checkin/$1';
 $route['edit/ajaxsubmit/(:any)']='edit/tldefault/ajaxsubmit/$1';
+$route['edit/fileupload/(:any)']='edit/tldefault/fileupload/$1';
 $route['edit/autosave/(:any)']='edit/tldefault/autosave/$1';
 $route['edit/clear_autosave/(:any)']='edit/tldefault/clear_autosave/$1';
 $route['edit/row/(:any)']='edit/tldefault/row/$1';
+$route['edit/jsonedit/(:any)']='edit/tldefault/jsonedit/$1';
+$route['edit/field/(:any)']='edit/tldefault/field/$1';
 $route['edit/(:any)']='edit/frame/fulldisplay/$1';
 
 $route['list/(:any)']='list/tldefault/$1';
