@@ -17,7 +17,7 @@
 		}
 		if (isset($content_type->urlid)) {
 	?>
-	<div class="menuitem"><?= anchor("edit/".$content_type->urlid,$content_type->name) ?></div>
+	<div class="menuitem" id='menuitem_<?= $content_type->urlid ?>'><?= anchor("edit/".$content_type->urlid,$content_type->name) ?></div>
 	<?php
 		}
 	}
