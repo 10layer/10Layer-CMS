@@ -751,6 +751,9 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		} elseif($this->uri->segment(3)=="deepsearch") { //A simple list
 			$this->deepsearch();
 			return true;
+		} elseif($this->uri->segment(2)=="jsonfilelist") { //Returns links to files
+			$this->jsonfilelist();
+			return true;
 		}
 		
 		$this->paginate();
@@ -951,6 +954,20 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$type=$this->uri->segment(2);
 		$limit=20;
 		print json_encode($this->search->smart_search($type,$s,$limit));
+	}
+	
+	public function jsonfilelist() {
+		$contentobj=$this->content->getByIdORM($this->uri->segment(4),$this->_contenttype->id);
+		$fields=$contentobj->getFields($this->_contenttype->id);
+		$result=array();
+		foreach($fields as $field) {
+			if ($field->type=="image" || $field->type=="file") {
+				if (isset($field->linkformat) && !empty($field->linkformat)) {
+					$result["value"]=str_replace('{filename}', $field->value, $field->linkformat);
+				}
+			}
+		}
+		$this->load->view('json', array('data'=>$result));
 	}
 
 }
