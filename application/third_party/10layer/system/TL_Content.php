@@ -1128,6 +1128,20 @@ class TLField {
 	public $showcount=false;
 	
 	/**
+	 * linkformat
+	 * 
+	 * If you want to show a link to an external file, set this to the external filename. 
+	 * Use {filename} as a placeholder for the filename.
+	 * Eg. http://myfiles.blah.com/images/{filename}
+	 *
+	 * (default value: false)
+	 * 
+	 * @var string
+	 * @access public
+	 */
+	public function $linkformat=false;
+	
+	/**
 	 * __construct function.
 	 * 
 	 * @access public
