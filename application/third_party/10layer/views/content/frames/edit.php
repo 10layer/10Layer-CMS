@@ -24,17 +24,21 @@
 		//Router
 		var app = Davis(function() {
 			this.get('/edit/:content_type', function(req) {
-				init_list(req.params['content_type']);
+				$(document.body).data('content_type', req.params['content_type']);
+				init_list();
 			});
 			this.get('/edit/:content_type/:urlid', function(req) {
-				init_edit(req.params['content_type'], req.params['urlid']);
+				$(document.body).data('content_type', req.params['content_type']);
+				$(document.body).data('urlid', req.params['urlid']);
+				init_edit();
 			});
 		});
 		
 		app.start();
 		
 		// Listing
-		function init_list(content_type) { //Run this the first time we initiate our list. After that, run update_list
+		function init_list() { //Run this the first time we initiate our list. After that, run update_list
+			content_type=$(document.body).data('content_type');
 			var searchstring=$("#listSearch").val();
 			if (searchstring=='Search') {
 				searchstring='';
@@ -53,6 +57,7 @@
 		}
 		
 		function update_list(content_type, offset) {
+			console.log(content_type);
 			var searchstring=$("#list-search").val();
 			if (searchstring=='Search') {
 				searchstring='';
@@ -61,8 +66,8 @@
 				offset=0;
 			}
 			$('#content-table').html("Loading...");
-			$.getJSON("<?= base_url() ?>list/jsonlist/content_type?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
-				update_pagination( data.count, offset, data.perpage );
+			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+				//update_pagination( data.count, offset, data.perpage );
 				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
 				$("#list-search").data('searchstring', searchstring);
 			});
@@ -76,7 +81,7 @@
 					current_page: (offset / perpage ),
 					callback: function(pg) {
 						var offset=(pg)*perpage;
-						update_list(offset, content_type);
+						update_list(content_type, offset);
 						return false;
 					}
 				}
@@ -87,7 +92,6 @@
 			$(".ajax_autoload").each(function() {
 				var url=$(this).attr("url");
 				var el=$(this);
-				console.log("finding "+url);
 				$.getJSON(url+"?jsoncallback=?", function(data) {
 					el.html(data.value);
 				});
@@ -106,14 +110,14 @@
 				searchstring='';
 			}
 			if (searchstring != $("#list-search").data('searchstring')) {
-				update_list();
+				update_list($(this).attr('content_type'));
 			}
 		}
 		
 		$(document).on('keyup','#list-search',function(e) {
 			if(e.keyCode == '13'){
 				clearTimeout($.data(this, 'timer'));
-				update_list()
+				update_list($(this).attr('content_type'));
 			}
 			
 			clearTimeout($.data(this, 'timer'));
@@ -122,7 +126,9 @@
 		});
 		
 		//Editing
-		function init_edit(content_type, urlid) {
+		function init_edit() {
+			content_type=$(document.body).data('content_type');
+			urlid=$(document.body).data('urlid');
 			$(".menuitem").each(function() {
 				$(this).removeClass('selected');
 			});
@@ -140,10 +146,14 @@
 		
 		$(document).on('click', '#dodone_right', function() {
 			$("#contentform").submit();
-			var urlid=$(this).attr("urlid");
-			var content_type=$(this).attr("content_type");
+			content_type=$(document.body).data('content_type');
+			urlid=$(document.body).data('urlid');
 			$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
 			location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+		});
+		
+		$(document).on('click', '.select_on_click', function() {
+			$(this).select();
 		});
 		
 	});
@@ -164,7 +174,7 @@
 <script type="text/template" id="listing-template">
 	<div id="contentlist" class="boxed full">
 		<div id="listSearchContainer">
-			<%= _.template($('#listing-template-search').html(), { search: data.search }) %>
+			<%= _.template($('#listing-template-search').html(), { search: data.search, content_type: content_type }) %>
 		</div>
 		<div id='pagination'>
 			
@@ -176,7 +186,7 @@
 </script>
 
 <script type='text/template' id='listing-template-search'>
-	<input type="text" id="list-search" value="<%= (search=='') ? 'Search' : search %>" />
+	<input content_type='<%= content_type %>' type="text" id="list-search" value="<%= (search=='') ? 'Search' : search %>" />
 	<span id="loading_icon" style="display:none;">
 		<img src="/tlresources/file/images/loader.gif" />
 	</span>
@@ -192,7 +202,7 @@
 				<th>Live</th>
 				<th>Workflow</th> 
 			</tr>
-	<% var x=0; _.each(content, function(item) { %>
+	<% var x=0; _.each(content, function(item) { console.log(item) %>
 			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>">
 				<td class='content-workflow-<%= item.major_version %>'><a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a></td>
 				<td><%= item.last_modified %></td>
