@@ -96,6 +96,15 @@
 					el.html(data.value);
 				});
 			});
+			$('.ajax_auto_link_check').each(function() {
+				var url=$(this).attr("url");
+				var el=$(this);
+				$.getJSON(url+"?jsoncallback=?", function(data) {
+					if (data) {
+						el.html('<input type="text" value="'+data.value+'" readonly="readonly" class="select_on_click" />');
+					}
+				});
+			});
 		}
 		
 		$(document).on('focus', "#list-search", function() {
@@ -200,9 +209,10 @@
 				<th>Edited by</th> 
 				<th>Start Date</th>
 				<th>Live</th>
-				<th>Workflow</th> 
+				<th>Workflow</th>
+				<th></th>
 			</tr>
-	<% var x=0; _.each(content, function(item) { console.log(item) %>
+	<% var x=0; _.each(content, function(item) { %>
 			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>">
 				<td class='content-workflow-<%= item.major_version %>'><a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a></td>
 				<td><%= item.last_modified %></td>
@@ -210,6 +220,7 @@
 				<td><%= item.start_date %></td>
 				<td class="<%= (item.live==1) ? 'green' : 'red' %>"><%= (item.live==1) ? 'Live' : 'Not live' %></td>
 				<td class='content-workflow-<%= item.major_version %>'><%= version_map[item.major_version] %></td>
+				<td class='ajax_auto_link_check' url='/list/jsonfilelist/<%= content_type %>/<%= item.urlid %>' ></td>
 			</tr>
 	<% x++; }); %>
 		</table>
