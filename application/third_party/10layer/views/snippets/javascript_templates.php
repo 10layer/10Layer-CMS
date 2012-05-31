@@ -143,6 +143,11 @@
 <%
 	}
 %>
+<% if (field.linkformat) { %>
+	<label>Download link</label>
+	<div class='download_url'><input type='text' class='select_on_click' readonly='readonly' value='<%= field.linkformat.replace('{filename}', field.value) %>' /></div>
+	<% } %>
+<br clear='both' />
 </script>
 
 <script type='text/template' id='edit-field-nesteditems'>
