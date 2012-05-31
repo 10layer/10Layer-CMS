@@ -315,12 +315,42 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function ajaxsubmit($type,$urlid) {
-	
 		$result=$this->submit($type,$urlid);
-		print "<script>document.domain=document.domain;</script><textarea>";
-		print json_encode($result); 
-		print "</textarea>";
+		$this->load->view("json", array("data"=>$result));
 	}
+	
+	/*public function fileupload($type, $urlid, $fieldname) {
+		$options=array(
+			'upload_dir'=>dirname($_SERVER['SCRIPT_FILENAME']).'/temp/',
+			'param_name'=>$fieldname,
+			'upload_url'=>base_url()."temp/",
+		);
+		$this->load->library('uploadhandler', $options);
+		$result=array();
+		switch ($_SERVER['REQUEST_METHOD']) {
+    		case 'OPTIONS':
+	        	break;
+    		case 'HEAD':
+		    case 'GET':
+    		    $result=$this->uploadhandler->get();
+        		break;
+		    case 'POST':
+    		    if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
+					$result=$this->uploadhandler->delete();
+	        	} else {
+					$result=$this->uploadhandler->post();
+	        	}
+		        break;
+    		case 'DELETE':
+				$result=$this->uploadhandler->delete();
+		        break;
+    		default:
+        		header('HTTP/1.1 405 Method Not Allowed');
+		}
+		
+		//$data=array("error"=>false, "message"=>"File uploaded successfully");
+		$this->load->view("json", array("data"=>$result));
+	}*/
 	
 	public function autosave($type, $urlid) {
 		$this->load->library("mongo_db");
@@ -380,6 +410,21 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		return true;
 	}
 	
+	public function field($fieldname, $type, $urlid) {
+		$contentobj=$this->content->getByIdORM($urlid, $type);
+		if (empty($contentobj->content_id)) {
+			show_404("/edit/".$this->uri->segment(3)."/".$urlid);
+		}
+		$fields=$contentobj->getFields();
+		foreach($fields as $field) {
+			if ($field->name==$fieldname) {
+				$fieldtype=$field->type;
+				$this->load->view("/snippets/$fieldtype", array("field"=>$field));
+				return true;
+			}
+		}
+	}
+	
 	/**
 	 * view function.
 	 * 
@@ -418,7 +463,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		
 		$data["contenttype_id"]=$contentobj->content_type->id;
 		$data["contenttype"]=$this->_contenttypeurlid;
-		
 		$this->load->library("formcreator");
 		
 		//Check if we have an autosaved version
@@ -443,18 +487,11 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 							}
 							if (!is_array($val) AND $val != "") {
 								$contentobj->fields[$key]->data[0]=$this->content->getByIdORM($val);
-							} else {
-								//
 							}
 						}
-						//$autosaved=true;
 					}
 				}
-				//print "Set $key to = $val<br />";
-				
 			}
-			//print_r($contentobj);
-			//die();
 		}
 		$data["autosaved"]=$autosaved;
 		$this->formcreator->setFields($contentobj->getFields());
@@ -462,6 +499,19 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$data["menu2_active"]="edit/".$this->_contenttypeurlid;
 		$data["heading"]= $this->format_heading($data["menu2_active"]);
 		$this->load->view("content/default/edit",$data);
+	}
+	
+	public function jsonedit($type, $urlid) {
+		$contentobj=$this->content->getByIdORM($urlid, $this->_contenttype->id);
+		if (empty($contentobj->content_id)) {
+			show_404();
+		}
+		$data["urlid"]=$contentobj->urlid;
+		$data["id"]=$contentobj->content_id;
+		$data["content_type_id"]=$contentobj->content_type->id;
+		$data["content_type"]=$this->_contenttypeurlid;
+		$data["fields"]=$contentobj->getFields();
+		$this->load->view("json", array("data"=>$data));
 	}
 	
 	/**
@@ -478,7 +528,8 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$this->paginate();
 		$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
 		
-		$data["contenttype"]="{$this->_contenttypeurlid}";
+		$data["contenttype"]=$this->_contenttypeurlid;
+		
 		if ($this->exists->view("content/{$this->_contenttypeurlid}/list")) {
 			$this->load->view("content/{$this->_contenttypeurlid}/list",$data);
 		} else {
@@ -688,8 +739,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		} elseif($this->uri->segment(2)=="simple") { //A simple list
 			$this->simple();
 			return true;
+		} elseif($this->uri->segment(2)=="jsonlist") { //A simple list
+			$this->jsonlist();
+			return true;
 		} elseif($this->uri->segment(2)=="nested") { //A simple list
 			$this->nested();
+			return true;
+		} elseif($this->uri->segment(2)=="jsonnested") { //A simple list
+			$this->jsonnested();
 			return true;
 		} elseif($this->uri->segment(3)=="deepsearch") { //A simple list
 			$this->deepsearch();
@@ -707,6 +764,26 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		} else {
 			$this->load->view("content/default/selectcontainer",$data);
 		}
+	}
+	
+	public function jsonlist() {
+		$this->_pg_perpage=100;
+		$data["search"]='';
+		$segments=$this->uri->segment_array();
+		$searchstring=$this->input->get_post('searchstring');
+		$this->_pg_offset=$this->input->get_post('offset');
+		if (!empty($searchstring)) {
+			$data["content"]=$this->content->search($this->_contenttypeurlid,$searchstring,$this->_pg_perpage, $this->_pg_offset);
+			$data["count"]=$this->content->searchCount($this->_contenttypeurlid,$searchstring);
+			$data["search"]=$searchstring;
+		} else {
+			$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
+			$data["count"]=$this->content->count();
+		}
+		$data["perpage"]=$this->_pg_perpage;
+		$data["offset"]=$this->_pg_offset;
+		$data["contenttype"]="{$this->_contenttypeurlid}";
+		$this->load->view("json",array("data"=>$data));
 	}
 	
 	/**
@@ -789,7 +866,6 @@ class TL_Controller_List extends TL_Controller_CRUD {
 	
 	public function simple() {
 		$this->_pg_perpage=100;
-		
 		$data["search"]="";
 		$segments=$this->uri->segment_array();
 		$searchcheck=array_slice($segments,-2);
@@ -823,9 +899,16 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$this->load->view("content/default/nested_sections",$data);
 	}
 	
+	public function jsonnested() {
+		$segments=$this->uri->segment_array();
+		$searchcheck=array_slice($segments,-2);
+		$tree = $this->content->get_sectionmap($searchcheck[0]);
+		$data['tree'] = $tree;
+		$data["contenttype"]="{$this->_contenttypeurlid}";
+		$this->load->view("json",array("data"=>$data));
+	}
 	
-	
-	function make_nested_tree($sections, $contenttype){
+	protected function make_nested_tree($sections, $contenttype){
 		$string = "<ul class='nested_tree '>";
 		foreach($sections as $section){
 			//hack to remove the home page section on the list

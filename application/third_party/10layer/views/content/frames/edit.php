@@ -5,18 +5,285 @@
 	link_js("/tlresources/file/js/forms.js");
 	link_js("/tlresources/file/jquery/jquery.form.js?1");
 	link_js("/tlresources/file/js/forms/default.js");
-	//ckeditor();
-	tinymce();
+	ckeditor();
+	//tinymce();
 ?>
+<script src="/tlresources/file/js/underscore-min.js"></script>
+<script src="/tlresources/file/js/jquery.pagination.js"></script>
+<script src="/tlresources/file/js/davis.min.js"></script>
+<script src='/tlresources/file/blueimp/js/vendor/jquery.ui.widget.js'></script>
+<script src='/tlresources/file/blueimp/js/jquery.fileupload.js'></script>
+<script src='/tlresources/file/blueimp/js/jquery.fileupload-fp.js'></script>
+<script src='/tlresources/file/blueimp/js/jquery.fileupload-ui.js'></script>
+<script src='/tlresources/file/blueimp/js/main.js'></script>
+<script src='/tlresources/file/blueimp/js/locale.js'></script>
+<link rel="stylesheet" href="/tlresources/file/css/file_upload.css" />
+<script>
+	$(function() {
+		
+		//Router
+		var app = Davis(function() {
+			this.get('/edit/:content_type', function(req) {
+				init_list(req.params['content_type']);
+			});
+			this.get('/edit/:content_type/:urlid', function(req) {
+				init_edit(req.params['content_type'], req.params['urlid']);
+			});
+		});
+		
+		app.start();
+		
+		// Listing
+		function init_list(content_type) { //Run this the first time we initiate our list. After that, run update_list
+			var searchstring=$("#listSearch").val();
+			if (searchstring=='Search') {
+				searchstring='';
+			}
+			$(".menuitem").each(function() {
+				$(this).removeClass('selected');
+			});
+			$('#menuitem_'+content_type).addClass('selected');
+			$('#dyncontent').html("Loading...");
+			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
+				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
+				update_pagination(content_type, data.count, 0, data.perpage );
+				update_autos();
+				$("#list-search").data('searchstring', searchstring);
+			});
+		}
+		
+		function update_list(content_type, offset) {
+			var searchstring=$("#list-search").val();
+			if (searchstring=='Search') {
+				searchstring='';
+			}
+			if (!offset) {
+				offset=0;
+			}
+			$('#content-table').html("Loading...");
+			$.getJSON("<?= base_url() ?>list/jsonlist/content_type?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+				update_pagination( data.count, offset, data.perpage );
+				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
+				$("#list-search").data('searchstring', searchstring);
+			});
+		}
+		
+		function update_pagination(content_type, count, offset, perpage) {
+			$("#pagination").pagination(
+				count,
+				{ 
+					items_per_page: perpage,
+					current_page: (offset / perpage ),
+					callback: function(pg) {
+						var offset=(pg)*perpage;
+						update_list(offset, content_type);
+						return false;
+					}
+				}
+			);
+		}
+		
+		function update_autos() {
+			$(".ajax_autoload").each(function() {
+				var url=$(this).attr("url");
+				var el=$(this);
+				console.log("finding "+url);
+				$.getJSON(url+"?jsoncallback=?", function(data) {
+					el.html(data.value);
+				});
+			});
+		}
+		
+		$(document).on('focus', "#list-search", function() {
+			if ($(this).val()=="Search") {
+				$(this).val("");
+			}
+		});
+		
+		function _check_search() {
+			var searchstring=$("#list-search").val();
+			if (searchstring=='Search') {
+				searchstring='';
+			}
+			if (searchstring != $("#list-search").data('searchstring')) {
+				update_list();
+			}
+		}
+		
+		$(document).on('keyup','#list-search',function(e) {
+			if(e.keyCode == '13'){
+				clearTimeout($.data(this, 'timer'));
+				update_list()
+			}
+			
+			clearTimeout($.data(this, 'timer'));
+			var wait = setTimeout(_check_search, 1000);
+			$(this).data('timer', wait);
+		});
+		
+		//Editing
+		function init_edit(content_type, urlid) {
+			$(".menuitem").each(function() {
+				$(this).removeClass('selected');
+			});
+			$('#menuitem_'+content_type).addClass('selected');
+			$('#dyncontent').html("Loading...");
+			$.getJSON("<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid+"?jsoncallback=?", function(data) {
+				$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
+				init_form();
+			});
+		}
+		
+		$(document).on('click', '#dosubmit_right', function() {
+			$("#contentform").submit();
+		});
+		
+		$(document).on('click', '#dodone_right', function() {
+			$("#contentform").submit();
+			var urlid=$(this).attr("urlid");
+			var content_type=$(this).attr("content_type");
+			$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
+			location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+		});
+		
+	});
+	
+	<?php
+		$this->load->model('model_workflow');
+		$workflows=$this->model_workflow->getAll();
+		$workflow_array=array();
+		foreach($workflows as $workflow) {
+			$workflow_array[]="'$workflow->name'";
+		}
+	?>
+	version_map=new Array(
+		<?= implode(",", $workflow_array); ?>
+	);
+	
+</script>
+<script type="text/template" id="listing-template">
+	<div id="contentlist" class="boxed full">
+		<div id="listSearchContainer">
+			<%= _.template($('#listing-template-search').html(), { search: data.search }) %>
+		</div>
+		<div id='pagination'>
+			
+		</div>
+		<div id='content-table'>
+			<%= _.template($('#listing-template-content').html(), { content_type: content_type, content: data.content }) %>
+		</div>
+	</div>
+</script>
+
+<script type='text/template' id='listing-template-search'>
+	<input type="text" id="list-search" value="<%= (search=='') ? 'Search' : search %>" />
+	<span id="loading_icon" style="display:none;">
+		<img src="/tlresources/file/images/loader.gif" />
+	</span>
+</script>
+
+<script type='text/template' id='listing-template-content'>
+		<table>
+			<tr> 
+				<th>Title</th> 
+				<th>Last Edit</th>
+				<th>Edited by</th> 
+				<th>Start Date</th>
+				<th>Live</th>
+				<th>Workflow</th> 
+			</tr>
+	<% var x=0; _.each(content, function(item) { %>
+			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>">
+				<td class='content-workflow-<%= item.major_version %>'><a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a></td>
+				<td><%= item.last_modified %></td>
+				<td class='ajax_autoload' url='/workers/content/jsongetlasteditor/<%= content_type %>/<%= item.urlid %>' ></td>
+				<td><%= item.start_date %></td>
+				<td class="<%= (item.live==1) ? 'green' : 'red' %>"><%= (item.live==1) ? 'Live' : 'Not live' %></td>
+				<td class='content-workflow-<%= item.major_version %>'><%= version_map[item.major_version] %></td>
+			</tr>
+	<% x++; }); %>
+		</table>
+</script>
+
+
+
+<script type='text/template' id='edit-template'>
+	<div id="edit-content" class="boxed wide">
+		<h2>Edit - <%= data.content_type %></h2>
+		<form id='contentform' method='post' enctype='multipart/form-data' action='<?= base_url() ?>edit/ajaxsubmit/<%= content_type %>/<%= urlid %>'>
+		<input type='hidden' name='action' value='submit' />
+		<% _.each(data.fields, function(field) { %>
+			<% if (!field.hidden) { %>
+				<%= _.template($('#edit-field-'+field.type).html(), { field: field, urlid: urlid, content_type: content_type  }) %>
+			<% } %>
+		<% }); %>
+		</form>
+	</div>
+	<div id="sidebar" class="pin">
+	<div id="sidebar_accordian">
+		<h3><a href="#">Actions</a></h3>
+		<div>
+			<button id="dodone_right" content_type="<%= content_type %>" urlid="<%= urlid %>">Done</button><br />
+			<br />
+			<button id="dosubmit_right">Save</button><br />
+			<br />
+		</div>
+		<h3><a href="#">Versions</a></h3>
+		<div>
+			<button id="dofork_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowthickstop-1-n"></span>Fork</button><br />
+			<br />
+			<button id="dolink_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-link"></span>Link</button><br />
+			<br />
+		</div>
+		<h3><a href="#">Workflow</a></h3>
+		<div id="workflows"></div>
+	</div>
+	</div>
+</script>
+
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td class="preview"><span class="fade"></span></td>
+        <td class="name"><span>{%=file.name%}</span></td>
+        <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+        {% if (file.error) { %}
+            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+        {% } else if (o.files.valid && !i) { %}
+            <td>
+                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+            </td>
+            <td class="start">{% if (!o.options.autoUpload) { %}
+                <button class="btn btn-primary">
+                    <i class="icon-upload icon-white"></i>
+                    <span>{%=locale.fileupload.start%}</span>
+                </button>
+            {% } %}</td>
+        {% } else { %}
+            <td colspan="2"></td>
+        {% } %}
+        <td class="cancel">{% if (!i) { %}
+            <button class="btn btn-warning">
+                <i class="icon-ban-circle icon-white"></i>
+                <span>{%=locale.fileupload.cancel%}</span>
+            </button>
+        {% } %}</td>
+    </tr>
+{% } %}
+</script>
+
+<?php
+	$this->load->view("snippets/javascript_templates");
+?>
+
 <script language="javascript">
 	
-	var dirty=false;
+	/*var dirty=false;
 	var autosaveTimer=false;
 	var autosaving=false;
 	
 	function markDirty(e) {
 		dirty=true;
-		//console.log("Setting timer");
 		clearTimeout(autosaveTimer);
 		autosaveTimer=setTimeout("autosave()", 5000);
 	}
@@ -77,44 +344,7 @@
 				cl.show();
 			}
 		});
-		
-		$("#dyncontent").load("<?= base_url()."edit/fullview/$type/$urlid" ?>", function() {
-			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
-			if ($(".richedit").length) {
-				//initCKEditor();
-				init_tinymce();
-			}
-		});
-		
-		$("#dyncontent").delegate(".pagination > a","click",function() {
-			var url=$(this).attr("href");
-			$("#dyncontent").load("<?= base_url()?>"+url, function() {  });
-			return false;
-		});
-		
-		function search() {
-			var s=$("#listSearch").val();
-			$("#loading_icon").show();
-			$("#dyncontent").load("/edit/fullview/<?= $type ?>/search/"+escape(s));
-		}
-		
-		$("#dyncontent").delegate("#listSearch", "click", function() {
-			if ($(this).val()=="Search...") {
-				$(this).val("");
-			}
-		});
-		
-		$("#dyncontent").delegate("#listSearch","keyup",function(e) {
-			
-			/*if(e.keyCode == '13'){
-				search();
-			}*/
-			
-			clearTimeout($.data(this, 'timer'));
-			var wait = setTimeout(search, 1500);
-			$(this).data('timer', wait);
-		});
-		
+				
 		$("#dyncontent").delegate(".add-relation","click",function() {
 		//Creates the popup box for adding a new item
 			var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
@@ -225,52 +455,8 @@
 				});
 			}
 		});
-		
-		/*$("#dyncontent").delegate("#contentform","submit",function(e) {
-			e.preventDefault();
-			$(this).ajaxSubmit({
-				dataType: "json",
-				iframe: true,
-				debug: false,
-				beforeSubmit: function(a,f,o) {
-					o.dataType = "json";
-				},
-				
-				success: function(data) {
-					//console.log(data);
-					if (data.error) {
-						//console.log(data);
-						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
-								}
-							}
-						});
-					} else {
-						$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-						
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
-								}
-							}
-						});
-					}
-				},
-				
-				error: function() {
-					console.log("Error");
-				}
-			});
-			return false;
-		});*/
 
-	});
+	});*/
 </script>
 
 <div id="msgdialog"></div>

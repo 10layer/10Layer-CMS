@@ -1,5 +1,3 @@
-
-
 <div id="contentlist" class="<?= $contenttype ?>-list boxed wide">
 	<div id="listSearchContainer">
 		<input type="text" id="listSearch" value="<?php

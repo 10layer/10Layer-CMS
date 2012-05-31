@@ -1,7 +1,7 @@
 //This javascript isn't run because it is loaded before teh dynamic content
 
 $(function() {
-	$(".items_container").sortable();
+	
 	
 	$("input, textarea").keyup(function() {
 		var reqs=checkreqs();
@@ -34,39 +34,83 @@ $(function() {
 		get_wordcount($(this));
 	});
 	
-	$(".countchars").each(function() {
-		if ($(this).hasClass("countdown")) {
-			var max=$(this).attr("max");
-			var current=max-$(this).val().length;
-			if (current>=0) {
-				$(this).after("<div class='charcount'>"+current+" chars remaining</div>");
-			} else {
-				$(this).after("<div class='charcount red'>"+Math.abs(current)+" chars over</div>");
-			}
+	
+	
+	
+	
 			
-			$(this).keyup(function() {
-				var max=$(this).attr("max");
-				var current=max-$(this).val().length;
-				if (current>=0) {
-					$(this).next().html(current+" chars remaining").removeClass("red");
-				} else {
-					$(this).next().html(Math.abs(current)+" chars over").addClass("red");
-				}
-			});
-		} else {
-			var current=$(this).val().length;
-			$(this).after("<div class='charcount'>"+current+" chars</div>");
-			$(this).keyup(function() {
-				current=$(this).val().length;
-				$(this).next().html(current+" chars");
-			});
-		}
-		$(this).removeClass("countchars");
+	$(".autocomplete_add").live("click",function() {
+		var viewfield=$("#autocomplete_view_"+$(this).attr("contenttype")+"_"+$(this).attr("fieldname"));
+		alert(viewfield.val());
+		return false;
+	});
+		
+	
+			
+	$(".remover").live("click", function() {
+		//$(this).next().remove();
+		$(this).parent().remove();
+		return false;
 	});
 	
 	
+	
+	$(document).unbind('keydown').bind('keydown', function (event) {
+		var doPrevent = false;
+		if (event.keyCode === 8) {
+			var d = event.srcElement || event.target;
+			if ((d.tagName.toUpperCase() === 'INPUT' && d.type.toUpperCase() === 'TEXT') || d.tagName.toUpperCase() === 'TEXTAREA') {
+            	doPrevent = d.readOnly || d.disabled;
+        	} else {
+            	doPrevent = true;
+        	}
+    	}
+
+	    if (doPrevent) {
+        	event.preventDefault();
+    	}
+	});
+});
+
+function checkreqs() {
+	var reqs=true;
+	$(".required").each(function() {
+		var val=$(this).val();
+		if (val=="") {
+			reqs=false;
+		}
+	});
+	if (!reqs) {
+		$("#submit").addClass("inactive");
+	} else {
+		$("#submit").removeClass("inactive");
+	}
+	return reqs;
+}
+
+function get_wordcount(sender) {
+	sender.nextAll(".wordcount_container").first().find(".wordcount_result").load("/workers/ajax_edit/wordcount", {"str": sender.val()})
+}
+
+function init_form() {
+	$('button').each(function() {
+		$(this).button();
+	});
+	
+	$(".datetimepicker").each(function() {
+		$(this).datetimepicker({
+			dateFormat:"yy-mm-dd",
+			timeFormat:"hh:mm:ss",
+		});
+	});
+	
+	$( ".datepicker" ).datepicker({
+		changeMonth: true,
+		changeYear: true,
+		dateFormat: "yy-mm-dd",
+	});
+	
 	$(".autocomplete").each(function() {
-		
 		var contenttype=$(this).attr("contenttype");
 		var contenttypes=false;
 		var source="/list/"+contenttype+"/suggest";
@@ -135,61 +179,190 @@ $(function() {
 			},
 		});
 	});
-			
-	$(".autocomplete_add").live("click",function() {
-		var viewfield=$("#autocomplete_view_"+$(this).attr("contenttype")+"_"+$(this).attr("fieldname"));
-		alert(viewfield.val());
+	
+	$(".deepsearch_input").live("keypress",function(e) { 
+    	if (e.which == 13) { 
+      		return false; 
+    	} 
+  	});
+  	
+  	$(".deepsearch_input").live("keypress",function(e) {
+  		if (e.which == 13) { 
+			var resultdiv=$(this).next().next();
+			var selected_container = resultdiv.next();
+			var selected_items = selected_container.children('div');
+			var items = new Array();
+			var content_type=$(this).attr("contenttype");
+			selected_items.each(function(index) {
+				items[index] = $(this).children(":first").val();
+			});
+		
+			var val = $(this).val();
+      		$.getJSON("/list/"+content_type+"/deepsearch?term="+escape(val), {"selected[]":items}, function(result) {
+				resultdiv.html("");
+				for(x=0; x<result.length; x++) {
+					resultdiv.append("<div class='deepsearch_item' id='"+result[x].id+"'>"+result[x].value+" ("+result[x].start_date+")</div>");
+				}
+			});	
+    	}		
+	});
+	
+	$(".deepsearch_item").live("click", function(){
+		var selected_set = $(this).parent().next();
+		var used_element = $(this).parent().prev().prev();
+		var label = $(this).html();
+		var id = this.id;
+		var newdisp="<div class='deepsearch_selected_item'>"+"<input type='hidden' value='"+id+"' name='"+used_element.attr("tablename")+"_"+used_element.attr("fieldname")+"[]' value='' /><span class='label'>"+
+		label+"</span></div>";
+		selected_set.append(newdisp);
+		$(this).remove();
 		return false;
 	});
 		
-	
-			
-	$(".remover").live("click", function() {
-		//$(this).next().remove();
-		$(this).parent().remove();
+	$(".deepsearch_selected_item").live("click", function(){
+		var search_result_set = $(this).parent().prev();
+		var label = $(this).text();
+		var id = $(this).children(":first").val();
+		var newdisp="<button class='autocomplete_item'>"+label+"</button>";
+		var newdisp="<div class='deepsearch_item' id='"+id+"'>"+label+"</div>";
+		search_result_set.append(newdisp);
+		$(this).remove();
 		return false;
 	});
 	
-	$(".datetimepicker").each(function() {
-		$(this).datetimepicker({
-			dateFormat:"yy-mm-dd",
-			timeFormat:"hh:mm",
-		});
+	$(document).on("click", '.nesteditems_item_button', function() {
+		var resultdiv=$(this).next();
+		var content_type=$(this).attr('contenttype');
+		if(resultdiv.is(':hidden') ) {
+    		$.getJSON('/list/jsonnested/'+content_type+'/1?jsoncallback=?', function(data) {
+  				resultdiv.html(_.template($('#edit-field-nesteditems-list').html(), data));
+	  			resultdiv.toggle();
+			});
+		} else {
+			resultdiv.toggle();
+		}
+		return false;
+	});
+
+	$(".nested_section").live("click", function(){
+		var content_id = $(this).attr("content_id");
+		var value = $(this).attr('label');
+		var display_el = $(this).parentsUntil(".section_list").parent().prev().prev();
+		display_el.html(value);
+		var value_el = display_el.prev();
+		value_el.val(content_id);
+		display_el.next().next().hide();
+		return false;
 	});
 	
-	$(document).unbind('keydown').bind('keydown', function (event) {
-		var doPrevent = false;
-		if (event.keyCode === 8) {
-			var d = event.srcElement || event.target;
-			if ((d.tagName.toUpperCase() === 'INPUT' && d.type.toUpperCase() === 'TEXT') || d.tagName.toUpperCase() === 'TEXTAREA') {
-            	doPrevent = d.readOnly || d.disabled;
-        	} else {
-            	doPrevent = true;
-        	}
-    	}
-
-	    if (doPrevent) {
-        	event.preventDefault();
-    	}
-	});
-});
-
-function checkreqs() {
-	var reqs=true;
-	$(".required").each(function() {
-		var val=$(this).val();
-		if (val=="") {
-			reqs=false;
+	$(".items_container").sortable();
+	
+	$(".countchars").each(function() {
+		if ($(this).hasClass("countdown")) {
+			var max=$(this).attr("max");
+			var current=max-$(this).val().length;
+			if (current>=0) {
+				$(this).after("<div class='charcount'>"+current+" chars remaining</div>");
+			} else {
+				$(this).after("<div class='charcount red'>"+Math.abs(current)+" chars over</div>");
+			}
+			
+			$(this).keyup(function() {
+				var max=$(this).attr("max");
+				var current=max-$(this).val().length;
+				if (current>=0) {
+					$(this).next().html(current+" chars remaining").removeClass("red");
+				} else {
+					$(this).next().html(Math.abs(current)+" chars over").addClass("red");
+				}
+			});
+		} else {
+			var current=$(this).val().length;
+			$(this).after("<div class='charcount'>"+current+" chars</div>");
+			$(this).keyup(function() {
+				current=$(this).val().length;
+				$(this).next().html(current+" chars");
+			});
 		}
+		$(this).removeClass("countchars");
 	});
-	if (!reqs) {
-		$("#submit").addClass("inactive");
-	} else {
-		$("#submit").removeClass("inactive");
+	
+	if ($(".richedit").length) {
+		//init_tinymce();
+		initCKEditor();
 	}
-	return reqs;
-}
-
-function get_wordcount(sender) {
-	sender.nextAll(".wordcount_container").first().find(".wordcount_result").load("/workers/ajax_edit/wordcount", {"str": sender.val()})
+	
+	$("#sidebar_accordian").accordion({
+		autoHeight: false
+	});
+	
+	$("#contentform").ajaxForm({
+			delegation: true,
+			dataType: "json",
+			iframe: true,
+			debug: true,
+			iframeSrc: '/blank',
+			success: function(data) {
+				if (data.error) {
+					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+					$("#msgdialog").dialog({
+						modal: true,
+						buttons: {
+							Ok: function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+				} else {
+					$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+					$("#msgdialog").dialog({
+						modal: true,
+						buttons: {
+							Ok: function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+				}
+			},
+			error: function(e) {
+				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
+				$("#msgdialog").dialog({
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+			}
+		});
+		
+		
+		
+	/*$('.file_upload').each(function() {
+		var el=$(this).parent();
+		$(this).fileupload({
+			dataType: 'json',
+			start: function (e) {
+				el.find('.fileupload-progress').show();
+			},
+			stop: function(e) {
+				el.find('.fileupload-progress').hide();
+			},
+			add: function (e, data) {
+				data.submit();
+			},
+			done: function (e, data) {
+				$.each(data.result, function (index, file) {
+					el.find('.fileupload-result').html('File uploaded: '+file.url).show();
+				});
+            },
+            progress: function (e, data) {
+				var progress = parseInt(data.loaded / data.total * 100, 10);
+				el.find('.fileupload-progress .progress .bar').css('width', progress+'%');
+				el.find('.fileupload-progress .progress-extended').html(progress+'%');
+			}
+		});
+	});*/
 }
