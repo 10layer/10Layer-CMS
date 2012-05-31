@@ -313,7 +313,7 @@
 			}
 			$this->limit($limit, $start);
 			$this->_prepGetAllQuery($all);
-			$this->db->group_by("content.urlid");
+			//$this->db->group_by("content.urlid");
 			$query=$this->db->get("content");
 			//print $this->db->last_query();
 			$results = $query->result();
