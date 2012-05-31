@@ -35,6 +35,10 @@
 		public function publish($sectionid) {
 		
 		}
+		
+		public function update_content() {
+		
+		}
 	}
 
 /* End of file eventapi.php */
