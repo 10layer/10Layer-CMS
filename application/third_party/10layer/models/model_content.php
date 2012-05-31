@@ -328,7 +328,7 @@
 				if (isset($result[0]->user_id) AND $result[0]->user_id != "") {
 					$item->tl_admin=$this->db->get_where("tl_users",array("id"=>$result[0]->user_id))->row();
 				}
-				array_push($container, $item);				
+				array_push($container, $item);
 			}
 			
 			return $container; //$query->result();
@@ -388,11 +388,11 @@
 				$this->db->join($this->content_type->table_name, "content.id={$this->content_type->table_name}.content_id");
 			}
 			
-			$time = date("Y-m-d");
+			/*$time = date("Y-m-d");
 			$now = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " +1 day")) ;
 			$start = date("Y-m-d", strtotime(date("Y-m-d", strtotime($time)) . " -90 days")) ;
 			$this->db->where("content.start_date <=", $now);
-			$this->db->where("content.start_date >=", $start);
+			$this->db->where("content.start_date >=", $start);*/
 
 			
 			$this->db->select("COUNT(*) AS count",false);
@@ -789,7 +789,7 @@
 				//echo $this->db->last_query(); die();
 				return $result;
 			}
-			return $this->count();
+			//return $this->count();
 		}
 		
 		
