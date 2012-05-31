@@ -782,7 +782,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		}
 		$data["perpage"]=$this->_pg_perpage;
 		$data["offset"]=$this->_pg_offset;
-		$data["contenttype"]="{$this->_contenttypeurlid}";
+		$data["contenttype"]=$this->_contenttypeurlid;
 		$this->load->view("json",array("data"=>$data));
 	}
 	
