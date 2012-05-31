@@ -1139,7 +1139,7 @@ class TLField {
 	 * @var string
 	 * @access public
 	 */
-	public function $linkformat=false;
+	public $linkformat=false;
 	
 	/**
 	 * __construct function.
