@@ -16,6 +16,7 @@
 		
 		//Router
 		var app = Davis(function() {
+			this.get('#', function(req) {});
 			this.get('/edit/:content_type', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
 				prepRouter();
