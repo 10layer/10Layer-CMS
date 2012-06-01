@@ -72,8 +72,17 @@
 			$(function() {
 				//initCKEditor();
 			});
+			function clearCKEditor() {
+				while (editors.length > 0) {
+					editor=editors.pop();
+					//editor.destroy();
+				}
+			}
+			
+			var editors=new Array();
+			
 			function initCKEditor() {
-				
+				clearCKEditor();
 				var config = { 
 					toolbar: [
 						['Source','-','Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','Image','-','Maximize']
@@ -90,8 +99,7 @@
 					
 				};
 				$('.richedit').ckeditor(config);
-				var editor = $('.richedit').ckeditorGet();		
-				//console.log(editor);
+				editors[editors.length] = $('.richedit').ckeditorGet();	
 			}
 			
 			function parsePaste(data) {

@@ -289,6 +289,7 @@ function init_form() {
 	
 	if ($(".richedit").length) {
 		//init_tinymce();
+		//clearCKEditor();
 		initCKEditor();
 	}
 	

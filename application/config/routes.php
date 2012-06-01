@@ -42,6 +42,8 @@ $route['default_controller'] = "home";
 $route['404_override'] = '';
 
 $route['create/fullview/(:any)']='create/tldefault/view/$1';
+$route['create/jsoncreate/(:any)']='create/tldefault/jsoncreate/$1';
+$route['create/field/(:any)']='create/tldefault/field/$1';
 $route['create/ajaxsubmit/(:any)']='create/tldefault/ajaxsubmit/$1';
 $route['create/autosave/(:any)']='create/tldefault/autosave/$1';
 $route['create/embed/(:any)']='create/tldefault/embed/$1';

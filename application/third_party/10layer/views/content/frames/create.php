@@ -5,12 +5,51 @@
 	link_js("/tlresources/file/js/forms.js");
 	link_js("/tlresources/file/jquery/jquery.form.js?1");
 	link_js("/tlresources/file/js/forms/default.js");
-	//ckeditor();
-	tinymce();
+	ckeditor();
+	//tinymce();
 ?>
+<script src="/tlresources/file/js/underscore-min.js"></script>
+<script src="/tlresources/file/js/jquery.pagination.js"></script>
+<script src="/tlresources/file/js/davis.min.js"></script>
 <script language="javascript">
-	
 	$(function() {
+	
+		//Router
+		var app = Davis(function() {
+			this.get('/create/:content_type', function(req) {
+				$(document.body).data('content_type', req.params['content_type']);
+				prepRouter();
+				init_create();
+			});
+		});
+		
+		app.start();
+		
+		function prepRouter() {
+			$('#dyncontent').children().find('.richedit').each(function() {
+				var name=$(this).attr('name');
+				var o=CKEDITOR.instances[name];
+			    if (o) o.destroy();
+			});
+		}
+		
+		function init_create() {
+			content_type=$(document.body).data('content_type');
+			$(".menuitem").each(function() {
+				$(this).removeClass('selected');
+			});
+			$('#menuitem_'+content_type).addClass('selected');
+			$('#dyncontent').html("Loading...");
+			$.getJSON("<?= base_url() ?>create/jsoncreate/"+content_type+"?jsoncallback=?", function(data) {
+				$('#dyncontent').html(_.template($("#create-template").html(), { data:data, content_type: content_type }));
+				init_form();
+			});
+		}
+		
+		$(document).on('click', '#dosubmit_right', function() {
+			$("#contentform").submit();
+		});
+		
 		$(document).ajaxError(function(e, xhr, settings, exception) { 
 			//$("#dyncontent").html('<h1>Caught error</h1>'+xhr.responseText); 
 		});
@@ -23,14 +62,14 @@
 			cl.show();
 		});
 		
-		$("#dyncontent").load("<?= base_url()."create/fullview/$type" ?>", function() {
+		/*$("#dyncontent").load("<?= base_url()."create/fullview/$type" ?>", function() {
 			if ($(".richedit").length) {
-				init_tinymce();
-//				initCKEditor();
+//				init_tinymce();
+				initCKEditor();
 			}
 			
 			$(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
-		});
+		});*/
 		
 		$("#dyncontent").delegate("#contentform","submit",function() {
 			
@@ -74,12 +113,6 @@
 			return false;
 		});
 		
-		$("#dyncontent").delegate(".pagination > a","click",function() {
-			var url=$(this).attr("href");
-			$("#dyncontent").load("<?= base_url()?>"+url, function() {  });
-			return false;
-		});
-		
 		$("#dyncontent").delegate(".add-relation","click",function() {
 		//Creates the popup box for adding a new item
 			var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
@@ -101,9 +134,7 @@
 					o.dataType = "json";
 				},
 				success: function(data) {
-					//console.log(data);
 					if (data.error) {
-						//console.log(data);
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
 						$("#msgdialog").dialog({
 							modal: true,
@@ -139,6 +170,33 @@
 		});
 
 	});
+</script>
+
+<?php
+	$this->load->view("snippets/javascript_templates");
+?>
+
+<script type='text/template' id='create-template'>
+	<div id="create-content" class="boxed wide">
+		<h2>Create - <%= content_type %></h2>
+		<form id='contentform' method='post' enctype='multipart/form-data' action='<?= base_url() ?>create/ajaxsubmit/<%= content_type %>'>
+		<input type='hidden' name='action' value='submit' />
+		<% _.each(data.fields, function(field) { %>
+			<% if (!field.hidden) { %>
+				<%= _.template($('#create-field-'+field.type).html(), { field: field, urlid: false, content_type: content_type  }) %>
+			<% } %>
+		<% }); %>
+		</form>
+	</div>
+	<div id="sidebar" class="pin">
+	<div id="sidebar_accordian">
+		<h3><a href="#">Actions</a></h3>
+		<div>
+			<button id="dosubmit_right">Save</button><br />
+			<br />
+		</div>
+	</div>
+	</div>
 </script>
 <div id="msgdialog"></div>
 <div id="createdialog"></div>

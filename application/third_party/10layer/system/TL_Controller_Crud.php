@@ -142,6 +142,27 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$this->checkCallback("onAfterView",$contentobj);
 	}
 	
+	public function jsoncreate($type) {
+		$contentobj=new TLContent();
+		$contentobj->setContentType($this->_contenttypeurlid);
+		$data["content_type_id"]=$contentobj->content_type->id;
+		$data["content_type"]=$this->_contenttypeurlid;
+		$data["fields"]=$contentobj->getFields();
+		$this->load->view("json", array("data"=>$data));
+	}
+	
+	public function field($fieldname, $type) {
+		$contentobj=new TLContent();
+		$contentobj->setContentType($this->_contenttypeurlid);
+		$fields=$contentobj->getFields();
+		foreach($fields as $field) {
+			if ($field->name==$fieldname) {
+				$fieldtype=$field->type;
+				$this->load->view("/snippets/$fieldtype", array("field"=>$field));
+				return true;
+			}
+		}
+	}
 	
 	public function embed() {
 		$this->_view="content/default/embed";
