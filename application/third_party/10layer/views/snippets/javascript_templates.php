@@ -119,7 +119,7 @@
 
 <script type='text/template' id='create-field-date'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>
-	<input type='text' name='<%= field.tablename %>_<%= field.name %>' value='<%= (field.value=="now") ? sqlCurrentDate() : ''  %>' class='datepicker <%= field.class %>' />
+	<input type='text' name='<%= field.tablename %>_<%= field.name %>' value='<%= (field.value=="now" || field.value=="Today") ? sqlCurrentDate() : field.value  %>' class='datepicker <%= field.class %>' />
 	<br clear='both' />
 </script>
 
@@ -363,8 +363,17 @@
 <script type='text/template' id='edit-field-select'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<select class='<%= field.class %>' name='<%= field.tablename %>_<%= field.name %>'>
+	<option value="0"></option>
+	<% 
+	var keyadjust=0;
+	_.each(field.options, function(val, key) {
+		if (key==0) {
+			keyadjust=1;
+		}
+	});
+	%>
 	<% _.each(field.options, function(option, key) { %>
-		<option value='<%= key %>' <%= (field.value==key) ? 'selected="selected"' : '' %> ><%= option %></option>
+		<option value='<%= ( key + keyadjust) %>' <%= (field.value==( key + keyadjust)) ? 'selected="selected"' : '' %> ><%= option %></option>
 	<% }); %>
 	</select>
 	<br clear='both' />
@@ -373,8 +382,17 @@
 <script type='text/template' id='create-field-select'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<select class='<%= field.class %>' name='<%= field.tablename %>_<%= field.name %>'>
+	<option value="0"></option>
+	<% 
+	var keyadjust=0;
+	_.each(field.options, function(val, key) {
+		if (key==0) {
+			keyadjust=1;
+		}
+	});
+	%>
 	<% _.each(field.options, function(option, key) { %>
-		<option value='<%= key %>' <%= (field.value==key) ? 'selected="selected"' : '' %> ><%= option %></option>
+		<option value='<%= (key + keyadjust) %>' <%= (field.value==( key + keyadjust) ) ? 'selected="selected"' : '' %> ><%= option %></option>
 	<% }); %>
 	</select>
 	<br clear='both' />
