@@ -11,13 +11,6 @@
 <script src="/tlresources/file/js/underscore-min.js"></script>
 <script src="/tlresources/file/js/jquery.pagination.js"></script>
 <script src="/tlresources/file/js/davis.min.js"></script>
-<script src='/tlresources/file/blueimp/js/vendor/jquery.ui.widget.js'></script>
-<script src='/tlresources/file/blueimp/js/jquery.fileupload.js'></script>
-<script src='/tlresources/file/blueimp/js/jquery.fileupload-fp.js'></script>
-<script src='/tlresources/file/blueimp/js/jquery.fileupload-ui.js'></script>
-<script src='/tlresources/file/blueimp/js/main.js'></script>
-<script src='/tlresources/file/blueimp/js/locale.js'></script>
-<link rel="stylesheet" href="/tlresources/file/css/file_upload.css" />
 <script>
 	$(function() {
 		
@@ -25,11 +18,13 @@
 		var app = Davis(function() {
 			this.get('/edit/:content_type', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
+				prepRouter();
 				init_list();
 			});
 			this.get('/edit/:content_type/:urlid', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
 				$(document.body).data('urlid', req.params['urlid']);
+				prepRouter();
 				init_edit();
 			});
 		});
@@ -193,6 +188,15 @@
 		$(document).on('click', '.select_on_click', function() {
 			$(this).select();
 		});
+		
+		function prepRouter() {
+			clear_ajaxqueue();
+			$('#dyncontent').children().find('.richedit').each(function() {
+				var name=$(this).attr('name');
+				var o=CKEDITOR.instances[name];
+			    if (o) o.destroy();
+			});
+		}
 		
 	});
 	
