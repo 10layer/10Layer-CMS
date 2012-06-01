@@ -292,8 +292,22 @@ function init_form() {
 		initCKEditor();
 	}
 	
-	$("#sidebar_accordian").accordion({
+	/*$("#sidebar_accordian").accordion({
 		autoHeight: false
+	});*/
+	
+	var content_type=$(document.body).data('content_type');
+	var urlid=$(document.body).data('urlid');
+	$("#workflows").load("/workflow/change/status/"+content_type+"/"+urlid);
+	$("#workflow_next").live("click", function() {
+		$.getJSON("/workflow/change/advance/"+content_type+"/"+urlid, function() {
+			$("#workflows").load("/workflow/change/status/"+content_type+"/"+urlid);
+		});
+	});
+	$("#workflow_revert").live("click", function() {
+		$.getJSON("/workflow/change/revert/"+content_type+"/"+urlid, function() {
+			$("#workflows").load("/workflow/change/status/"+content_type+"/"+urlid);
+		});
 	});
 	
 	$("#contentform").ajaxForm({

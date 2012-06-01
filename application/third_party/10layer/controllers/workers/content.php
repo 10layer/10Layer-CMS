@@ -83,6 +83,7 @@
 			}
 			$this->load->view("json", array("data"=>$admin));
 		}
+		
 	}
 
 /* End of file content.php */

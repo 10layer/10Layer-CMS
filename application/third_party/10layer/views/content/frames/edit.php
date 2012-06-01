@@ -57,7 +57,6 @@
 		}
 		
 		function update_list(content_type, offset) {
-			console.log(content_type);
 			var searchstring=$("#list-search").val();
 			if (searchstring=='Search') {
 				searchstring='';
@@ -249,13 +248,13 @@
 			<button id="dosubmit_right">Save</button><br />
 			<br />
 		</div>
-		<h3><a href="#">Versions</a></h3>
+		<!--<h3><a href="#">Versions</a></h3>
 		<div>
 			<button id="dofork_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowthickstop-1-n"></span>Fork</button><br />
 			<br />
 			<button id="dolink_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-link"></span>Link</button><br />
 			<br />
-		</div>
+		</div>-->
 		<h3><a href="#">Workflow</a></h3>
 		<div id="workflows"></div>
 	</div>
