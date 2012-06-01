@@ -68,6 +68,7 @@
 			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
 				//update_pagination( data.count, offset, data.perpage );
 				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
+				update_autos();
 				$("#list-search").data('searchstring', searchstring);
 			});
 		}
@@ -84,6 +85,7 @@
 			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
 				update_pagination( content_type, data.count, offset, data.perpage );
 				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
+				update_autos();
 				$("#list-search").data('searchstring', searchstring);
 			});
 		}
