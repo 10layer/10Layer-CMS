@@ -72,6 +72,22 @@
 			});
 		}
 		
+		function search_list() {
+			content_type=$(document.body).data('content_type');
+			var searchstring=$("#list-search").val();
+			if (searchstring=='Search') {
+				return;
+			}
+			offset=0;
+			$('#content-table').html("Loading...");
+			$('#pagination').html('');
+			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+				update_pagination( content_type, data.count, offset, data.perpage );
+				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
+				$("#list-search").data('searchstring', searchstring);
+			});
+		}
+		
 		function update_pagination(content_type, count, offset, perpage) {
 			$("#pagination").pagination(
 				count,
@@ -118,14 +134,14 @@
 				searchstring='';
 			}
 			if (searchstring != $("#list-search").data('searchstring')) {
-				update_list($(this).attr('content_type'));
+				search_list($(this).attr('content_type'));
 			}
 		}
 		
 		$(document).on('keyup','#list-search',function(e) {
 			if(e.keyCode == '13'){
 				clearTimeout($.data(this, 'timer'));
-				update_list($(this).attr('content_type'));
+				search_list($(this).attr('content_type'));
 			}
 			
 			clearTimeout($.data(this, 'timer'));
@@ -184,9 +200,7 @@
 		<div id="listSearchContainer">
 			<%= _.template($('#listing-template-search').html(), { search: data.search, content_type: content_type }) %>
 		</div>
-		<div id='pagination'>
-			
-		</div>
+		<div id='pagination'></div>
 		<div id='content-table'>
 			<%= _.template($('#listing-template-content').html(), { content_type: content_type, content: data.content }) %>
 		</div>
