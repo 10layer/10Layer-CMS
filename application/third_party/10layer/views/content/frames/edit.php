@@ -28,11 +28,15 @@
 				init_edit();
 			});
 			this.get('#', function(req) {});
-			
+			this.configure(function () {
+				this.generateRequestOnPageLoad = true
+			})
 			
 		});
 		
+		app.start();
 		
+		//app.handleRequest('<?= $this->uri->uri_string() ?>');
 		
 		// Listing
 		function init_list() { //Run this the first time we initiate our list. After that, run update_list
@@ -200,8 +204,6 @@
 			    if (o) o.destroy();
 			});
 		}
-		
-		app.start({generateRequestOnPageLoad: true });
 	});
 	
 	<?php
