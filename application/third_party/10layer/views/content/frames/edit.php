@@ -27,8 +27,10 @@
 				$(document.body).data('urlid', req.params['urlid']);
 				prepRouter();
 				init_edit();
-			});
+			}, {generateRequestOnPageLoad: true });
 			this.get('#', function(req) {});
+			
+			
 		});
 		
 		
@@ -201,7 +203,7 @@
 		}
 		
 		app.start();
-		
+		//console.log(app);
 	});
 	
 	<?php
