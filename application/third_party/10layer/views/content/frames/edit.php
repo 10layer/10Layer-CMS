@@ -16,7 +16,6 @@
 		
 		//Router
 		var app = Davis(function() {
-			console.log("init Davis");
 			this.get('/edit/:content_type', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
 				prepRouter();
@@ -203,7 +202,6 @@
 		}
 		
 		app.start({generateRequestOnPageLoad: true });
-		//console.log(app);
 	});
 	
 	<?php
