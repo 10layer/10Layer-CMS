@@ -32,16 +32,17 @@
 		});
 		
 	$(function() {
+		
 		function prepRouter() {
 			clear_ajaxqueue();
 			$('#dyncontent').children().find('.richedit').each(function() {
 				var name=$(this).attr('name');
 				var o=CKEDITOR.instances[name];
 				if (o) o.destroy();
-				});
-			}
+			});
+		}
 
-		app.start();
+		
 		
 		$(document.body).bind('router.init_list', function() {
 			prepRouter();
@@ -52,7 +53,7 @@
 			prepRouter();
 			init_edit();
 		});
-		
+		app.start();
 		//app.handleRequest('<?= $this->uri->uri_string() ?>');
 		
 		// Listing
