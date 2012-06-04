@@ -23,6 +23,7 @@
 				init_list();
 			});
 			this.get('/edit/:content_type/:urlid', function(req) {
+				console.log("Routed content_type/urlid");
 				$(document.body).data('content_type', req.params['content_type']);
 				$(document.body).data('urlid', req.params['urlid']);
 				prepRouter();
