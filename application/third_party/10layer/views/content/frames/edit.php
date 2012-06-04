@@ -12,6 +12,7 @@
 <script src="/tlresources/file/js/jquery.pagination.js"></script>
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script>
+	var currentpage=false;
 	//Router
 	var app = Davis(function() {
 		this.configure(function () {
@@ -19,9 +20,19 @@
 			this.raiseErrors = true;
 			this.formSelector = "noforms";
 		});
+		this.before('/edit/:content_type', function(req) {
+			console.log('before '+currentpage);
+			if ('/edit/'+req.params['content_type'] == currentpage) {
+				console.log(currentpage);
+				return false;
+			}
+		});
+		
 		this.get('/edit/:content_type', function(req) {
 			$(document.body).data('content_type', req.params['content_type']);
 			$(document.body).trigger('router.init_list');
+			currentpage = '/edit/'+req.params['content_type'];
+			console.log('Set '+currentpage);
 		});
 		this.get('/edit/:content_type/:urlid', function(req) {
 			$(document.body).data('content_type', req.params['content_type']);
