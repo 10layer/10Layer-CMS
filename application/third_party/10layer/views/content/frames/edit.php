@@ -16,22 +16,22 @@
 		
 		//Router
 		var app = Davis(function() {
-			this.get('#', function(req) {});
+			console.log("init Davis");
 			this.get('/edit/:content_type', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
 				prepRouter();
 				init_list();
 			});
 			this.get('/edit/:content_type/:urlid', function(req) {
-				console.log("Routed content_type/urlid");
 				$(document.body).data('content_type', req.params['content_type']);
 				$(document.body).data('urlid', req.params['urlid']);
 				prepRouter();
 				init_edit();
 			});
+			this.get('#', function(req) {});
 		});
 		
-		app.start();
+		
 		
 		// Listing
 		function init_list() { //Run this the first time we initiate our list. After that, run update_list
@@ -214,6 +214,7 @@
 		<?= implode(",", $workflow_array); ?>
 	);
 	
+	app.start();
 </script>
 <script type="text/template" id="listing-template">
 	<div id="contentlist" class="boxed full">
