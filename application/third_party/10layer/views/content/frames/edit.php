@@ -13,42 +13,48 @@
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script>
 	var currentpage=false;
-	//Router
+	
+		
+	$(function() {
+	
+		//Router
 	var app = Davis(function() {
 		this.configure(function () {
-			//this.generateRequestOnPageLoad = true;
+			this.generateRequestOnPageLoad = true;
 			this.raiseErrors = true;
 			this.formSelector = "noforms";
 		});
+		
 		this.before('/edit/:content_type', function(req) {
-			console.log('before '+currentpage);
-			if ('/edit/'+req.params['content_type'] == currentpage) {
-				console.log(currentpage);
+			if ($(document.body).data('content_type') == req.params['content_type'] && $(document.body).data('page')=='list') {
+				return false;
+			}
+		});
+		
+		this.before('/edit/:content_type/:urlid', function(req) {
+			if ($(document.body).data('urlid') == req.params['urlid'] && $(document.body).data('page')=='edit') {
 				return false;
 			}
 		});
 		
 		this.get('/edit/:content_type', function(req) {
 			$(document.body).data('content_type', req.params['content_type']);
+			$(document.body).data('page', 'list');
 			$(document.body).trigger('router.init_list');
-			currentpage = '/edit/'+req.params['content_type'];
-			console.log('Set '+currentpage);
 		});
+		
 		this.get('/edit/:content_type/:urlid', function(req) {
 			$(document.body).data('content_type', req.params['content_type']);
 			$(document.body).data('urlid', req.params['urlid']);
+			$(document.body).data('page', 'edit');
 			$(document.body).trigger('router.init_edit');
-		});
-		this.post('/edit/ajaxsubmit/*stuff', function(req) {
-			console.log("Submit");
 		});
 		this.get('#', function(req) {});
-		this.bind('start', function () {
+		/*this.bind('start', function () {
 			$(document.body).trigger('router.init_edit');
-		});
+		});*/
 	});
-		
-	$(function() {
+	
 		function prepRouter() {
 			clear_ajaxqueue();
 			$('#dyncontent').children().find('.richedit').each(function() {
@@ -59,7 +65,8 @@
 		}
 
 		$(document.body).bind('router.init_list', function() {
-			prepRouter();
+			console.log("init_list");
+			//prepRouter();
 			init_list();
 		});
 		
@@ -128,7 +135,9 @@
 			});
 		}
 		
+		var ajaxqueue=new Array();
 		function clear_ajaxqueue() {
+			if (!ajaxqueue) return;
 			while(ajaxqueue.length>0) {
 				jqXHR=ajaxqueue.pop();
 				jqXHR.abort();
@@ -150,7 +159,7 @@
 			);
 		}
 		
-		var ajaxqueue=new Array();
+		
 		function update_autos() {
 			$(".ajax_autoload").each(function() {
 				var url=$(this).attr("url");
