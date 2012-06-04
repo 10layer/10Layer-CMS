@@ -16,6 +16,9 @@
 		
 		//Router
 		var app = Davis(function() {
+			this.configure(function () {
+				this.generateRequestOnPageLoad = true;
+			});
 			this.get('/edit/:content_type', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
 				prepRouter();
@@ -28,13 +31,9 @@
 				init_edit();
 			});
 			this.get('#', function(req) {});
-			this.configure(function () {
-				this.generateRequestOnPageLoad = true
-			})
-			
 		});
 		
-		app.start();
+		//app.start();
 		
 		//app.handleRequest('<?= $this->uri->uri_string() ?>');
 		
