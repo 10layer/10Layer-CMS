@@ -12,28 +12,46 @@
 <script src="/tlresources/file/js/jquery.pagination.js"></script>
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script>
-	$(function() {
-		
-		//Router
+	//Router
 		var app = Davis(function() {
 			this.configure(function () {
-				this.generateRequestOnPageLoad = true;
+				//this.generateRequestOnPageLoad = true;
+				this.raiseErrors = true;
 			});
 			this.get('/edit/:content_type', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
-				prepRouter();
-				init_list();
+				$(document.body).trigger('router.init_list');
+				
 			});
 			this.get('/edit/:content_type/:urlid', function(req) {
 				$(document.body).data('content_type', req.params['content_type']);
 				$(document.body).data('urlid', req.params['urlid']);
-				prepRouter();
-				init_edit();
+				$(document.body).trigger('router.init_edit');
 			});
 			this.get('#', function(req) {});
 		});
 		
-		//app.start();
+	$(function() {
+		function prepRouter() {
+			clear_ajaxqueue();
+			$('#dyncontent').children().find('.richedit').each(function() {
+				var name=$(this).attr('name');
+				var o=CKEDITOR.instances[name];
+				if (o) o.destroy();
+				});
+			}
+
+		app.start();
+		
+		$(document.body).bind('router.init_list', function() {
+			prepRouter();
+			init_list();
+		});
+		
+		$(document.body).bind('router.init_edit', function() {
+			prepRouter();
+			init_edit();
+		});
 		
 		//app.handleRequest('<?= $this->uri->uri_string() ?>');
 		
@@ -195,14 +213,7 @@
 			$(this).select();
 		});
 		
-		function prepRouter() {
-			clear_ajaxqueue();
-			$('#dyncontent').children().find('.richedit').each(function() {
-				var name=$(this).attr('name');
-				var o=CKEDITOR.instances[name];
-			    if (o) o.destroy();
-			});
-		}
+		
 	});
 	
 	<?php
