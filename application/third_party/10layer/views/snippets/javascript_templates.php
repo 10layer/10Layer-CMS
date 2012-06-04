@@ -53,7 +53,7 @@
 
 	<% if (field.external==1) { %>
 	<br clear="both"><br clear="both">
-	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>New</span></button>
+	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation">New</button>
 	<br clear="both">
 	<%
 		}
@@ -71,7 +71,7 @@
 
 	<% if (field.external==1) { %>
 	<br clear="both"><br clear="both">
-	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>New</span></button>
+	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation"><span class="ui-button-text">New</button>
 	<br clear="both">
 	<%
 		}
@@ -282,7 +282,7 @@
 		<button class="nesteditems_item_button" contenttype="<%= field.contenttype %>">Change...</button>
 		<div class="section_list" ></div>
 		<br clear="both"/><br clear="both"/>
-		<button><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>New</span></button>
+		<button>New</button>
 	</div>
 </script>
 
@@ -337,11 +337,35 @@
 </script>
 
 <script type='text/template' id='edit-field-reverse'>
-	<%= _.template($("#old-fields-template").html(), { field: field, urlid: urlid, content_type: content_type }) %>
+	<label class='<%= field.label_class %>'><%= field.label %></label>
+	<select name='<%= field.tablename %>_<%= field.name %>' id='<%= field.name %>-hook'>
+		<option value='0'></option>
+	<% 
+		var url='/list/jsonlist/'+field.contenttype;
+		$.get(url, function(data) {
+			_.each(data.content, function(item) {
+				$('#'+field.name+'-hook').append('<option value="'+item.content_id+'" '+((item.content_id==field.value) ? 'selected="selected"' : '')+'>'+item.title+'</option>');
+			});
+		}); 
+	%>
+	</select>
+	<br clear='both' />
 </script>
 
 <script type='text/template' id='create-field-reverse'>
-	<%= _.template($("#old-fields-create-template").html(), { field: field, content_type: content_type }) %>
+	<label class='<%= field.label_class %>'><%= field.label %></label>
+	<select name='<%= field.tablename %>_<%= field.name %>' id='<%= field.name %>-hook'>
+		<option value='0'></option>
+	<% 
+		var url='/list/jsonlist/'+field.contenttype;
+		$.get(url, function(data) {
+			_.each(data.content, function(item) {
+				$('#'+field.name+'-hook').append('<option value="'+item.content_id+'">'+item.title+'</option>');
+			});
+		}); 
+	%>
+	</select>
+	<br clear='both' />
 </script>
 
 <script type='text/template' id='edit-field-rich'>
