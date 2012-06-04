@@ -13,26 +13,31 @@
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script>
 	//Router
-		var app = Davis(function() {
-			this.configure(function () {
-				//this.generateRequestOnPageLoad = true;
-				this.raiseErrors = true;
-			});
-			this.get('/edit/:content_type', function(req) {
-				$(document.body).data('content_type', req.params['content_type']);
-				$(document.body).trigger('router.init_list');
-				
-			});
-			this.get('/edit/:content_type/:urlid', function(req) {
-				$(document.body).data('content_type', req.params['content_type']);
-				$(document.body).data('urlid', req.params['urlid']);
-				$(document.body).trigger('router.init_edit');
-			});
-			this.get('#', function(req) {});
+	var app = Davis(function() {
+		this.configure(function () {
+			//this.generateRequestOnPageLoad = true;
+			this.raiseErrors = true;
+			this.formSelector = "noforms";
 		});
+		this.get('/edit/:content_type', function(req) {
+			$(document.body).data('content_type', req.params['content_type']);
+			$(document.body).trigger('router.init_list');
+		});
+		this.get('/edit/:content_type/:urlid', function(req) {
+			$(document.body).data('content_type', req.params['content_type']);
+			$(document.body).data('urlid', req.params['urlid']);
+			$(document.body).trigger('router.init_edit');
+		});
+		this.post('/edit/ajaxsubmit/*stuff', function(req) {
+			console.log("Submit");
+		});
+		this.get('#', function(req) {});
+		this.bind('start', function () {
+			$(document.body).trigger('router.init_edit');
+		});
+	});
 		
 	$(function() {
-		
 		function prepRouter() {
 			clear_ajaxqueue();
 			$('#dyncontent').children().find('.richedit').each(function() {
@@ -42,8 +47,6 @@
 			});
 		}
 
-		
-		
 		$(document.body).bind('router.init_list', function() {
 			prepRouter();
 			init_list();
@@ -200,6 +203,7 @@
 		
 		$(document).on('click', '#dosubmit_right', function() {
 			$("#contentform").submit();
+			return false;
 		});
 		
 		$(document).on('click', '#dodone_right', function() {
@@ -208,6 +212,7 @@
 			urlid=$(document.body).data('urlid');
 			$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
 			location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+			return false;
 		});
 		
 		$(document).on('click', '.select_on_click', function() {
