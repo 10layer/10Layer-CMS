@@ -65,8 +65,7 @@
 		}
 
 		$(document.body).bind('router.init_list', function() {
-			console.log("init_list");
-			//prepRouter();
+			prepRouter();
 			init_list();
 		});
 		
