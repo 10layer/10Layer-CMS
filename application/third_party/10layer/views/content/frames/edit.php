@@ -200,6 +200,8 @@
 			});
 		}
 		
+		app.start();
+		
 	});
 	
 	<?php
@@ -214,7 +216,6 @@
 		<?= implode(",", $workflow_array); ?>
 	);
 	
-	app.start();
 </script>
 <script type="text/template" id="listing-template">
 	<div id="contentlist" class="boxed full">
