@@ -82,9 +82,64 @@
 			$this->returndata();
 		}
 		
+		public function relations_right($urlid, $content_type, $content_link_type, $limit=0, $offset=0) {
+			$query=$this->db->get_where("content_types", array("urlid"=>$content_type))->row();
+			if (!isset($query->id)) {
+				$this->data["error"]=true;
+				$this->data["msg"]="Content type $content_type not found";
+				$this->returndata();
+				return true;
+			}
+			$type1=$query->id;
+			$query=$this->db->get_where("content_types", array("urlid"=>$content_link_type))->row();
+			if (!isset($query->id)) {
+				$this->data["error"]=true;
+				$this->data["msg"]="Content type $content_type not found";
+				$this->returndata();
+				return true;
+			}
+			$type2=$query->id;
+			if (!empty($limit)) {
+				$this->db->limit($limit, $offset);
+			}
+			$result=$this->db->select('content2.*')->from('content')->join('content_content','content.id=content_content.content_id')->join('content AS content2', 'content_content.content_link_id=content2.id')->where('content.urlid', $urlid)->where('content2.content_type_id',$type2)->where('content.content_type_id',$type1)->get()->result();
+			$this->data["count"]=$this->db->select('content2.*')->from('content')->join('content_content','content.id=content_content.content_id')->join('content AS content2', 'content_content.content_link_id=content2.id')->where('content.urlid', $urlid)->where('content2.content_type_id',$type2)->where('content.content_type_id',$type1)->get()->num_rows();
+			$this->data["data"]=$result;
+			$this->returndata();
+			return true;
+		}
+		
+		public function relations_left($urlid, $content_type, $content_link_type, $limit=0, $offset=0) {
+			$query=$this->db->get_where("content_types", array("urlid"=>$content_type))->row();
+			if (!isset($query->id)) {
+				$this->data["error"]=true;
+				$this->data["msg"]="Content type $content_type not found";
+				$this->returndata();
+				return true;
+			}
+			$type1=$query->id;
+			$query=$this->db->get_where("content_types", array("urlid"=>$content_link_type))->row();
+			if (!isset($query->id)) {
+				$this->data["error"]=true;
+				$this->data["msg"]="Content type $content_type not found";
+				$this->returndata();
+				return true;
+			}
+			$type2=$query->id;
+			if (!empty($limit)) {
+				$this->db->limit($limit, $offset);
+			}
+			$result=$this->db->select('content.*')->from('content')->join('content_content','content.id=content_content.content_id')->join('content AS content2', 'content_content.content_link_id=content2.id')->where('content2.urlid', $urlid)->where('content2.content_type_id',$type1)->where('content.content_type_id',$type2)->get()->result();
+			$this->data["count"]=$this->db->select('content.*')->from('content')->join('content_content','content.id=content_content.content_id')->join('content AS content2', 'content_content.content_link_id=content2.id')->where('content2.urlid', $urlid)->where('content2.content_type_id',$type1)->where('content.content_type_id',$type2)->get()->num_rows();
+			$this->data["data"]=$result;
+			
+			$this->returndata();
+			return true;
+		}
+		
 		protected function returndata() {
 			if ($this->_render) {
-				$this->load->view("api/json",array("data"=>$this->data));
+				$this->load->view("json",array("data"=>$this->data));
 			}
 		}
 	}
