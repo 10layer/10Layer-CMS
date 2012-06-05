@@ -60,6 +60,9 @@
 		 */
 		public function get_minor_version() {
 			$query=$this->ci->db->get_where("content",array("urlid"=>$this->urlid));
+			if (!isset($query->row()->minor_version)) {
+				return 0;
+			}
 			return (Int) $query->row()->minor_version;
 			/*$result=$this->get();
 			if (!isset($result->minor_version)) {
@@ -77,6 +80,9 @@
 		 */
 		public function get_major_version() {
 			$query=$this->ci->db->get_where("content",array("urlid"=>$this->urlid));
+			if (!isset($query->row()->major_version)) {
+				return 0;
+			}
 			return (Int) $query->row()->major_version;
 			//$result=$this->get();
 			//return (Int) $result->major_version;
