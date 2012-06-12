@@ -471,7 +471,8 @@
 				return false;
 			}
 			$contentobj->insert();
-			return $this;
+			
+			return $contentobj;
 		}
 		
 		/**
@@ -794,6 +795,7 @@
 			}
 			//return $this->count();
 		}
+		
 		
 		
 		
