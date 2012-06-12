@@ -61,7 +61,10 @@
 		}
 		
 		$(document).on('click', '#dosubmit_right', function() {
-			$("#contentform").submit();
+			if (!$(document.body).data('saving')) {
+				$("#contentform").submit();
+			}
+			return false;
 		});
 		
 		$(document).ajaxError(function(e, xhr, settings, exception) { 
@@ -92,9 +95,10 @@
 				dataType: "json",
 				beforeSubmit: function(a,f,o) {
 					o.dataType = "json";
-					
+					$(document).data("saving",true);
 				},
 				success: function(data) {
+					$(document).data("saving",false);
 					if (data.error) {
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /><br /> "+data.info+"</p></div>");
 						$("#msgdialog").dialog({
@@ -122,6 +126,18 @@
 							}
 						});
 					}
+				},
+				error: function(e) {
+					$(document).data("saving",false);
+					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
+					$("#msgdialog").dialog({
+						modal: true,
+						buttons: {
+							Ok: function() {
+								$(this).dialog("close");
+							}
+						}
+					});
 				},
 			});
 			return false;

@@ -311,55 +311,7 @@ function init_form() {
 		});
 	});
 	
-	$(document.body).data('done_submit',false);
-	$("#contentform").ajaxForm({
-			delegation: true,
-			dataType: "json",
-			iframe: true,
-			debug: true,
-			iframeSrc: '/blank',
-			success: function(data) {
-				if (data.error) {
-					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
-					$("#msgdialog").dialog({
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$(this).dialog("close");
-							}
-						}
-					});
-				} else {
-					$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-					if ($(document.body).data('done_submit')) {
-						content_type=$(document.body).data('content_type');
-						urlid=$(document.body).data('urlid');
-						$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
-						location.href="/workers/content/unlock/"+content_type+"/"+urlid;
-					} else {
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
-								}
-							}
-						});
-					}
-				}
-			},
-			error: function(e) {
-				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
-				$("#msgdialog").dialog({
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-			}
-		});
+	
 		
 		
 	/*$('.file_upload').each(function() {
