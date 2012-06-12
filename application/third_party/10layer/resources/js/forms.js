@@ -311,6 +311,7 @@ function init_form() {
 		});
 	});
 	
+	$(document.body).data('done_submit',false);
 	$("#contentform").ajaxForm({
 			delegation: true,
 			dataType: "json",
@@ -330,14 +331,21 @@ function init_form() {
 					});
 				} else {
 					$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-					$("#msgdialog").dialog({
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$(this).dialog("close");
+					if ($(document.body).data('done_submit')) {
+						content_type=$(document.body).data('content_type');
+						urlid=$(document.body).data('urlid');
+						$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
+						location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+					} else {
+						$("#msgdialog").dialog({
+							modal: true,
+							buttons: {
+								Ok: function() {
+									$(this).dialog("close");
+								}
 							}
-						}
-					});
+						});
+					}
 				}
 			},
 			error: function(e) {

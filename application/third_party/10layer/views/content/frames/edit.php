@@ -221,16 +221,14 @@
 		}
 		
 		$(document).on('click', '#dosubmit_right', function() {
+			$(document.body).data('done_submit', false);
 			$("#contentform").submit();
 			return false;
 		});
 		
 		$(document).on('click', '#dodone_right', function() {
+			$(document.body).data('done_submit', true);
 			$("#contentform").submit();
-			content_type=$(document.body).data('content_type');
-			urlid=$(document.body).data('urlid');
-			$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
-			location.href="/workers/content/unlock/"+content_type+"/"+urlid;
 			return false;
 		});
 		
@@ -254,6 +252,8 @@
 			$(this).parent().submit();
 		});
 		
+		var allow_done=true;
+		
 		$("#createdialog").delegate("#createform-popup","submit",function() {
 		//Handles the submit for a new item
 			$("#createdialog #createform-popup").ajaxSubmit({
@@ -265,6 +265,7 @@
 				},
 				success: function(data) {
 					if (data.error) {
+						allow_done=false;
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
 						$("#msgdialog").dialog({
 							modal: true,
@@ -275,6 +276,7 @@
 							}
 						});
 					} else {
+						allow_done=true;
 						$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
 						var title=data.data.title;
 						var id=data.data.id;
@@ -284,14 +286,16 @@
 						$("."+fieldname).val(id);
 						//$("#dyncontent").find()
 						$("#createdialog").dialog("close");
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
+						
+							$("#msgdialog").dialog({
+								modal: true,
+								buttons: {
+									Ok: function() {
+										$(this).dialog("close");
+									}
 								}
-							}
-						});
+							});
+						
 					}
 					
 				}
