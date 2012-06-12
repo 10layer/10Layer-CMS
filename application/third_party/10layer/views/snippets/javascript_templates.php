@@ -265,8 +265,7 @@
 		<div class="nesteditems_item_label"><%= (field.data) ? field.data.fields.title.value : '' %></div>
 		<button class="nesteditems_item_button" contenttype="<%= field.contenttype %>">Change...</button>
 		<div class="section_list" ></div>
-		<br clear="both"/><br clear="both"/>
-		<button><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>New</span></button>
+		<br clear="both"/>
 	</div>
 </script>
 
@@ -287,8 +286,7 @@
 		<div class="nesteditems_item_label"><%= (field.data) ? field.data.fields.title.value : 'None selected' %></div>
 		<button class="nesteditems_item_button" contenttype="<%= field.contenttype %>">Change...</button>
 		<div class="section_list" ></div>
-		<br clear="both"/><br clear="both"/>
-		<button>New</button>
+		<br clear="both"/>
 	</div>
 </script>
 

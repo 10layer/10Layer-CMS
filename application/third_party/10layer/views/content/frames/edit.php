@@ -238,6 +238,67 @@
 			$(this).select();
 		});
 		
+		$(document).on('click', '.add-relation',function() {
+		//Creates the popup box for adding a new item
+			var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
+			var content_type=$(this).attr("contenttype");
+			$.getJSON("<?= base_url() ?>create/jsoncreate/"+content_type+"?jsoncallback=?", function(data) {
+				$('#createdialog').dialog({ minWidth: 700, modal: true, }).html(_.template($("#create-popup-template").html(), { data:data, content_type: content_type }));
+				init_form();
+			});
+			//$("#createdialog").data("fieldname",fieldname);
+			return false;
+		});
+		
+		$(document).on('click', '#create-popup-submit', function() {
+			$(this).parent().submit();
+		});
+		
+		$("#createdialog").delegate("#createform-popup","submit",function() {
+		//Handles the submit for a new item
+			$("#createdialog #createform-popup").ajaxSubmit({
+				dataType: "json",
+				iframe: true,
+				
+				beforeSubmit: function(a,f,o) {
+					o.dataType = "json";
+				},
+				success: function(data) {
+					if (data.error) {
+						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+						$("#msgdialog").dialog({
+							modal: true,
+							buttons: {
+								Ok: function() {
+									$(this).dialog("close");
+								}
+							}
+						});
+					} else {
+						$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+						var title=data.data.title;
+						var id=data.data.id;
+						var fieldname=$("#createdialog").data("fieldname");
+						var newoption="<option value='"+id+"'>"+title+"</option>";
+						$("."+fieldname).prepend(newoption);
+						$("."+fieldname).val(id);
+						//$("#dyncontent").find()
+						$("#createdialog").dialog("close");
+						$("#msgdialog").dialog({
+							modal: true,
+							buttons: {
+								Ok: function() {
+									$(this).dialog("close");
+								}
+							}
+						});
+					}
+					
+				}
+			});
+			return false;
+		});
+		
 		
 	});
 	
@@ -332,6 +393,22 @@
 		<div id="workflows"></div>
 	</div>
 	</div>
+</script>
+
+<script type='text/template' id='create-popup-template'>
+	<div id="create-content" class="boxed wide">
+		<h2>Create - <%= content_type %></h2>
+		<form id='createform-popup' method='post' enctype='multipart/form-data' action='<?= base_url() ?>create/ajaxsubmit/<%= content_type %>'>
+		<input type='hidden' name='action' value='submit' />
+		<% _.each(data.fields, function(field) { %>
+			<% if (!field.hidden) { %>
+				<%= _.template($('#create-field-'+field.type).html(), { field: field, urlid: false, content_type: content_type  }) %>
+			<% } %>
+		<% }); %>
+		<button id='create-popup-submit'>Submit</button>
+		</form>
+	</div>
+	
 </script>
 
 <script id="template-upload" type="text/x-tmpl">
