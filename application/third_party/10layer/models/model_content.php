@@ -471,7 +471,6 @@
 				return false;
 			}
 			$contentobj->insert();
-			
 			return $contentobj;
 		}
 		
