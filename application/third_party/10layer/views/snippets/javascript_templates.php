@@ -401,7 +401,7 @@
 	});
 	%>
 	<% _.each(field.options, function(option, key) { %>
-		<option value='<%= ( key + keyadjust) %>' <%= (field.value==( key + keyadjust)) ? 'selected="selected"' : '' %> ><%= option %></option>
+		<option value='<%= key %>' <%= (field.value==( key + keyadjust)) ? 'selected="selected"' : '' %> ><%= option %></option>
 	<% }); %>
 	</select>
 	<br clear='both' />
@@ -420,7 +420,7 @@
 	});
 	%>
 	<% _.each(field.options, function(option, key) { %>
-		<option value='<%= (key + keyadjust) %>' <%= (field.value==( key + keyadjust) ) ? 'selected="selected"' : '' %> ><%= option %></option>
+		<option value='<%= key %>' <%= (field.value==( key + keyadjust) ) ? 'selected="selected"' : '' %> ><%= option %></option>
 	<% }); %>
 	</select>
 	<br clear='both' />

@@ -797,6 +797,7 @@
 		
 		
 		
+		
 		/**
 		 * smart_count function.
 		 *
