@@ -210,7 +210,13 @@
 </script>
 
 <script type='text/template' id='edit-field-hidden'>
+	<% if (field.multiple) { 
+		_.each(field.value, function(value) { %>
+			<input type='hidden' name='<%= field.tablename %>_<%= field.name %>[]' value='<%= value %>' />
+	<% 	});
+		} else { %>
 	<input type='hidden' name='<%= field.tablename %>_<%= field.name %>' value='<%= field.value %>' />
+	<% } %>
 </script>
 
 <script type='text/template' id='create-field-hidden'>
