@@ -115,13 +115,13 @@
 							modal: true,
 							buttons: {
 								"Create another": function() {
-									location.href="<?= base_url() ?>create/<?= $type ?>";
+									location.href="<?= base_url() ?>create/"+$(document.body).data('content_type');
 								},
 								"Reuse info": function() {
 									$(this).dialog( "close" );
 								},
 								"Edit": function() {
-									location.href="<?= base_url() ?>edit/<?= $type ?>/"+data.data.urlid;
+									location.href="<?= base_url() ?>edit/"+$(document.body).data('content_type')+"/"+data.data.urlid;
 								}
 							}
 						});
