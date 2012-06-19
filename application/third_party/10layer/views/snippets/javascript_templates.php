@@ -224,6 +224,7 @@
 </script>
 
 <script type='text/template' id='edit-field-image'>
+	<div class='field-image'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<input type="file" name="<%= field.tablename %>_<%= field.name %>" class="file_upload <%= field.class %>" value="<%= field.value %>" data-url='/edit/fileupload/<%= content_type %>/<%= urlid %>/<%= field.tablename %>_<%= field.name %>' />
 	<input type="hidden" name="<%= field.tablename %>_<%= field.name %>" value="<%= field.value %>" />
@@ -245,17 +246,20 @@
 <%
 	}
 %>
-<% if (field.linkformat) { %>
+<% if (field.linkformat && urlid) { %>
 	<label>Download link</label>
 	<div class='download_url'><input type='text' class='select_on_click' readonly='readonly' value='<%= field.linkformat.replace('{filename}', field.value) %>' /></div>
 	<% } %>
 <br clear='both' />
+	</div>
 </script>
 
 <script type='text/template' id='create-field-image'>
+	<div class='field-image'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<input type="file" name="<%= field.tablename %>_<%= field.name %>" class="file_upload <%= field.class %>" />
 	<br clear='both' />
+	</div>
 </script>
 
 <script type='text/template' id='edit-field-nesteditems'>
