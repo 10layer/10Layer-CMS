@@ -169,6 +169,21 @@
 			return true;
 		}
 		
+		public function insert($content_type, $api_key) {
+			$api_key=trim($api_key);
+			$comp_api_key=$this->config->item('api_key');
+			if (!empty($api_key) && ($comp_api_key != $api_key)) {
+				header('HTTP/1.1 401 Access Denied');
+				die();
+			}
+			require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
+			$tlcontroller=new TL_Controller_Create();
+			$result=$tlcontroller->submit($content_type);
+			$this->data=$result;
+			$this->returndata();
+			return true;
+		}
+		
 		protected function returndata() {
 			if ($this->_render) {
 				$this->load->view("json",array("data"=>$this->data));

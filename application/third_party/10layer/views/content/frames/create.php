@@ -89,8 +89,34 @@
 		});*/
 		
 		$("#dyncontent").delegate("#contentform","submit",function() {
-			
-			$(this).ajaxSubmit({
+			$(document).data("saving",true);
+			content_type=$(document.body).data('content_type');
+			if (!$(document.body).data('saving')) {
+				$(document.body).data('saving', true);
+				var formData = new FormData($('#contentform')[0]);
+				$.ajax({
+					url: "<?= base_url() ?>/workers/api/insert/"+content_type+"/<?= $this->config->item('api_key') ?>",  //server script to process data
+					type: 'POST',
+					xhr: function() {  // custom xhr
+					    myXhr = $.ajaxSettings.xhr();
+					    if(myXhr.upload){ // check if upload property exists
+					        myXhr.upload.addEventListener('progress',uploadProgress, false); // for handling the progress of the upload
+				    	}
+					    return myXhr;
+					},
+					//Ajax events
+					beforeSend: uploadBefore,
+					success: uploadComplete,
+					error: uploadFailed,
+					// Form data
+					data: formData,
+					//Options to tell JQuery not to process data or worry about content-type
+					cache: false,
+					contentType: false,
+					processData: false
+				});
+			}
+			/*$(this).ajaxSubmit({
 				iframe: true,
 				dataType: "json",
 				beforeSubmit: function(a,f,o) {
@@ -139,9 +165,60 @@
 						}
 					});
 				},
-			});
+			});*/
 			return false;
 		});
+		
+		function uploadBefore(e) {}
+		
+		function uploadProgress(e) {
+			//console.log("Upload progress");
+			//console.log(e);
+		}
+		
+		function uploadComplete(data) {
+			$(document.body).data("saving",false);
+			if (data.error) {
+			    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /><br /> "+data.info+"</p></div>");
+			    $("#msgdialog").dialog({
+			    	modal: true,
+			    	buttons: {
+			    		Ok: function() {
+			    			$( this ).dialog( "close" );
+			    		}
+			    	}
+			    });
+			} else {
+			    $("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+			    $("#msgdialog").dialog({
+			    	modal: true,
+			    	buttons: {
+			    		"Create another": function() {
+			    			location.href="<?= base_url() ?>create/"+$(document.body).data('content_type');
+			    		},
+			    		"Reuse info": function() {
+			    			$(this).dialog( "close" );
+			    		},
+			    		"Edit": function() {
+			    			location.href="<?= base_url() ?>edit/"+$(document.body).data('content_type')+"/"+data.data.urlid;
+			    		}
+			    	}
+			    });
+			}
+		}
+		
+		function uploadFailed(e) {
+			$(document.body).data("saving",false);
+			$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
+			$("#msgdialog").dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
 		
 		$("#dyncontent").delegate(".add-relation","click",function() {
 		//Creates the popup box for adding a new item
