@@ -291,7 +291,28 @@
 			}
 		}
 		
-		function save_success(data) {
+		$(document).on('change', 'input[type=file]', function() {
+			content_type=$(document.body).data('content_type');
+			var files=this.files; //FileList object
+			var file=files[0]; //Only handle single upload at a time
+			var el=$(this);
+			var container=el.parent();
+			var viewer = new FileReader();
+			viewer.onload = (function(f) {
+				container.find('.preview-image img').attr('src', f.target.result).css("height", 300);
+			});
+			viewer.readAsDataURL(file);
+			
+		});
+		
+		function uploadBefore(e) {}
+		
+		function uploadProgress(e) {
+			//console.log("Upload progress");
+			//console.log(e);
+		}
+		
+		function uploadComplete(data) {
 			$(document.body).data("saving",false);
 			if (data.error) {
 			    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
@@ -321,34 +342,6 @@
 			    	});
 			    }
 			}
-		}
-		
-		$(document).on('change', 'input[type=file]', function() {
-			content_type=$(document.body).data('content_type');
-			var files=this.files; //FileList object
-			var file=files[0]; //Only handle single upload at a time
-			var el=$(this);
-			var container=el.parent();
-			var viewer = new FileReader();
-			viewer.onload = (function(f) {
-				container.find('.preview-image img').attr('src', f.target.result).css("height", 300);
-			});
-			viewer.readAsDataURL(file);
-			
-		});
-		
-		function uploadBefore(e) {
-			
-		}
-		
-		function uploadProgress(e) {
-			console.log("Upload progress");
-			console.log(e);
-		}
-		
-		function uploadComplete(response) {
-			$(document.body).data("saving",false);
-			save_success(response);
 		}
 		
 		function uploadFailed(e) {
