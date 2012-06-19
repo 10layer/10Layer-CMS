@@ -221,22 +221,154 @@
 		}
 		
 		$(document).on('click', '#dosubmit_right', function() {
-			if (!$(document.body).data('saving')) {
-				$(document.body).data('saving', true);
-				$(document.body).data('done_submit', false);
-				$("#contentform").submit();
-			}
+			$(document.body).data('done_submit', false);
+			save();
 			return false;
 		});
 		
 		$(document).on('click', '#dodone_right', function() {
-			if (!$(document.body).data('saving')) {
-				$(document.body).data('saving', true);
-				$(document.body).data('done_submit', true);
-				$("#contentform").submit();
-			}
+			$(document.body).data('done_submit', true);
+			save();
 			return false;
 		});
+		
+		
+		function save() {
+			content_type=$(document.body).data('content_type');
+			urlid=$(document.body).data('urlid');
+			if (!$(document.body).data('saving')) {
+				$(document.body).data('saving', true);
+				var formData = new FormData($('#contentform')[0]);
+				$.ajax({
+					url: "<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>",  //server script to process data
+					type: 'POST',
+					xhr: function() {  // custom xhr
+					    myXhr = $.ajaxSettings.xhr();
+					    if(myXhr.upload){ // check if upload property exists
+					        myXhr.upload.addEventListener('progress',uploadProgress, false); // for handling the progress of the upload
+				    	}
+					    return myXhr;
+					},
+					//Ajax events
+					beforeSend: uploadBefore,
+					success: uploadComplete,
+					error: uploadFailed,
+					// Form data
+					data: formData,
+					//Options to tell JQuery not to process data or worry about content-type
+					cache: false,
+					contentType: false,
+					processData: false
+				});
+				/*var data = {};
+				$('#contentform').find('input, textarea, select').each(function(x, field) {
+					if (field.name) {
+						if (field.name.indexOf('[]')>0) {
+							if (!$.isArray(data[field.name])) {
+								data[field.name]=new Array();
+							}
+							data[field.name].push(field.value);
+						} else {
+							data[field.name]=field.value;
+						}
+					}
+					
+				});
+				$.getJSON("<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>?jsoncallback=?", data, function(response) {
+					save_success(response);
+				}).error(function(e) {
+					$(document.body).data("saving",false);
+					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
+					$("#msgdialog").dialog({
+						modal: true,
+						buttons: {
+							Ok: function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+				});*/
+			}
+		}
+		
+		function save_success(data) {
+			$(document.body).data("saving",false);
+			if (data.error) {
+			    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+			    $("#msgdialog").dialog({
+			    	modal: true,
+			    	buttons: {
+			    		Ok: function() {
+			    			$(this).dialog("close");
+			    		}
+			    	}
+			    });
+			} else {
+			    $("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+			    if ($(document.body).data('done_submit')) {
+			    	content_type=$(document.body).data('content_type');
+			    	urlid=$(document.body).data('urlid');
+			    	$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
+			    	location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+			    } else {
+			    	$("#msgdialog").dialog({
+			    		modal: true,
+			    		buttons: {
+			    			Ok: function() {
+			    				$(this).dialog("close");
+			    			}
+			    		}
+			    	});
+			    }
+			}
+		}
+		
+		$(document).on('change', 'input[type=file]', function() {
+			content_type=$(document.body).data('content_type');
+			var files=this.files; //FileList object
+			var file=files[0]; //Only handle single upload at a time
+			var el=$(this);
+			var container=el.parent();
+			var viewer = new FileReader();
+			viewer.onload = (function(f) {
+				container.find('.preview-image img').attr('src', f.target.result).css("height", 300);
+			});
+			viewer.readAsDataURL(file);
+			
+		});
+		
+		function uploadBefore(e) {
+			
+		}
+		
+		function uploadProgress(e) {
+			console.log("Upload progress");
+			console.log(e);
+		}
+		
+		function uploadComplete(response) {
+			$(document.body).data("saving",false);
+			save_success(response);
+		}
+		
+		function uploadFailed(e) {
+			$(document.body).data("saving",false);
+			$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
+			$("#msgdialog").dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+		
+		function uploadCanceled(e) {
+			$(document.body).data("saving",false);
+			console.log("uploadCanceled");
+			console.log(e);
+		}
 		
 		$(document).on('click', '.select_on_click', function() {
 			$(this).select();
@@ -262,59 +394,6 @@
 		
 		$(document.body).data('done_submit',false);
 		$(document.body).data("saving",false);
-		$("#contentform").ajaxForm({
-			delegation: true,
-			dataType: "json",
-			iframe: true,
-			debug: true,
-			iframeSrc: '/blank',
-			beforeSubmit: function() {
-				$(document.body).data("saving",true);
-			},
-			success: function(data) {
-				$(document.body).data("saving",false);
-				if (data.error) {
-					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
-					$("#msgdialog").dialog({
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$(this).dialog("close");
-							}
-						}
-					});
-				} else {
-					$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-					if ($(document.body).data('done_submit')) {
-						content_type=$(document.body).data('content_type');
-						urlid=$(document.body).data('urlid');
-						$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
-						location.href="/workers/content/unlock/"+content_type+"/"+urlid;
-					} else {
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
-								}
-							}
-						});
-					}
-				}
-			},
-			error: function(e) {
-				$(document.body).data("saving",false);
-				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
-				$("#msgdialog").dialog({
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-			}
-		});
 		
 		$("#createdialog").delegate("#createform-popup","submit",function() {
 		//Handles the submit for a new item
