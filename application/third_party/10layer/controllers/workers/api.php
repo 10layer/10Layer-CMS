@@ -161,8 +161,13 @@
 				header('HTTP/1.1 401 Access Denied');
 				die();
 			}
-			require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
-			$tlcontroller=new TL_Controller_Edit();
+			if (file_exists(APPPATH.'controllers/edit/tldefault.php')) {
+				require_once(APPPATH.'controllers/edit/tldefault.php');
+				$tlcontroller=new TLDefault();
+			} else {
+				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
+				$tlcontroller=new TL_Controller_Edit();
+			}
 			$result=$tlcontroller->submit($content_type, $urlid);
 			$this->data=$result;
 			$this->returndata();
@@ -176,8 +181,13 @@
 				header('HTTP/1.1 401 Access Denied');
 				die();
 			}
-			require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
-			$tlcontroller=new TL_Controller_Create();
+			if (file_exists(APPPATH.'controllers/create/tldefault.php')) {
+				require_once(APPPATH.'controllers/create/tldefault.php');
+				$tlcontroller=new TLDefault();
+			} else {
+				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
+				$tlcontroller=new TL_Controller_Create();
+			}
 			$result=$tlcontroller->submit($content_type);
 			$this->data=$result;
 			$this->returndata();
