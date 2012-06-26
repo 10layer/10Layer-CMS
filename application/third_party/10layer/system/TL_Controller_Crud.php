@@ -267,10 +267,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			return $returndata;
 		}
 		
-		$do_action=$this->input->post("action");
-		
-		
-		
+		$do_action=$this->input->get_post("action");
 		if (!empty($do_action)) {
 			$this->checkCallback("onBeforeAction",$contentobj);
 			$dbdata=array();
@@ -282,9 +279,8 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				if ($field->readonly || ($field->type=="drilldown")) {
 					//Do Nothing!
 				} else {
-					
 					if (!$this->fileupload($field, $urlid, $contentobj, $returndata)) {
-						$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
+						$contentobj->{$field->name}=$this->input->get_post($field->tablename."_".$field->name);
 					}
 				}
 			}
