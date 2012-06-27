@@ -158,6 +158,10 @@ $(function() {
 		});
 	});
 	
+	$(document).on("click", '.new-window', function() {
+		window.open($(this).attr('href'), '_blank');
+	});
+	
 });
 
 function checkreqs() {

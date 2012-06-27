@@ -20,9 +20,9 @@
 </script>
 <div class="rich_overlay">
 	<div class="rich_overlay_remove">Remove</div>
-	<a href="/edit/picture/<?= $item->urlid ?>" target="_blank" class="rich_overlay_edit">Edit</a>
+	<div class="new-window rich_overlay_edit" href="<?= base_url() ?>edit/picture/<?= $item->urlid ?>">Edit</div>
 </div>
 <div class="selectitem">
-	<div class="selectitem-image"><img src="/workers/picture/display/<?= $item->urlid ?>/cropThumbnailImage/500/300" /></div>
+	<div class="selectitem-image"><img src="workers/picture/display/<?= $item->urlid ?>/cropThumbnailImage/500/300" /></div>
 	<div class="selectitem-title"><?= $item->getData()->title ?></div>
 </div>
