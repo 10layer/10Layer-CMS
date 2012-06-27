@@ -231,6 +231,8 @@
 		
 		
 		function save() {
+			for ( instance in CKEDITOR.instances )
+				CKEDITOR.instances[instance].updateElement();
 			content_type=$(document.body).data('content_type');
 			urlid=$(document.body).data('urlid');
 			if (!$(document.body).data('saving')) {
