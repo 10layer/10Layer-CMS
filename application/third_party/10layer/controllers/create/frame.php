@@ -19,7 +19,7 @@
 		public function display($type) {
 			$data["type"]=$type;
 			$this->load->library("tluserprefs");
-			$this->tluserprefs->click_menu($type);
+			//$this->tluserprefs->click_menu($type);
 			$this->load->view("content/frames/create",$data);
 		}
 	}
