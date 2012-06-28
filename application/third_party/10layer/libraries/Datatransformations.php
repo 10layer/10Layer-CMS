@@ -44,10 +44,10 @@ class Datatransformations {
 		$dir = dirname($value);
 		
 		$s=exec("/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf | head -n 1");
-		print "/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf\n";
-		print "$s\n";
+		//print "/usr/bin/unzip -o -d .".dirname($value)." .{$value} | grep soundslider.swf\n";
+		//print "$s\n";
 		$s=str_replace("./resources/uploads/files/original/","",$s);
-		print "$s\n";
+		//print "$s\n";
 		$parts=explode(" ",$s);
 
 		$the_parts = explode("/",$parts[sizeof($parts)-1]);
