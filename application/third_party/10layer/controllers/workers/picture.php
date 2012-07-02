@@ -41,8 +41,6 @@
 					if (!file_exists(".".$tmpfile)) {
 						file_put_contents(".".$tmpfile,file_get_contents($field->value));
 					}
-					print $tmpfile;
-					die();
 					$this->_filename=$tmpfile;
 				}
 			}
@@ -74,6 +72,8 @@
 								$filename=$field->data->fields["filename"]->value;
 								$filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
 								$tmpfile="/resources/cache/pictures/cdn/".basename($field->value);
+								print $tmpfile;
+								die();
 								if (!file_exists(".".$tmpfile)) {
 									file_put_contents(".".$tmpfile,file_get_contents($field->value));
 								}
