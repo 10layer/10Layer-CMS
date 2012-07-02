@@ -18,7 +18,7 @@
 		 */
 		public function __construct() {
 			parent::__construct();
-			$cachefilename=$this->_cachefilename();
+			//$cachefilename=$this->_cachefilename();
 			if (is_file($cachefilename)) {
 				$cached=$this->header($cachefilename);
 				if (!$cached) {
@@ -47,18 +47,28 @@
 			if (empty($this->_filename)) {
 				foreach($fields as $field) {
 					if ($field->type=="file" || $field->type=="image") {
-						$this->_filename=$field->value;
-						if (!empty($field->directory)) {
-							$dir=$field->directory;
-							if ($dir[0]!="/") {
-								$dir="/".$dir;
+						if (isset($field->data->fields["filename"]->linkformat) && !empty($field->data->fields["filename"]->linkformat)) {
+							$filename=$field->data->fields["filename"]->value;
+							$filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
+							$tmpfile="./resources/cache/pictures/cdn/".basename($field->data->fields["filename"]->value);
+							if (!file_exists($tmpfile)) {
+								file_put_contents($tmpfile,file_get_contents($filename));
 							}
-							while (strpos($dir,"{")!==false) {
-								$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
-								$replace=eval("return $part;");
-								$dir=str_replace("{".$part."}", $replace, $dir);
+							$this->_filename=ltrim($tmpfile, '.');
+						} else {
+							$this->_filename=$field->value;
+							if (!empty($field->directory)) {
+								$dir=$field->directory;
+								if ($dir[0]!="/") {
+									$dir="/".$dir;
+								}
+								while (strpos($dir,"{")!==false) {
+									$part=substr($dir, strpos($dir,"{")+1, strpos($dir,"}")-strpos($dir,"{")-1);
+									$replace=eval("return $part;");
+									$dir=str_replace("{".$part."}", $replace, $dir);
+								}
+								$this->_filename=$dir.basename($this->_filename);
 							}
-							$this->_filename=$dir.basename($this->_filename);
 						}
 					}
 				}
