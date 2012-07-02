@@ -68,7 +68,12 @@
 				foreach($fields as $field) {
 					if ($field->type=="rich") {
 						if (!empty($field->data->fields["filename"]->value)) {
-							$this->_filename=$field->data->fields["filename"]->value;
+							if (isset($field->data->fields["filename"]->linkformat) && !empty($field->data->fields["filename"]->linkformat)) {
+								$filename=$field->data->fields["filename"]->value;
+								$this->_filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
+							} else {
+								$this->_filename=$field->data->fields["filename"]->value;
+							}
 							break;
 						}
 					}
