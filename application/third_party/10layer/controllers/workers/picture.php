@@ -41,6 +41,8 @@
 					if (!file_exists(".".$tmpfile)) {
 						file_put_contents(".".$tmpfile,file_get_contents($field->value));
 					}
+					print $tmpfile;
+					die();
 					$this->_filename=$tmpfile;
 				}
 			}
