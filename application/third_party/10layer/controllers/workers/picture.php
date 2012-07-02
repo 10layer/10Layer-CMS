@@ -70,9 +70,12 @@
 						if (!empty($field->data->fields["filename"]->value)) {
 							if (isset($field->data->fields["filename"]->linkformat) && !empty($field->data->fields["filename"]->linkformat)) {
 								$filename=$field->data->fields["filename"]->value;
-								$this->_filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
-								print $this->_filename;
-								die();
+								$filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
+								$tmpfile="/resources/cache/pictures/cdn/".basename($field->value);
+								if (!file_exists(".".$tmpfile)) {
+									file_put_contents(".".$tmpfile,file_get_contents($field->value));
+								}
+								$this->_filename=$tmpfile;
 							} else {
 								$this->_filename=$field->data->fields["filename"]->value;
 							}
