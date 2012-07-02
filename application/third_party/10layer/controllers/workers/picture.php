@@ -18,7 +18,7 @@
 		 */
 		public function __construct() {
 			parent::__construct();
-			//$cachefilename=$this->_cachefilename();
+			$cachefilename=$this->_cachefilename();
 			if (is_file($cachefilename)) {
 				$cached=$this->header($cachefilename);
 				if (!$cached) {
