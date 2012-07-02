@@ -23,6 +23,6 @@
 	<div class="new-window rich_overlay_edit" href="<?= base_url() ?>edit/picture/<?= $item->urlid ?>">Edit</div>
 </div>
 <div class="selectitem">
-	<div class="selectitem-image"><img src="workers/picture/display/<?= $item->urlid ?>/cropThumbnailImage/500/300" /></div>
+	<div class="selectitem-image"><img src="/workers/picture/display/<?= $item->urlid ?>/cropThumbnailImage/500/300" /></div>
 	<div class="selectitem-title"><?= $item->getData()->title ?></div>
 </div>
