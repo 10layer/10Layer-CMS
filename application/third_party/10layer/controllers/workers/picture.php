@@ -47,12 +47,10 @@
 			if (empty($this->_filename)) {
 				foreach($fields as $field) {
 					if ($field->type=="file" || $field->type=="image") {
-						print_r($field);
-						die();
-						if (isset($field->data->fields["filename"]->linkformat) && !empty($field->data->fields["filename"]->linkformat)) {
-							$filename=$field->data->fields["filename"]->value;
-							$filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
-							$tmpfile="./resources/cache/pictures/cdn/".basename($field->data->fields["filename"]->value);
+						if (isset($field->linkformat) && !empty($field->linkformat)) {
+							$filename=$field->value;
+							$filename=str_replace('{filename}', $filename, $field->linkformat);
+							$tmpfile="./resources/cache/pictures/cdn/".basename($field->value);
 							if (!file_exists($tmpfile)) {
 								file_put_contents($tmpfile,file_get_contents($filename));
 							}
