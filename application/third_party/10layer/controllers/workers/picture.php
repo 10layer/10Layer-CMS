@@ -71,6 +71,8 @@
 							if (isset($field->data->fields["filename"]->linkformat) && !empty($field->data->fields["filename"]->linkformat)) {
 								$filename=$field->data->fields["filename"]->value;
 								$this->_filename=str_replace('{filename}', $filename, $field->data->fields["filename"]->linkformat);
+								print $this->_filename;
+								die();
 							} else {
 								$this->_filename=$field->data->fields["filename"]->value;
 							}
