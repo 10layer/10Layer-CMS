@@ -75,6 +75,8 @@
 								if (!file_exists($tmpfile)) {
 									file_put_contents($tmpfile,file_get_contents($filename));
 								}
+								print $tmpfile;
+								die();
 								$this->_filename=$tmpfile;
 							} else {
 								$this->_filename=$field->data->fields["filename"]->value;
