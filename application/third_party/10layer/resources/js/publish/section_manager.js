@@ -391,28 +391,75 @@ $(function() {
 	});
 	
 	$('input[type="checkbox"][class="zone_automator"]').change(function() {
-		$("#the_display_panel").html("");
+		
 		var zone = $(this).attr("id");
+		
+		var automator = $(this);
+		
      	if(this.checked) {
      	    //automate a zone
-     	    $.get("/publish/worker/automate_zone/"+$("#section_id").val()+"/"+zone,function(data) {
-	 				$("#message_box").html(data);
-	 		 });
-	 		 
-	 		 $(this).parent().next().children(":first").removeClass("auto_0");
-	 		 $(this).parent().next().children(":first").addClass("auto_1");
-	 		 
+     	    var pointer = this;
+     	    
+     	   	
+     	   	$( "#msgdialog" ).html("Are you sure you want to automate this zone?");
+     	    $( "#msgdialog" ).dialog({
+					resizable: false,
+					height:140,
+					width:380,
+					modal: true,
+					buttons: {
+						"Automate": function() {
+							$("#the_display_panel").html("");
+							$( this ).dialog( "close" );
+							$.get("/publish/worker/automate_zone/"+$("#section_id").val()+"/"+zone,function(data) {
+	 							$("#message_box").html(data);
+	 		 				});			
+	 		 				automator.parent().next().children(":first").removeClass("auto_0");
+	 		 				automator.parent().next().children(":first").addClass("auto_1");
+	 		 				update_panel(true);
+
+						},
+						Cancel: function() {
+							$( this ).dialog( "close" );
+							pointer.checked = false;
+						}
+					}
+			});			
+     	    
+     	    
+     	    	 		 
 	 		 
      	}else{
-     		$.get("/publish/worker/de_automate_zone/"+zone,function(data) {
-	 				$("#message_box").html(data);
-	 		 });
+     		var pointer = this;
+     		$( "#msgdialog" ).html("Are you sure you want to de-automate this zone?");
+     	    $( "#msgdialog" ).dialog({
+					resizable: false,
+					height:140,
+					width:380,
+					modal: true,
+					buttons: {
+						"De-automate": function() {
+							$("#the_display_panel").html("");
+							$( this ).dialog( "close" );
+							$.get("/publish/worker/de_automate_zone/"+zone,function(data) {
+	 							$("#message_box").html(data);
+	 		 				});
 	 		 
-	 		 $(this).parent().next().children(":first").removeClass("auto_1");
-	 		 $(this).parent().next().children(":first").addClass("auto_0");
+	 		 				automator.parent().next().children(":first").removeClass("auto_1");
+	 		 				automator.parent().next().children(":first").addClass("auto_0");
+	 		 				update_panel(true);
+
+						},
+						Cancel: function() {
+							$( this ).dialog( "close" );
+							pointer.checked = true;
+						}
+					}
+			});			
+     	
      	}
      	
-     	update_panel(true);
+     	
      	     
  	}); 	
 
