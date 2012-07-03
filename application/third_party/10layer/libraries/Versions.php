@@ -58,7 +58,10 @@
 		 * @access	public
 		 * @return	int		The minor content version
 		 */
-		public function get_minor_version() {
+		public function get_minor_version($urlid=false) {
+			if (!empty($urlid)) {
+				$this->urlid=$urlid;
+			}
 			$query=$this->ci->db->get_where("content",array("urlid"=>$this->urlid));
 			if (!isset($query->row()->minor_version)) {
 				return 0;
@@ -78,7 +81,10 @@
 		 * @access	public
 		 * @return	int		The major content version
 		 */
-		public function get_major_version() {
+		public function get_major_version($urlid=false) {
+			if (!empty($urlid)) {
+				$this->urlid=$urlid;
+			}
 			$query=$this->ci->db->get_where("content",array("urlid"=>$this->urlid));
 			if (!isset($query->row()->major_version)) {
 				return 0;
@@ -95,7 +101,10 @@
 		 * @access	public
 		 * @return	array		The new version
 		 */
-		public function bump_minor_version() {
+		public function bump_minor_version($urlid=false) {
+			if (!empty($urlid)) {
+				$this->urlid=$urlid;
+			}
 			$this->_save_change_control();
 			$minor_ver=$this->get_minor_version();
 			$minor_ver++;

@@ -20,7 +20,7 @@
 			$data["type"]=$type;
 			$data["urlid"]=$urlid;
 			$this->load->library("tluserprefs");
-			$this->tluserprefs->click_menu($type);
+			//$this->tluserprefs->click_menu($type);
 			$this->load->view("content/frames/edit",$data);
 		}
 	}

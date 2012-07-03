@@ -149,6 +149,7 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$data["content_type"]=$this->_contenttypeurlid;
 		$data["fields"]=$contentobj->getFields();
 		$this->tluserprefs->click_menu($this->_contenttypeurlid);
+		$this->session->set_userdata("contenttype",$this->_contenttypeurlid);
 		$this->load->view("json", array("data"=>$data));
 	}
 	
@@ -267,10 +268,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			return $returndata;
 		}
 		
-		$do_action=$this->input->post("action");
-		
-		
-		
+		$do_action=$this->input->get_post("action");
 		if (!empty($do_action)) {
 			$this->checkCallback("onBeforeAction",$contentobj);
 			$dbdata=array();
@@ -282,9 +280,8 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				if ($field->readonly || ($field->type=="drilldown")) {
 					//Do Nothing!
 				} else {
-					
 					if (!$this->fileupload($field, $urlid, $contentobj, $returndata)) {
-						$contentobj->{$field->name}=$this->input->post($field->tablename."_".$field->name);
+						$contentobj->{$field->name}=$this->input->get_post($field->tablename."_".$field->name);
 					}
 				}
 			}
@@ -533,6 +530,8 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$data["content_type_id"]=$contentobj->content_type->id;
 		$data["content_type"]=$this->_contenttypeurlid;
 		$data["fields"]=$contentobj->getFields();
+		$this->session->set_userdata("contenttype",$this->_contenttypeurlid);
+		$this->tluserprefs->click_menu($this->_contenttypeurlid);
 		$this->load->view("json", array("data"=>$data));
 	}
 	
@@ -808,7 +807,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$data["perpage"]=$this->_pg_perpage;
 		$data["offset"]=$this->_pg_offset;
 		$data["contenttype"]=$this->_contenttypeurlid;
-		$this->tluserprefs->click_menu($this->_contenttypeurlid);
+		//$this->tluserprefs->click_menu($this->_contenttypeurlid);
 		$this->load->view("json",array("data"=>$data));
 	}
 	
@@ -1055,7 +1054,7 @@ class TL_Controller_CRUD extends CI_Controller {
 		$this->content->setContentType($this->_contenttypeurlid);
 		$this->content->setPlatform($this->platforms->id());
 		
-		$this->session->set_userdata("contenttype",$this->_contenttypeurlid);
+		//$this->session->set_userdata("contenttype",$this->_contenttypeurlid);
 		//Send where we are thru Stomp
 		$stompinfo=array("user"=>$this->model_user->get_by_id($this->session->userdata("id")), "url"=>$this->uri->segment_array());
 		$this->messaging->post_message("all",json_encode($stompinfo));

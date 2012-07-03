@@ -50,9 +50,6 @@
 			$(document.body).trigger('router.init_edit');
 		});
 		this.get('#', function(req) {});
-		/*this.bind('start', function () {
-			$(document.body).trigger('router.init_edit');
-		});*/
 	});
 	
 		function prepRouter() {
@@ -234,6 +231,8 @@
 		
 		
 		function save() {
+			for ( instance in CKEDITOR.instances )
+				CKEDITOR.instances[instance].updateElement();
 			content_type=$(document.body).data('content_type');
 			urlid=$(document.body).data('urlid');
 			if (!$(document.body).data('saving')) {
@@ -260,34 +259,6 @@
 					contentType: false,
 					processData: false
 				});
-				/*var data = {};
-				$('#contentform').find('input, textarea, select').each(function(x, field) {
-					if (field.name) {
-						if (field.name.indexOf('[]')>0) {
-							if (!$.isArray(data[field.name])) {
-								data[field.name]=new Array();
-							}
-							data[field.name].push(field.value);
-						} else {
-							data[field.name]=field.value;
-						}
-					}
-					
-				});
-				$.getJSON("<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>?jsoncallback=?", data, function(response) {
-					save_success(response);
-				}).error(function(e) {
-					$(document.body).data("saving",false);
-					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
-					$("#msgdialog").dialog({
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$(this).dialog("close");
-							}
-						}
-					});
-				});*/
 			}
 		}
 		
@@ -307,10 +278,7 @@
 		
 		function uploadBefore(e) {}
 		
-		function uploadProgress(e) {
-			//console.log("Upload progress");
-			//console.log(e);
-		}
+		function uploadProgress(e) {}
 		
 		function uploadComplete(data) {
 			$(document.body).data("saving",false);
@@ -375,7 +343,6 @@
 				$('#createdialog').dialog({ minWidth: 700, modal: true, }).html(_.template($("#create-popup-template").html(), { data:data, content_type: content_type }));
 				init_form();
 			});
-			//$("#createdialog").data("fieldname",fieldname);
 			return false;
 		});
 		
@@ -583,189 +550,6 @@
 <?php
 	$this->load->view("snippets/javascript_templates");
 ?>
-
-<script language="javascript">
-	
-	/*var dirty=false;
-	var autosaveTimer=false;
-	var autosaving=false;
-	
-	function markDirty(e) {
-		dirty=true;
-		clearTimeout(autosaveTimer);
-		autosaveTimer=setTimeout("autosave()", 5000);
-	}
-	
-	function autosave() {
-		//console.log("Checking autosave");
-		if (dirty) {
-			autosaving=true;
-			$("#contentform").ajaxSubmit({
-				dataType: "json",
-				iframe: true,
-				debug: true,
-				url: "<?= base_url()."edit/autosave/$type/$urlid" ?>",
-				beforeSubmit: function(a,f,o) {
-					o.dataType = "json";
-				},
-				success: function(result) {
-					autosaving=false;
-					if (result.changed) {
-						$("#autosave").slideDown("slow");
-					} else {
-						$("#autosave").slideUp("slow");
-					}
-				},
-				error: function() {
-					autosaving=false;
-				},
-			});
-		}
-		dirty=false;
-	}
-	
-	var autosaveTimer=false;
-	
-	
-	
-	$(function() {
-		$(window).unload(function() {
-			if (dirty) {
-				autosave();
-			}
-		});
-		
-		$("#dyncontent").keyup(function(e) {
-			markDirty(e);
-		});
-		
-		$(document).ajaxError(function(e, xhr, settings, exception) { 
-			$("#dyncontent").html(xhr.responseText); 
-		});
-		
-		$("#dyncontent").ajaxComplete(function() {
-			cl.hide();
-		});
-		
-		$("#dyncontent").ajaxStart(function() {
-			if (!autosaving) {
-				cl.show();
-			}
-		});
-				
-		$("#dyncontent").delegate(".add-relation","click",function() {
-		//Creates the popup box for adding a new item
-			var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
-			$("#createdialog").dialog({ minWidth: 700, modal: true, }).load(
-				"/create/fullview/"+$(this).attr("contenttype")+"/embed"
-			);
-			$("#createdialog").data("fieldname",fieldname);
-			return false;
-		});
-		
-		
-		$("#createdialog").delegate("#contentform","submit",function() {
-		//Handles the submit for a new item
-			$("#createdialog #contentform").ajaxSubmit({
-				dataType: "json",
-				iframe: true,
-				
-				beforeSubmit: function(a,f,o) {
-					o.iframe = true;
-					
-				},
-				success: function(data) {
-					if (data.error) {
-						//console.log(data);
-						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
-								}
-							}
-						});
-					} else {
-						$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-						var title=data.data.title;
-						var id=data.data.id;
-						var fieldname=$("#createdialog").data("fieldname");
-						var newoption="<option value='"+id+"'>"+title+"</option>";
-						$("."+fieldname).prepend(newoption);
-						$("."+fieldname).val(id);
-						//$("#dyncontent").find()
-						$("#createdialog").dialog("close");
-						$("#msgdialog").dialog({
-							modal: true,
-							buttons: {
-								Ok: function() {
-									$(this).dialog("close");
-								}
-							}
-						});
-					}
-				},
-				error: function(data) {
-					//console.log("Caught error");
-					//console.log(data);
-				}
-			});
-			return false;
-		});
-		
-		$("#contentform").ajaxForm({
-			delegation: true,
-			dataType: "json",
-			iframe: true,
-			debug: true,
-			iframeSrc: '<?= base_url() ?>blank',
-			beforeSerialize: function(form, options) {
-				
-				//console.log(options);
-			},
-			beforeSubmit: function(form, options) {
-				//console.log("beforeSubmit");
-			},
-			success: function(data) {
-				if (data.error) {
-					$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
-					$("#msgdialog").dialog({
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$(this).dialog("close");
-							}
-						}
-					});
-				} else {
-					$("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-					$("#msgdialog").dialog({
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$(this).dialog("close");
-							}
-						}
-					});
-				}
-			},
-			error: function(e) {
-				//console.log(e);
-				$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.error+"</p></div>");
-				$("#msgdialog").dialog({
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-			}
-		});
-
-	});*/
-</script>
 
 <div id="msgdialog"></div>
 <div id="dyncontent">
