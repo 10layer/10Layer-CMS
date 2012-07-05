@@ -3,6 +3,8 @@
 	 * Workflow Change class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Change extends CI_Controller {
 

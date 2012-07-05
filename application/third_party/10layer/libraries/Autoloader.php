@@ -7,6 +7,7 @@ class Autoloader {
 	 * @param	String	Path to view
 	 * @param	String	Default view to load if we don't find the view we want
 	 * @return	boolean	True if it finds the view, false if it doesn't
+	 * @package 10Layer
 	 */
 	public function javascript($default=true) {
 	    $ci=& get_instance();

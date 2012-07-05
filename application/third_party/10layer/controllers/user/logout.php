@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Logout class.
+ * 
+ * @extends CI_Controller
+ * @package 10Layer
+ * @subpackage Controllers
+ */
 class Logout extends CI_Controller {
 
 	public function __construct() {

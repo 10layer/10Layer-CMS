@@ -8,6 +8,8 @@
 	 * Slimmed down Content Model that forms the base of custom and generic content types.
 	 *
 	 * @extends CI_Model
+	 * @package 10Layer
+	 * @subpackage Models
 	 */
 	class Model_Content extends CI_Model {
 		/**

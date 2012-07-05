@@ -3,6 +3,8 @@
 	 * Preview class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Preview extends CI_Controller {
 

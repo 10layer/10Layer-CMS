@@ -3,6 +3,8 @@
 	 * Import class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Import extends CI_Controller {
 		protected $mapping=array();

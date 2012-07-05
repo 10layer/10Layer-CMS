@@ -4,6 +4,8 @@
 	 * Model_Section class.
 	 * 
 	 * @extends CI_Model
+	 * @package 10Layer
+	 * @subpackage Models
 	 */
 	class Model_Section extends CI_Model {
 	

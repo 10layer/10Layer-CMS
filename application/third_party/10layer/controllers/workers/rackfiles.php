@@ -3,6 +3,8 @@
 	 * Rackfiles class
 	 * 
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Rackfiles extends CI_Controller {
 

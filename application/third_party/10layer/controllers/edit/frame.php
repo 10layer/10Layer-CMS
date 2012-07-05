@@ -3,6 +3,8 @@
 	 * Edit Frame class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Frame extends CI_Controller {
 

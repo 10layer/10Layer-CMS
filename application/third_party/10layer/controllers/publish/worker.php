@@ -5,6 +5,8 @@
 	 * Does all the heavy lifting for the Publish feature
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Worker extends CI_Controller {
 

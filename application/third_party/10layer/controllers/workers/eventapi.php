@@ -5,6 +5,8 @@
 	 * Catch events thrown up by our middleware and do stuff with it
 	 *
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class EventApi extends CI_Controller {
 

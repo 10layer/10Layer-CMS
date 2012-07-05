@@ -3,6 +3,8 @@
 	 * Healthchecks class
 	 * 
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Healthchecks extends CI_Controller {
 

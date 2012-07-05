@@ -42,6 +42,8 @@
  * @licence MIT License
  * @version 0.2
  * @date 15 November 2010
+ * @package 10Layer
+ * @subpackage Libraries
  *
  */	
  

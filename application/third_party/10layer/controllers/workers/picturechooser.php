@@ -3,6 +3,8 @@
 	 * PictureChooser class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class PictureChooser extends CI_Controller {
 

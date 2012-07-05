@@ -3,6 +3,8 @@
 	 * Retrieve_Password class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Retrieve_Password extends CI_Controller {
 

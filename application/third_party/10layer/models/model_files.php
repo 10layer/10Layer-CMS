@@ -1,5 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+/**
+ * Model_Files class.
+ * 
+ * @extends Model_Content
+ * @package 10Layer
+ * @subpackage Models
+ */
 class Model_Files extends Model_Content {
 	public $order_by=array(
 		"timestamp DESC"

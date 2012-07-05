@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Files class.
+ * 
+ * @extends CI_Controller
+ * @package 10Layer
+ * @subpackage Controllers
+ */
 class Files extends CI_Controller {
 
 	public function __construct() {

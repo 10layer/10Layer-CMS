@@ -3,6 +3,8 @@
 	 * Picture class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Libraries
 	 */
 	class Picture extends CI_Controller {
 		protected $_filename="";

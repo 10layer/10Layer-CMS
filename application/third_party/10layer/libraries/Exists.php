@@ -5,6 +5,8 @@
  * Checks if a CodeIgniter thing exists before trying to load it
  * Also searches through Packages.
  * 
+ * @package 10Layer
+ * @subpackage Libraries
  */
 class Exists {
 

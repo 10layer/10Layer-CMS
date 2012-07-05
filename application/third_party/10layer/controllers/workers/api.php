@@ -2,6 +2,8 @@
 	/**
 	 * API class
 	 * 
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 * @extends Controller
 	 */
 	class API extends CI_Controller {
@@ -31,6 +33,16 @@
 			);
 		}
 		
+		/**
+		 * content function.
+		 * 
+		 * Fetches a single content item
+		 *
+		 * @access public
+		 * @param string $contenttype_urlid
+		 * @param string $urlid
+		 * @return void
+		 */
 		public function content($contenttype_urlid, $urlid) {
 			$contenttype=$this->db->get_where("content_types",array("urlid"=>$contenttype_urlid))->row();
 			if (empty($contenttype->id)) {
@@ -46,12 +58,31 @@
 			$this->returndata();
 		}
 		
+		/**
+		 * content_cached function.
+		 * 
+		 * Same as content, but uses memcache for the item
+		 *
+		 * @access public
+		 * @param string $contenttype_urlid
+		 * @param string $urlid
+		 * @return void
+		 */
 		public function content_cached($contenttype_urlid, $urlid) {
 			$this->load->library("memcacher");
 			$this->data["data"]=$this->memcacher->getById($contenttype_urlid, $urlid);
 			$this->returndata();
 		}
 		
+		/**
+		 * section function.
+		 * 
+		 * Returns all zones and content items in a section
+		 *
+		 * @access public
+		 * @param string $section_urlid
+		 * @return void
+		 */
 		public function section($section_urlid) {
 			$this->load->model("model_site_sections");
 			$section=$this->model_site_sections->getByIdORM($section_urlid);
@@ -73,6 +104,15 @@
 			$this->returndata();
 		}
 		
+		/**
+		 * zone function.
+		 * 
+		 * Returns all content items in a zone
+		 *
+		 * @access public
+		 * @param string $zone_urlid
+		 * @return void
+		 */
 		public function zone($zone_urlid) {
 			$this->load->model("model_zones");
 			$zonedata=$this->model_zones->getByIdORM($zone_urlid)->getData();
@@ -82,6 +122,19 @@
 			$this->returndata();
 		}
 		
+		/**
+		 * relations_right function.
+		 * 
+		 * Finds all related items belonging to the content item, limited to $content_link_type
+		 *
+		 * @access public
+		 * @param string $urlid
+		 * @param string $content_type
+		 * @param string $content_link_type
+		 * @param int $limit. (default: false)
+		 * @param int $offset. (default: false)
+		 * @return void
+		 */
 		public function relations_right($urlid, $content_type, $content_link_type, $limit=false, $offset=false) {
 			$query=$this->db->get_where("content_types", array("urlid"=>$content_type))->row();
 			if (!isset($query->id)) {
@@ -109,6 +162,19 @@
 			return true;
 		}
 		
+		/**
+		 * relations_left function.
+		 * 
+		 * Finds all related items that the content item belongs to, limited to $content_link_type
+		 *
+		 * @access public
+		 * @param mixed $urlid
+		 * @param mixed $content_type
+		 * @param mixed $content_link_type
+		 * @param bool $limit. (default: false)
+		 * @param bool $offset. (default: false)
+		 * @return void
+		 */
 		public function relations_left($urlid, $content_type, $content_link_type, $limit=false, $offset=false) {
 			$query=$this->db->get_where("content_types", array("urlid"=>$content_type))->row();
 			if (!isset($query->id)) {
@@ -137,6 +203,14 @@
 			return true;
 		}
 		
+		/**
+		 * get_batch function.
+		 * 
+		 * Gets a whole bunch of content items by setting a GET or POST item 'urlid', which can be an array
+		 *
+		 * @access public
+		 * @return void
+		 */
 		public function get_batch() {
 			$urlids=$this->input->get_post('urlid');
 			if (is_array($urlids)) {
@@ -154,6 +228,17 @@
 			return true;
 		}
 		
+		/**
+		 * update function.
+		 * 
+		 * Updates a content item. You can only call this through the CMS or by using the API key
+		 *
+		 * @access public
+		 * @param string $content_type
+		 * @param string $urlid
+		 * @param string $api_key
+		 * @return void
+		 */
 		public function update($content_type, $urlid, $api_key) {
 			$api_key=trim($api_key);
 			$comp_api_key=$this->config->item('api_key');
@@ -174,6 +259,16 @@
 			return true;
 		}
 		
+		/**
+		 * insert function.
+		 * 
+		 * Inserts a new content item. You can only call this through the CMS or by using the API key
+		 *
+		 * @access public
+		 * @param string $content_type
+		 * @param string $api_key
+		 * @return void
+		 */
 		public function insert($content_type, $api_key) {
 			$api_key=trim($api_key);
 			$comp_api_key=$this->config->item('api_key');
@@ -194,6 +289,12 @@
 			return true;
 		}
 		
+		/**
+		 * returndata function.
+		 * 
+		 * @access protected
+		 * @return void
+		 */
 		protected function returndata() {
 			if ($this->_render) {
 				$this->load->view("json",array("data"=>$this->data));

@@ -3,6 +3,8 @@
 	 * Collection class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Collection extends CI_Controller {
 

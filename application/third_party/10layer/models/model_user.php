@@ -1,16 +1,17 @@
 <?php
+	/**
+	 * 10Layer User Model
+	 *
+	 * This model handles user data
+	 *
+	 * @package		10Layer
+	 * @subpackage	Models
+	 * @category	Models
+	 * @author		Jason Norwood-Young
+	 * @link		http://10layer.com
+	 */
 	class Model_User extends CI_Model {
-		/**
-		 * 10Layer User Model
-		 *
-		 * This model handles user data
-		 *
-		 * @package		10Layer
-		 * @subpackage	Models
-		 * @category	Models
-		 * @author		Jason Norwood-Young
-		 * @link		http://10layer.com
-		 */
+		
 		
 		public function __construct() {
 			parent::__construct();

@@ -4,6 +4,8 @@
 	 * Model_Collections class.
 	 * 
 	 * @extends Model
+	 * @package 10Layer
+	 * @subpackage Models
 	 */
 	class Model_Collections extends CI_Model {
 	

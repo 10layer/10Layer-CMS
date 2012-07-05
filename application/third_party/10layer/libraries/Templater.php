@@ -7,6 +7,7 @@
 	 *
 	 * @author Jason Norwood-Young
 	 * @package 10Layer
+	 * @subpackage Libraries
 	 *
 	 */
 	 

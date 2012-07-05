@@ -3,6 +3,8 @@
 	 * Login class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Login extends CI_Controller {
 

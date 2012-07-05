@@ -8,6 +8,8 @@
  * This model is in the process of being DEPRECATED!!!
  * 
  * @extends CI_Model
+ * @package 10Layer
+ * @subpackage Deprecated
  */
 class Model_CRUD_DEPRECATED extends CI_Model {
 	protected $_tablename;

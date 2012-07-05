@@ -1,8 +1,10 @@
 <?php
 	/**
-	 *  class
+	 * Content class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Content extends CI_Controller {
 

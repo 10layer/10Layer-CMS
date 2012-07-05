@@ -5,6 +5,8 @@
 	 * Fixes content_content to add fieldnames where applicable
 	 * 
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class ContentContent_Fix extends CI_Controller {
 

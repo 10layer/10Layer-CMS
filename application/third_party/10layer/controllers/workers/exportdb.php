@@ -5,6 +5,8 @@
 	 * Exports the DB as separate files for each table to ./database/tables, and creates a database.sql for an entire import
 	 * 
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class exportdb extends CI_Controller {
 

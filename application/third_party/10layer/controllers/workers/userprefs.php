@@ -5,6 +5,8 @@
 	 * Records user preferences so that stuff can automagically customise itself to user behaviour
 	 *
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Userprefs extends CI_Controller {
 

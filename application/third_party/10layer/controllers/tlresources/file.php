@@ -5,6 +5,8 @@
 	 * Loads files in application/third_party/resources
 	 *
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class File extends CI_Controller {
 

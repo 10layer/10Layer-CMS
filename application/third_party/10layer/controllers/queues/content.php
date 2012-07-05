@@ -3,6 +3,8 @@
 	 * Content class
 	 * 
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Content extends CI_Controller {
 		public $content_filters=array();

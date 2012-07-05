@@ -5,6 +5,8 @@
 	 * Handles the configuration of sections
 	 *
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Sections extends CI_Controller {
 

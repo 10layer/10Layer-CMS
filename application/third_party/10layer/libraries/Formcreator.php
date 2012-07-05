@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Formcreator class.
+ * 
+ * Draws a lovely form
+ *
+ * @package 10Layer
+ * @subpackage Libraries
+ */
 class Formcreator {
 	protected $ci;
 	protected $_fields=array();

@@ -8,6 +8,8 @@
 	 * some of the same methods, plus some extras
 	 *
 	 * @author Jason Norwood-Young
+	 * @package 10Layer
+	 * @subpackage Libraries
 	 * 
 	 */
 	class Validation {
@@ -26,9 +28,9 @@
 		 * validate function.
 		 * 
 		 * @access public
-		 * @param mixed $fieldname
-		 * @param mixed $name
-		 * @param mixed $value
+		 * @param string $fieldname
+		 * @param string $name
+		 * @param string $value
 		 * @param array $ruleset. (default: array())
 		 * @return void
 		 */
@@ -61,11 +63,28 @@
 			}
 		}
 		
+		/**
+		 * results function.
+		 *
+		 * Returns a list of passed and failed fields.
+		 * 
+		 * @access public
+		 * @return array $results
+		 */
 		public function results() {
 			return array("passed"=>$this->passed,"failed_fields"=>$this->failed_fields,"failed_names"=>$this->failed_names,"failed_messages"=>$this->failed_messages);
 		}
 		
 		
+		/**
+		 * display_errors function.
+		 * 
+		 * Returns a list of errors, split by $deliminator
+		 *
+		 * @access public
+		 * @param string $deliminator. (default: "<br />")
+		 * @return string
+		 */
 		public function display_errors($deliminator="<br />") {
 			if ($this->passed) {
 				return "";
@@ -73,6 +92,14 @@
 			return implode($deliminator,$this->failed_messages);
 		}
 		
+		/**
+		 * min_count function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param int $var
+		 * @return boolean
+		 */
 		public function min_count($value, $var){
 			if (is_array($value[0])) {
 				$value=$value[0];
@@ -82,10 +109,16 @@
 			}else{
 				return true;
 			}
-			
-			
 		}
 		
+		/**
+		 * max_count function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param int $var
+		 * @return boolean
+		 */
 		public function max_count($value, $var){
 			if (is_array($value[0])) {
 				$value=$value[0];
@@ -97,6 +130,14 @@
 			}
 		}
 		
+		/**
+		 * required function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param int $var. (default: false)
+		 * @return boolean
+		 */
 		public function required($value,$var=false) {
 			if (is_array($value)) {
 				return (!$this->is_blank_array($value));
@@ -105,16 +146,13 @@
 			}
 		}
 		
-		/*public function required_list($value, $var=false){
-			if(is_array($value[0])){
-				echo $this->is_blank_array($value[0]);
-				return (!$this->is_blank_array($value[0]));
-			}else{
-				return (!empty($value));
-			}
-			
-		}*/
-		
+		/**
+		 * is_blank_array function.
+		 * 
+		 * @access public
+		 * @param array $array
+		 * @return boolean
+		 */
 		function is_blank_array($array){
 			$check = "";
 			if(is_array($array)){
@@ -123,7 +161,6 @@
 						$check = $item;
 					}
 				}
-				//echo $check;
 				return ($check == "");
 			}else{
 				return (!empty($array));
@@ -131,18 +168,50 @@
 
 		}
 		
+		/**
+		 * minlen function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param int $var
+		 * @return boolean
+		 */
 		public function minlen($value,$var) {
 			return (strlen($value) >= $var);
 		}
 		
+		/**
+		 * maxlen function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param int $var
+		 * @return boolean
+		 */
 		public function maxlen($value,$var) {
 			return (strlen($value) <= $var);
 		}
 		
+		/**
+		 * password_strength function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param int $var
+		 * @return boolean
+		 */
 		public function password_strength($value,$var) {
 			return ($this->check_password_strength($value) >= $var);
 		}
 		
+		/**
+		 * valid_email function.
+		 * 
+		 * @access public
+		 * @param string $value
+		 * @param bool $var. (default: false)
+		 * @return boolean
+		 */
 		public function valid_email($value,$var=false) {
 			if (empty($value)) {
 				return true;
@@ -354,6 +423,15 @@
 		   return $strength;
 		}
 		
+		/**
+		 * getmessage function.
+		 * 
+		 * @access protected
+		 * @param string $rule
+		 * @param string $name
+		 * @param string $var. (default: false)
+		 * @return string
+		 */
 		protected function getmessage($rule,$name,$var=false) {
 			$s="";
 			switch($rule) {

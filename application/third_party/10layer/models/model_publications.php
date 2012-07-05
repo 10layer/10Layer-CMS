@@ -4,6 +4,8 @@
 	 * Model_Publications class.
 	 * 
 	 * @extends CI_Model
+	 * @package 10Layer
+	 * @subpackage Models
 	 */
 	class Model_Publications extends CI_Model {
 	

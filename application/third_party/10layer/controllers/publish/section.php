@@ -3,6 +3,8 @@
 	 * Section class
 	 * 
 	 * @extends CI_Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Section extends CI_Controller {
 

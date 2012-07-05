@@ -6,6 +6,8 @@
  * This is the main base controller for the CMS.
  * It is used to create the views, and handle the return data in a variety of ways.
  * 
+ * @package 10Layer
+ * @subpackage Core
  * @extends TL_Controller_CRUD
  */
 class TL_Controller_Create extends TL_Controller_CRUD {

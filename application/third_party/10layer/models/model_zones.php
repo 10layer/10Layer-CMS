@@ -1,5 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+/**
+ * Model_Zones class.
+ * 
+ * @extends Model_Content
+ * @package		10Layer
+ * @subpackage	Models
+ * @category	Models
+ * @author		Jason Norwood-Young
+ * @link		http://10layer.com
+ */
 class Model_Zones extends Model_Content {
 	public $order_by=array(
 		"title ASC",

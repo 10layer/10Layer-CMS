@@ -5,8 +5,7 @@
 	 * This class handles plugins for documents utilising MongoDB as a meta store
 	 *
 	 * @package		10Layer
-	 * @subpackage	Libraries
-	 * @category	Libraries
+	 * @subpackage	Core
 	 * @author		Jason Norwood-Young
 	 * @link		http://10layer.com
 	 */

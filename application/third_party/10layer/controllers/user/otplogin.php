@@ -3,6 +3,8 @@
 		 * OtpLogin class
 		 * 
 		 * @extends CI_Controller
+		 * @package 10Layer
+		 * @subpackage Controllers
 		 */
 		class OtpLogin extends CI_Controller {
 	

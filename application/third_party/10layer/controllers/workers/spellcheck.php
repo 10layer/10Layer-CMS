@@ -16,6 +16,8 @@
 	 * http://sam.zoy.org/wtfpl/COPYING for more details.
 	 *
 	 * @extends Controller
+	 * @package 10Layer
+	 * @subpackage Controllers
 	 */
 	class Spellcheck extends CI_Controller {
 	

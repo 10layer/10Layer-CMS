@@ -4,6 +4,8 @@
 	 * Model_Platforms class.
 	 * 
 	 * @extends CI_Model
+	 * @package 10Layer
+	 * @subpackage Models
 	 */
 	class Model_Platforms extends CI_Model {
 	

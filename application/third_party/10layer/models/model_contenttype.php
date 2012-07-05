@@ -6,6 +6,8 @@
  * DEPRECATED! Just here as a shell for compatibility. Implement Model_Crud directly.
  *
  * @extends Model_Crud
+ * @package 10Layer
+ * @subpackage Models
  */
 class Model_ContentType extends Model_Crud {
 	

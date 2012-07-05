@@ -1,5 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+/**
+ * Model_Tagtype class.
+ * 
+ * @extends Model_Content
+ * @package 10Layer
+ * @subpackage Models
+ */
 class Model_Tagtype extends Model_Content {
 	public $order_by=array(
 		"title DESC",

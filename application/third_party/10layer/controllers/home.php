@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Home class.
+ * 
+ * @extends CI_Controller
+ * @package 10Layer
+ * @subpackage Controllers
+ */
 class Home extends CI_Controller {
 
 	function __construct() {

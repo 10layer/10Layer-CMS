@@ -1,5 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Model_Articles class.
+ * 
+ * @extends Model_Content
+ * @package 10Layer
+ * @subpackage Models
+ */
 class Model_Articles extends Model_Content {
 	public $order_by=array(
 		"title ASC",

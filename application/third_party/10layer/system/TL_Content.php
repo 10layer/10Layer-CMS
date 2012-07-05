@@ -6,6 +6,9 @@
  * A type of ORM for describing content and relationships between content
  *
  * Call with an urlid or content id to autopopulate, or construct and then call setContentType for a clear TLContent
+ *
+ * @package 10Layer
+ * @subpackage Core
  */
 class TLContent {
 	/**

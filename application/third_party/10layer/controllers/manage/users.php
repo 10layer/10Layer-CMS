@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Users class.
+ * 
+ * @extends CI_Controller
+ * @package 10Layer
+ * @subpackage Controllers
+ */
 class Users extends CI_Controller {
 
 	function __construct() {

@@ -1,5 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+/**
+ * Model_Pictures class.
+ * 
+ * @extends Model_Content
+ * @package 10Layer
+ * @subpackage Models
+ */
 class Model_Pictures extends Model_Content {
 	public $fields=array(
 	    array(
