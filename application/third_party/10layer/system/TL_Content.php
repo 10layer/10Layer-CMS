@@ -724,6 +724,12 @@ class TLContent {
 		return true;
 	}
 	
+	/**
+	 * delete function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	public function delete() {
 		$ci=&get_instance();
 		$content_type=$this->getContentType();

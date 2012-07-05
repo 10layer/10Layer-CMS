@@ -667,6 +667,15 @@
 			return $result->result();
 		}
 		
+		/**
+		 * suggest_broad function.
+		 * 
+		 * @access public
+		 * @param mixed $types
+		 * @param mixed $s
+		 * @param mixed $limit
+		 * @return void
+		 */
 		public function suggest_broad($types, $s, $limit) {
 			$cids=array();
 			foreach($types as $type) {
@@ -735,6 +744,15 @@
 			return $result->result();
 		}
 		
+		/**
+		 * deep_suggest_broad function.
+		 * 
+		 * @access public
+		 * @param array $types
+		 * @param string $s
+		 * @param int $limit
+		 * @return void
+		 */
 		public function deep_suggest_broad($types, $s, $limit) {
 			$cids=array();
 			foreach($types as $type) {
@@ -766,7 +784,6 @@
 		 * @param mixed $limit
 		 * @return result
 		 */
-		
 		function smart_search($content_type, $s, $limit, $offset=0){
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
@@ -962,57 +979,30 @@ if(strlen($s) > 2) {
 				foreach($children as $child){
 					$parent->children[] = $child;
 				}
-				
 			}
-						
 			return $ancestors;
-			
-			//die();
-			
-			//echo $this->db->last_query(); die();
-			
-			
-			
-			/*
-$all=$query->result();
-			
-			$query=$this->db->select("content.urlid, content.title, content.id AS content_id, content_content.content_id AS parent_id")->from("content")->join("content_content","content_content.content_link_id=content.id")->join("content AS content2","content_content.content_id=content2.id")->where("content.content_type_id",$content_type_id)->where("content2.content_type_id",$content_type_id)->group_by("content.id")->get();
-			$children=$query->result();
-			$parents=array();
-			foreach($all as $section) {
-				$found=false;
-				foreach($children as $child) {
-					if ($child->content_id==$section->content_id) {
-						$found=true;
-					}
-				}
-				if (!$found) {
-					$parents[]=$section;
-				}
-			}
-			for($y=0; $y<sizeof($parents); $y++) {
-				for($x=0; $x<sizeof($children); $x++) {
-					if ($children[$x]->parent_id==$parents[$y]->content_id) {
-						$parents[$y]->children[]=$children[$x];
-					}
-				}
-			}
-			$keys=array();
-			foreach($parents as $parent) {
-				$keys[]=$parent->title;
-			}
-			array_multisort($keys, $parents);
-			return $parents;
-*/
 		}
 		
+		/**
+		 * get_children function.
+		 * 
+		 * @access public
+		 * @param mixed $section_id
+		 * @return void
+		 */
 		public function get_children($section_id){
 			$sql = "select title,urlid,content_id,content_link_id from content_content join content on content.id = content_content.content_link_id where content_content.content_id = {$section_id} and content.content_type_id = 11 order by title asc;";
 			$children = $this->db->query($sql)->result();
 			return $children; 
 		}
 		
-		
+		/**
+		 * is_ancestor function.
+		 * 
+		 * @access public
+		 * @param mixed $content_id
+		 * @return void
+		 */
 		public function is_ancestor($content_id){
 		
 			$parents = $this->db->query("select content_id, title, content_link_id from content_content join content on content.id = content_content.content_id where content.content_type_id = 11 and content_link_id = $content_id")->result();
@@ -1024,10 +1014,6 @@ $all=$query->result();
 			}
 		
 		}
-		
-		
-		
-		
 		
 		/**
 		 * get_subsections function.

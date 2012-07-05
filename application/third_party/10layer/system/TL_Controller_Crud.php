@@ -3,7 +3,8 @@
 /**
  * TL_Controller_Create class.
  *
- * Used to create new content.
+ * This is the main base controller for the CMS.
+ * It is used to create the views, and handle the return data in a variety of ways.
  * 
  * @extends TL_Controller_CRUD
  */
@@ -101,6 +102,7 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 	 * ajaxsubmit function.
 	 *
 	 * This will do your submit through Ajax, and will also set your document.domain and package it in a textarea for cross-domain safety
+	 * This has largely been replaced by the JSON stuff which uses JSONP-friendly return view
 	 * 
 	 * @access public
 	 * @return void
@@ -142,6 +144,15 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$this->checkCallback("onAfterView",$contentobj);
 	}
 	
+	/**
+	 * jsoncreate function.
+	 * 
+	 * Sends the data for drawing the view as a JSONP package. 
+	 *
+	 * @access public
+	 * @param mixed $type
+	 * @return void
+	 */
 	public function jsoncreate($type) {
 		$contentobj=new TLContent();
 		$contentobj->setContentType($this->_contenttypeurlid);
@@ -153,6 +164,17 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$this->load->view("json", array("data"=>$data));
 	}
 	
+	/**
+	 * field function.
+	 * 
+	 * Draws a single field for embedding in a form. Usually used where we haven't converted
+	 * a snippet to the new Javascript system.
+	 *
+	 * @access public
+	 * @param mixed $fieldname
+	 * @param mixed $type
+	 * @return void
+	 */
 	public function field($fieldname, $type) {
 		$contentobj=new TLContent();
 		$contentobj->setContentType($this->_contenttypeurlid);
@@ -166,6 +188,14 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		}
 	}
 	
+	/**
+	 * embed function.
+	 *
+	 * Used to put an "New" popup in a form to quickly create a different data type
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	public function embed() {
 		$this->_view="content/default/embed";
 		$contentobj=new TLContent();
@@ -338,39 +368,16 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$this->load->view("json", array("data"=>$result));
 	}
 	
-	/*public function fileupload($type, $urlid, $fieldname) {
-		$options=array(
-			'upload_dir'=>dirname($_SERVER['SCRIPT_FILENAME']).'/temp/',
-			'param_name'=>$fieldname,
-			'upload_url'=>base_url()."temp/",
-		);
-		$this->load->library('uploadhandler', $options);
-		$result=array();
-		switch ($_SERVER['REQUEST_METHOD']) {
-    		case 'OPTIONS':
-	        	break;
-    		case 'HEAD':
-		    case 'GET':
-    		    $result=$this->uploadhandler->get();
-        		break;
-		    case 'POST':
-    		    if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
-					$result=$this->uploadhandler->delete();
-	        	} else {
-					$result=$this->uploadhandler->post();
-	        	}
-		        break;
-    		case 'DELETE':
-				$result=$this->uploadhandler->delete();
-		        break;
-    		default:
-        		header('HTTP/1.1 405 Method Not Allowed');
-		}
-		
-		//$data=array("error"=>false, "message"=>"File uploaded successfully");
-		$this->load->view("json", array("data"=>$result));
-	}*/
-	
+	/**
+	 * autosave function.
+	 * 
+	 * Autosaves
+	 *
+	 * @access public
+	 * @param mixed $type
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	public function autosave($type, $urlid) {
 		$this->load->library("mongo_db");
 		$result=$this->mongo_db->where(array("urlid"=>$urlid))->get("tl_content");
@@ -378,16 +385,22 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 			$this->mongo_db->insert("tl_content",array("urlid"=>$urlid));
 		}
 		$this->mongo_db->where(array("urlid"=>$urlid))->update("tl_content",array("autosave"=>$_POST, "autosave_time"=>date("c")));
-		//$result=$this->mongo_db->where(array("urlid"=>$urlid))->get("tl_content");
-		
-		
 		$result=$this->check_change($_POST, $urlid);
-		
 		print "<script>document.domain=document.domain;</script><textarea>";
 		print json_encode($result);
 		print "</textarea>";
 	}
 	
+	/**
+	 * check_change function.
+	 * 
+	 * Checks if there is an autosave active
+	 *
+	 * @access protected
+	 * @param mixed $data
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	protected function check_change($data, $urlid) {
 		$content=$this->content->getByIdORM($urlid)->getData();
 		$changedfields=array();
@@ -419,6 +432,16 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		return array("changed"=>$changed, "changed_fields"=>$changedfields, "unchanged_fields"=>$unchangedfields, "missing_fields"=>$missingfields);
 	}
 	
+	/**
+	 * clear_autosave function.
+	 * 
+	 * Clears the autosave
+	 *
+	 * @access public
+	 * @param mixed $type
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	public function clear_autosave($type, $urlid) {
 		$this->load->library("mongo_db");
 		$this->mongo_db->where(array("urlid"=>$urlid))->update("tl_content", array("autosave"=>false));
@@ -429,6 +452,18 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		return true;
 	}
 	
+	/**
+	 * field function.
+	 * 
+	 * Draws a single field for embedding in a form. Usually used where we haven't converted
+	 * a snippet to the new Javascript system.
+	 *
+	 * @access public
+	 * @param mixed $fieldname
+	 * @param mixed $type
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	public function field($fieldname, $type, $urlid) {
 		$contentobj=$this->content->getByIdORM($urlid, $type);
 		if (empty($contentobj->content_id)) {
@@ -520,6 +555,16 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$this->load->view("content/default/edit",$data);
 	}
 	
+	/**
+	 * jsonedit function.
+	 * 
+	 * Sends the data for displaying a form as a JSONP packet
+	 *
+	 * @access public
+	 * @param mixed $type
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	public function jsonedit($type, $urlid) {
 		$contentobj=$this->content->getByIdORM($urlid, $this->_contenttype->id);
 		if (empty($contentobj->content_id)) {
@@ -543,8 +588,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 */
 	public function index() {
 		$this->load->library("memcacher");
-		//$this->content->setContentType($this->_contenttypeurlid);
-		//$this->content->setPlatform($this->platforms->id());
 		$this->load->library("tlpicture");
 		$this->paginate();
 		$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
@@ -593,9 +636,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$config['uri_segment'] = 5;
 		$config['num_links'] = $this->_pg_numlinks;
 		$config['base_url'] = "/edit/".$this->uri->segment(2)."/".$this->uri->segment(3)."/pg/";
-		//$config['total_rows'] = $this->{$this->_model}->count();
 		$config['total_rows'] = $this->content->count();
-		
 		$config['per_page'] = $this->_pg_perpage;
 		$this->pagination->initialize($config);
 	}
@@ -790,6 +831,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		}
 	}
 	
+	/**
+	 * jsonlist function.
+	 * 
+	 * Sends a list of content as a JSONP package. If you set 'searchstring' as a get or post, it'll search. 
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function jsonlist() {
 		$this->_pg_perpage=100;
 		$data["search"]='';
@@ -839,8 +888,15 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		print json_encode($result);
 	}
 	
+	/**
+	 * suggest function.
+	 * 
+	 * Like search, but uses the 'suggest' algorighm
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function suggest() {
-
 		$this->load->library("search");
 		$s=$this->input->get("term");
 		$type=$this->uri->segment(2);
@@ -889,6 +945,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$this->pagination->initialize($config);
 	}
 	
+	/**
+	 * simple function.
+	 * 
+	 * Used by the publish view
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function simple() {
 		$this->_pg_perpage=100;
 		$data["search"]="";
@@ -914,8 +978,15 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$this->load->view("content/default/simplelist",$data);
 	}
 	
-	function nested()
-	{
+	/**
+	 * nested function.
+	 * 
+	 * Display a nested view of an item list
+	 *
+	 * @access public
+	 * @return void
+	 */
+	function nested() {
 		$segments=$this->uri->segment_array();
 		$searchcheck=array_slice($segments,-2);
 		$tree = $this->content->get_sectionmap($searchcheck[0]);
@@ -924,6 +995,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$this->load->view("content/default/nested_sections",$data);
 	}
 	
+	/**
+	 * jsonnested function.
+	 * 
+	 * A nested view of an item list, as JSONP
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function jsonnested() {
 		$segments=$this->uri->segment_array();
 		$searchcheck=array_slice($segments,-2);
@@ -933,6 +1012,16 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		$this->load->view("json",array("data"=>$data));
 	}
 	
+	/**
+	 * make_nested_tree function.
+	 * 
+	 * Iterative function that works with nested()
+	 *
+	 * @access protected
+	 * @param mixed $sections
+	 * @param mixed $contenttype
+	 * @return void
+	 */
 	protected function make_nested_tree($sections, $contenttype){
 		$string = "<ul class='nested_tree '>";
 		foreach($sections as $section){
@@ -953,6 +1042,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		return $string;
 	}
 	
+	/**
+	 * nested_children function.
+	 * 
+	 * @access public
+	 * @param mixed $children
+	 * @param mixed $contenttype
+	 * @return void
+	 */
 	function nested_children($children, $contenttype)
 	{
 		$string = "<ul class='small_section'>";
@@ -967,9 +1064,12 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		return $string;
 	}
 	
-	
-	
-	
+	/**
+	 * deepsearch function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	public function deepsearch() {
 		$this->load->library("search");
 		$s=$this->input->get("term");
@@ -978,6 +1078,14 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		print json_encode($this->search->smart_search($type,$s,$limit));
 	}
 	
+	/**
+	 * jsonfilelist function.
+	 * 
+	 * Returns files associated to a piece of content
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function jsonfilelist() {
 		$contentobj=$this->content->getByIdORM($this->uri->segment(4),$this->_contenttype->id);
 		$fields=$contentobj->getFields($this->_contenttype->id);
@@ -1060,6 +1168,14 @@ class TL_Controller_CRUD extends CI_Controller {
 		$this->messaging->post_message("all",json_encode($stompinfo));
 	}
 	
+	/**
+	 * cachereset function.
+	 * 
+	 * @access public
+	 * @param mixed $contenttype_urlid
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	public function cachereset($contenttype_urlid, $urlid) {
 		$this->load->library("tlpicture");
 		$this->load->library("memcacher");
@@ -1068,6 +1184,14 @@ class TL_Controller_CRUD extends CI_Controller {
 		$this->tlpicture->clearCache($urlid, $contenttype_urlid);
 	}
 	
+	/**
+	 * cachesave function.
+	 * 
+	 * @access public
+	 * @param mixed $contenttype_urlid
+	 * @param mixed $urlid
+	 * @return void
+	 */
 	public function cachesave($contenttype_urlid, $urlid) {
 		$this->load->library("memcacher");
 		$this->memcacher->addById($contenttype_urlid, $urlid);
@@ -1081,9 +1205,9 @@ class TL_Controller_CRUD extends CI_Controller {
 	 * Returns false if it's not a file, and true if it is a file. Everything else is returned by reference.
 	 *
 	 * @access public
-	 * @param mixed $field
-	 * @param mixed $urlid
-	 * @param mixed &$contentobj
+	 * @param object $field
+	 * @param string $urlid
+	 * @param object &$contentobj
 	 * @param mixed &$returndata
 	 * @return boolean
 	 */
@@ -1181,8 +1305,14 @@ class TL_Controller_CRUD extends CI_Controller {
 		}
 	}
 	
+	/**
+	 * format_heading function.
+	 * 
+	 * @access protected
+	 * @param mixed $active_menu
+	 * @return void
+	 */
 	protected function format_heading($active_menu){
-		
 		$items = explode("/",$active_menu);
 		$string = "";
 		foreach($items as $item){
