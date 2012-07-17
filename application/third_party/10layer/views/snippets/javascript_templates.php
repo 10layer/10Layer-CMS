@@ -1,3 +1,4 @@
+
 <script>
 	function leadingZeros(s) {
 		if (s<10) {
@@ -264,13 +265,17 @@
 
 <script type='text/template' id='edit-field-nesteditems'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>
-	<div class="nesteditems_actions">
-		<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= field.value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
-		<div class="nesteditems_item_label"><%= (field.data) ? field.data.fields.title.value : '' %></div>
-		<button class="nesteditems_item_button" contenttype="<%= field.contenttype %>">Change...</button>
-		<div class="section_list" ></div>
-		<br clear="both"/>
+	<div class='nested_container' contenttype="<%= field.contenttype %>"> 
+		<div class="selected_item">
+		
+			<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= field.value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
+			<div class="nesteditems_item_label1"><%= (field.data) ? field.data.fields.title.value : '' %></div>
+		</div>
+		
+		<div class="nested_items"></div>
 	</div>
+<br clear="both"/>
+
 </script>
 
 <script type='text/template' id='edit-field-nesteditems-list'>
@@ -282,6 +287,30 @@
 	<% }); %>
 	</ul>
 </script>
+
+
+
+<script type='text/template' id='edit-field-nesteditems-list'>
+	<% _.each(tree, function(item) { %>
+		<li label='<%= item.title %>' content_id='<%= (item.content_link_id) ? item.content_link_id : item.content_id %>' class='nested_section'>
+		<%= item.title %>
+		<%= (item.children) ? _.template($('#edit-field-nesteditems-list').html(), {tree: item.children}) : '' %>
+		</li>
+	<% }); %>
+
+
+	
+</script>
+
+
+
+
+
+
+
+
+
+
 
 <script type='text/template' id='create-field-nesteditems'>
 	<label class='<%= field.label_class %>'><%= field.label %></label>

@@ -1,3 +1,4 @@
+
 //This javascript isn't run because it is loaded before teh dynamic content
 
 $(function() {
@@ -69,31 +70,6 @@ $(function() {
 	    if (doPrevent) {
         	event.preventDefault();
     	}
-	});
-	
-	$(document).on("click", '.nesteditems_item_button', function() {
-		var resultdiv=$(this).next();
-		var content_type=$(this).attr('contenttype');
-		if(resultdiv.is(':hidden') ) {
-    		$.getJSON('/list/jsonnested/'+content_type+'/1?jsoncallback=?', function(data) {
-  				resultdiv.html(_.template($('#edit-field-nesteditems-list').html(), data));
-	  			resultdiv.toggle();
-			});
-		} else {
-			resultdiv.toggle();
-		}
-		return false;
-	});
-
-	$(".nested_section").live("click", function(){
-		var content_id = $(this).attr("content_id");
-		var value = $(this).attr('label');
-		var display_el = $(this).parentsUntil(".section_list").parent().prev().prev();
-		display_el.html(value);
-		var value_el = display_el.prev();
-		value_el.val(content_id);
-		display_el.next().next().hide();
-		return false;
 	});
 	
 	$(".deepsearch_input").live("keypress",function(e) { 
@@ -185,6 +161,34 @@ function get_wordcount(sender) {
 }
 
 function init_form() {
+
+	$($('.nested_container')).each(function(index) {
+		var container = $(this);
+		var content_type = $(this).attr("contenttype");
+		var items = container.children().eq(1);
+		    	
+    	$.getJSON('/list/jsonnested/'+content_type+'/1?jsoncallback=?', function(data) {
+  				items.html(_.template($('#edit-field-nesteditems-list').html(), data));
+  				
+  				$(".nested_section").live("click", function(){
+					var content_id = $(this).attr("content_id");
+					var value = $(this).attr('label');
+					var display_el = $(this).parentsUntil(".nested_items").parent().prev();
+					display_el.children().eq(1).html(value);
+					var value_el = display_el.children().eq(0);
+					value_el.val(content_id);
+					return false;
+				});				
+
+		});
+    	
+    	
+    	
+    	
+	});
+	
+	
+	
 	$('button').each(function() {
 		$(this).button();
 	});
