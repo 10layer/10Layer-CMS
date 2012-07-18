@@ -1000,6 +1000,16 @@ position: fixed;
 	overflow: auto;
 }
 
+.cool_t{
+	background: aqua;
+}
+
+.nested_section div{
+	padding: 5px;
+	border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 5px;
+}
+
 
 .selected_item{
 	background: none repeat scroll 0 0 #CCC;

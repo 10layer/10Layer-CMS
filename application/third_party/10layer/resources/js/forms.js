@@ -172,6 +172,9 @@ function init_form() {
   				
   				$(".nested_section").live("click", function(){
 					var content_id = $(this).attr("content_id");
+					var indicator = $(this);
+					$(".cool_t").removeClass("cool_t");
+                	indicator.children().eq(0).addClass("cool_t");
 					var value = $(this).attr('label');
 					var display_el = $(this).parentsUntil(".nested_items").parent().prev();
 					display_el.children().eq(1).html(value);

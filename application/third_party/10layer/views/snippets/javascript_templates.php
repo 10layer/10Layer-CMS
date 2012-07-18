@@ -281,7 +281,8 @@
 <script type='text/template' id='edit-field-nesteditems-list'>
 	<ul class='nested_tree'>
 	<% _.each(tree, function(item) { %>
-		<li label='<%= item.title %>' content_id='<%= (item.content_link_id) ? item.content_link_id : item.content_id %>' class='nested_section'><%= item.title %>
+		<li label='<%= item.title %>' content_id='<%= (item.content_link_id) ? item.content_link_id : item.content_id %>' class='nested_section'>
+		<div> <%= item.title %></div>
 		<%= (item.children) ? _.template($('#edit-field-nesteditems-list').html(), {tree: item.children}) : '' %>
 		</li>
 	<% }); %>
