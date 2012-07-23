@@ -1151,6 +1151,18 @@ class TLField {
 	public $linkformat=false;
 	
 	/**
+	 * hidenew
+	 * 
+	 * Set hidenew to true to hide the "New" button below the field.
+	 *
+	 * (default value: false)
+	 * 
+	 * @var bool
+	 * @access public
+	 */
+	public $hidenew=false;
+	
+	/**
 	 * __construct function.
 	 * 
 	 * @access public

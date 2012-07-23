@@ -1,6 +1,6 @@
 <?php
-	$headerdata["menu1"]="login";
-	$headerdata["menu2"]="login";
+	$headerdata["menu1"]="default";
+	$headerdata["menu2"]="";
 	$headerdata["menu2_active"]="login";
 	$this->load->view("/templates/header",$headerdata);
 ?>
@@ -35,19 +35,12 @@
 		return reqs;
 	}
 </script>
-	<div class="message"><?= $status ?></div>
-<div id="loginbox" class="boxed wide centered">
-	<div class="title">Login</div>
-	<form id="loginform" method="post">
-		<input type="hidden" name="dologin" value="1" />
-		<label>Email</label>
-		<input type="text" name="email" class="required" value="" /><br />
-		<label>Password</label>
-		<input type="password" name="password" class="required" value="" /><br />
-		<input class="button" type="submit" value="Login" />
-	</form>
-	<br clear="both" />
-</div>
+	<div class="message">
+		<?= $status ?>
+		<p>You do not have sufficient permissions to perform this action. Please speak to your systems administrator if this is an error.</p>
+		<p><a href='<?= base_url() ?>'>Return home</a></p>
+	</div>
+
 <?php
 	$this->load->view("/templates/footer");
 ?>

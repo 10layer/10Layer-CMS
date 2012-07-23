@@ -11,7 +11,7 @@
 			modal: true,
 		});
 		
-		$("#contentselectButton_<?= $field->tablename."_".$field->name ?>").click(function() {
+		$(".btnContentSelect").click(function() {
 			
 			$("#contentselect_<?= $field->tablename."_".$field->name ?>").load("/list/<?= $field->contenttype ?>/<?php ($field->multiple)? print "1" : print "0" ?>",function() {
 				search();
@@ -203,8 +203,5 @@ if (this_container.parent().is(":visible")) {
 	
 </script>
 
-<input type="button" id="contentselectButton_<?= $field->tablename."_".$field->name ?>" value="Select <?= $field->label ?>" class="button btnContentSelect" />
 
 
-<div id="displayResults_<?= $field->tablename."_".$field->name ?>" class="linkResults"></div>
-<div id="contentselect_<?= $field->tablename."_".$field->name ?>" class="<?= $field->tablename."_".$field->name ?>-select popup wide"></div>

@@ -129,12 +129,16 @@
 		
 		protected function checkUrl() {
 			$url=$this->ci->uri->uri_string();
+			if (!empty($url) && $url[0]!='/') {
+				$url='/'.$url;
+			}
 			//Root url
 			if ($url=="/home" || empty($url)) {
 				return true;
 			}
+			
 			//User accounts
-			if ($url=="manage/users/my_account") {
+			if ($url=="/manage/users/my_account") {
 				return true;
 			}
 			//Exact match

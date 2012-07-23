@@ -32,18 +32,12 @@
 			_.each(field.data, function(data) {
 				var value=data.content_id;
 				title=data.fields.title.value;
+				data.content_type=field.contenttype;
+				data.tablename=field.tablename;
+				data.fieldname=field.name;
+				data.multiple=field.multiple;
 	%>
-	
-	<li class="autocomplete_item">
-		<span class="ui-icon ui-icon-arrowthick-2-n-s float-left" style="margin:10px;"></span>
-		<span class="remover ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false">
-			<span class="ui-button-icon-primary ui-icon ui-icon-circle-close"></span>
-			<span class="ui-button-text">
-				<%= title %>
-			</span></span>
-	<input id="autocomplete_<%= field.contenttype %>_<%= field.name %>_<%= value %>" type="hidden" name="<%= field.tablename %>_<%= field.name %><%= (field.multiple==1) ? '[]' : '' %>" value="<%= value %>"  />
-	</li>
-	
+				<%= _.template($('#field-autocomplete-item').html(), { field: data }) %>
 	<%
 			});
 		}
@@ -52,9 +46,9 @@
 	</ul>
 	</div>
 
-	<% if (field.external==1) { %>
+	<% if ((field.external==1) && (field.hidenew==false)) { %>
 	<br clear="both"><br clear="both">
-	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation">New</button>
+	<%= _.template($('#button-new-template').html(), { field: field }) %>
 	<br clear="both">
 	<%
 		}
@@ -77,6 +71,22 @@
 	<%
 		}
 	%>
+</script>
+
+<script type='text/template' id='field-autocomplete-item'>
+	<%
+		var title=field.fields.title.value;
+		console.log(field);
+	%>
+	<li class="autocomplete_item">
+		<span class="ui-icon ui-icon-arrowthick-2-n-s float-left" style="margin:10px;"></span>
+		<span class="remover ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false">
+			<span class="ui-button-icon-primary ui-icon ui-icon-circle-close"></span>
+			<span class="ui-button-text">
+				<%= title %>
+			</span></span>
+	<input id="autocomplete_<%= field.content_type %>_<%= field.fieldname %>_<%= field.content_id %>" type="hidden" name="<%= field.tablename %>_<%= field.fieldname %><%= (field.multiple==1) ? '[]' : '' %>" value="<%= field.content_id %>"  />
+	</li>
 </script>
 
 <script type='text/template' id='edit-field-boolean'>
@@ -406,11 +416,71 @@
 </script>
 
 <script type='text/template' id='edit-field-rich'>
-	<%= _.template($("#old-fields-template").html(), { field: field, urlid: urlid, content_type: content_type }) %>
+	<label class='<%= field.label_class %>'><%= field.label %></label>
+	<button id="contentselectButton_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="btn_rich_select">Select <%= field.label %></button>
+	<% $(document.body).data('onsave', update_rich) %>
+	<%= _.template($('#button-new-template').html(), { field: field }) %>
+	<div id='link_results_<%= field.contenttype %>_<%= field.name %>'><%= _.template($('#field-rich-item').html(), { contenttype: field.contenttype, fieldname: field.name, urlid: field.data.urlid, content_id: field.data.content_id, tablename: field.tablename }) %></div>
+	<div id="contentselect_<%= field.contenttype %>_<%= field.name %>" class="<%= field.contenttype %>_<%= field.name %>-select popup wide"></div>
 </script>
 
 <script type='text/template' id='create-field-rich'>
 	<%= _.template($("#old-fields-create-template").html(), { field: field, content_type: content_type }) %>
+</script>
+
+<script type='text/template' id='field-rich-item'>
+	<div class="link_results">
+		<div class="rich_overlay">
+			<div class="rich_overlay_remove">Remove</div>
+			<div class="new-window rich_overlay_edit" href="/edit/picture/<%= urlid %>">Edit</div>
+		</div>
+		<div class="selectitem">
+			<div class="selectitem-image"><img src="/workers/picture/display/<%= urlid %>/cropThumbnailImage/500/150" /></div>
+		</div>
+		<input type='hidden' name='<%= tablename %>_<%= fieldname %>' value='<%= content_id %>' />
+	</div>
+</script>
+
+<script type='text/template' id='field-rich-list'>
+	<div id="contentlist" class="<%= contenttype %>-list boxed wide">
+		<div class="popupSearchContainer">
+			<input type="text" class="popup_search" value="<%= (search=='') ? 'Search…' : search %>" fieldname='<%= fieldname %>' contenttype='<%= contenttype %>' tablename='<%= tablename %>' />
+			<span class="popupResultsCount"></span>
+		</div>
+		
+		<table>
+			<tr> 
+				<th></th>
+				<th></th>
+				<th>Title</th>
+				<th>Edit</th>
+			</tr>
+		<%
+			var odd="odd";
+			_.each(content, function(item) {
+		%>
+		<tr class="<%= odd %> <%= contenttype %>-item content-item">
+			<td>
+				<input type="radio" value="<%= item.content_id %>" class="item-select singleselect" fieldname='<%= fieldname %>' contenttype='<%= contenttype %>' tablename='<%= tablename %>' urlid='<%= item.urlid %>' />
+			</td>
+			<td>
+				<img src="/workers/picture/display/<%= item.urlid %>/cropThumbnailImage/40/30" />
+			</td>
+			<td><%= item.title %></td>
+			<td><a href="/edit/<%= contenttype %>/<%= item.urlid %>">Edit</a></td>
+		</tr>
+		<%
+			if (odd=="") {
+				odd="odd";
+			} else {
+				odd="";
+			}
+		});
+		%>
+	</table>
+	
+	</div>
+	<br clear="both" />
 </script>
 
 <script type='text/template' id='edit-field-section'>
@@ -505,4 +575,42 @@
 	%>
 	<div id='<%= field.name %>-hook'></div>
 	<br clear='both' />
+</script>
+
+<script type='text/template' id='button-new-template'>
+	<button id="new_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="btn_new">New <%= field.label %></button>
+	<div class='popup' id='new_dialog_<%= field.tablename %>_<%= field.name %>'></div>
+</script>
+
+<script type='text/template' id='create-template'>
+	<%	
+		if (typeof popup == 'undefined') {
+			popup = false;
+		}
+	%>
+	<div id="create-content" class="boxed wide">
+		<h2>Create - <%= content_type %></h2>
+		<form id='form_create_<%= content_type %>' class='<%= (popup) ? "popupform" : "contentform" %>' method='post' enctype='multipart/form-data' action='<?= base_url() ?>create/ajaxsubmit/<%= content_type %>'>
+		<input type='hidden' name='action' value='submit' />
+		<% _.each(data.fields, function(field) { %>
+			<% if (!field.hidden) { %>
+				<%= _.template($('#create-field-'+field.type).html(), { field: field, urlid: false, content_type: content_type  }) %>
+			<% } %>
+		<% }); %>
+		<% if (popup) { %>
+		<button contenttype="<%= content_type %>" fieldname="<%= name %>" class='dosubmit_popup'>Save</button>
+		<% } %>
+		</form>
+	</div>
+	<% if (popup == false) { %>
+	<div id="sidebar" class="pin">
+		<div id="sidebar_accordian">
+			<h3><a href="#">Actions</a></h3>
+			<div>
+				<button id="dosubmit_right">Save</button><br />
+				<br />
+			</div>
+		</div>
+	</div>
+	<% } %>
 </script>

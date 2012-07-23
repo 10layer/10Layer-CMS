@@ -13,7 +13,9 @@
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script language="javascript">
 	$(function() {
-	
+		//Set the API key
+		$(document.body).data('api_key', '<?= $this->config->item('api_key') ?>');
+		
 		//Router
 		var app = Davis(function() {
 			this.configure(function () {
@@ -283,28 +285,7 @@
 	$this->load->view("snippets/javascript_templates");
 ?>
 
-<script type='text/template' id='create-template'>
-	<div id="create-content" class="boxed wide">
-		<h2>Create - <%= content_type %></h2>
-		<form id='contentform' method='post' enctype='multipart/form-data' action='<?= base_url() ?>create/ajaxsubmit/<%= content_type %>'>
-		<input type='hidden' name='action' value='submit' />
-		<% _.each(data.fields, function(field) { %>
-			<% if (!field.hidden) { %>
-				<%= _.template($('#create-field-'+field.type).html(), { field: field, urlid: false, content_type: content_type  }) %>
-			<% } %>
-		<% }); %>
-		</form>
-	</div>
-	<div id="sidebar" class="pin">
-	<div id="sidebar_accordian">
-		<h3><a href="#">Actions</a></h3>
-		<div>
-			<button id="dosubmit_right">Save</button><br />
-			<br />
-		</div>
-	</div>
-	</div>
-</script>
+
 <div id="msgdialog"></div>
 <div id="createdialog"></div>
 <div id="dyncontent">

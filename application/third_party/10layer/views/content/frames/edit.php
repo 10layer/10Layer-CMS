@@ -16,41 +16,43 @@
 	
 		
 	$(function() {
-	
+		
+		$(document.body).data('api_key', '<?= $this->config->item('api_key') ?>');
+		
 		//Router
-	var app = Davis(function() {
-		this.configure(function () {
-			this.generateRequestOnPageLoad = true;
-			this.raiseErrors = true;
-			this.formSelector = "noforms";
+		var app = Davis(function() {
+			this.configure(function () {
+				this.generateRequestOnPageLoad = true;
+				this.raiseErrors = true;
+				this.formSelector = "noforms";
+			});
+			
+			this.before('/edit/:content_type', function(req) {
+				if ($(document.body).data('content_type') == req.params['content_type'] && $(document.body).data('page')=='list') {
+					return false;
+				}
+			});
+			
+			this.before('/edit/:content_type/:urlid', function(req) {
+				if ($(document.body).data('urlid') == req.params['urlid'] && $(document.body).data('page')=='edit') {
+					return false;
+				}
+			});
+			
+			this.get('/edit/:content_type', function(req) {
+				$(document.body).data('content_type', req.params['content_type']);
+				$(document.body).data('page', 'list');
+				$(document.body).trigger('router.init_list');
+			});
+			
+			this.get('/edit/:content_type/:urlid', function(req) {
+				$(document.body).data('content_type', req.params['content_type']);
+				$(document.body).data('urlid', req.params['urlid']);
+				$(document.body).data('page', 'edit');
+				$(document.body).trigger('router.init_edit');
+			});
+			this.get('#', function(req) {});
 		});
-		
-		this.before('/edit/:content_type', function(req) {
-			if ($(document.body).data('content_type') == req.params['content_type'] && $(document.body).data('page')=='list') {
-				return false;
-			}
-		});
-		
-		this.before('/edit/:content_type/:urlid', function(req) {
-			if ($(document.body).data('urlid') == req.params['urlid'] && $(document.body).data('page')=='edit') {
-				return false;
-			}
-		});
-		
-		this.get('/edit/:content_type', function(req) {
-			$(document.body).data('content_type', req.params['content_type']);
-			$(document.body).data('page', 'list');
-			$(document.body).trigger('router.init_list');
-		});
-		
-		this.get('/edit/:content_type/:urlid', function(req) {
-			$(document.body).data('content_type', req.params['content_type']);
-			$(document.body).data('urlid', req.params['urlid']);
-			$(document.body).data('page', 'edit');
-			$(document.body).trigger('router.init_edit');
-		});
-		this.get('#', function(req) {});
-	});
 	
 		function prepRouter() {
 			clear_ajaxqueue();
@@ -276,54 +278,13 @@
 			
 		});
 		
-		function uploadBefore(e) {}
 		
-		function uploadProgress(e) {}
 		
-		function uploadComplete(data) {
-			$(document.body).data("saving",false);
-			if (data.error) {
-			    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
-			    $("#msgdialog").dialog({
-			    	modal: true,
-			    	buttons: {
-			    		Ok: function() {
-			    			$(this).dialog("close");
-			    		}
-			    	}
-			    });
-			} else {
-			    $("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
-			    if ($(document.body).data('done_submit')) {
-			    	content_type=$(document.body).data('content_type');
-			    	urlid=$(document.body).data('urlid');
-			    	$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
-			    	location.href="/workers/content/unlock/"+content_type+"/"+urlid;
-			    } else {
-			    	$("#msgdialog").dialog({
-			    		modal: true,
-			    		buttons: {
-			    			Ok: function() {
-			    				$(this).dialog("close");
-			    			}
-			    		}
-			    	});
-			    }
-			}
-		}
 		
-		function uploadFailed(e) {
-			$(document.body).data("saving",false);
-			$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
-			$("#msgdialog").dialog({
-				modal: true,
-				buttons: {
-					Ok: function() {
-						$(this).dialog("close");
-					}
-				}
-			});
-		}
+		
+		
+		
+		
 		
 		function uploadCanceled(e) {
 			$(document.body).data("saving",false);
@@ -385,17 +346,15 @@
 						var newoption="<option value='"+id+"'>"+title+"</option>";
 						$("."+fieldname).prepend(newoption);
 						$("."+fieldname).val(id);
-						//$("#dyncontent").find()
 						$("#createdialog").dialog("close");
-						
-							$("#msgdialog").dialog({
-								modal: true,
-								buttons: {
-									Ok: function() {
-										$(this).dialog("close");
-									}
-								}
-							});
+						$("#msgdialog").dialog({
+						    modal: true,
+						    buttons: {
+						    	Ok: function() {
+						    		$(this).dialog("close");
+						    	}
+						    }
+						});
 						
 					}
 					
@@ -479,24 +438,24 @@
 		</form>
 	</div>
 	<div id="sidebar" class="pin">
-	<div id="sidebar_accordian">
-		<h3><a href="#">Actions</a></h3>
-		<div>
-			<button id="dodone_right" content_type="<%= content_type %>" urlid="<%= urlid %>">Done</button><br />
-			<br />
-			<button id="dosubmit_right">Save</button><br />
-			<br />
+		<div id="sidebar_accordian">
+			<h3><a href="#">Actions</a></h3>
+			<div>
+				<button id="dodone_right" content_type="<%= content_type %>" urlid="<%= urlid %>">Done</button><br />
+				<br />
+				<button id="dosubmit_right">Save</button><br />
+				<br />
+			</div>
+			<!--<h3><a href="#">Versions</a></h3>
+			<div>
+				<button id="dofork_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowthickstop-1-n"></span>Fork</button><br />
+				<br />
+				<button id="dolink_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-link"></span>Link</button><br />
+				<br />
+			</div>-->
+			<h3><a href="#">Workflow</a></h3>
+			<div id="workflows"></div>
 		</div>
-		<!--<h3><a href="#">Versions</a></h3>
-		<div>
-			<button id="dofork_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowthickstop-1-n"></span>Fork</button><br />
-			<br />
-			<button id="dolink_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-link"></span>Link</button><br />
-			<br />
-		</div>-->
-		<h3><a href="#">Workflow</a></h3>
-		<div id="workflows"></div>
-	</div>
 	</div>
 </script>
 
@@ -513,7 +472,6 @@
 		<button id='create-popup-submit'>Submit</button>
 		</form>
 	</div>
-	
 </script>
 
 <script id="template-upload" type="text/x-tmpl">

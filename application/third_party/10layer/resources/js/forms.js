@@ -1,5 +1,19 @@
 
-//This javascript isn't run because it is loaded before teh dynamic content
+function update_rich(sender) {
+	var content_type = $(sender).attr('contenttype');
+	var fieldname = $(sender).attr('fieldname');
+	var urlid = $(sender).attr('urlid');
+	var tablename = $(sender).attr('tablename');
+	var content_id = $(sender).val();
+	$('#contentselect_'+content_type+'_'+fieldname).dialog('close');
+	update_content({ template: 'field-rich-item', element: 'link_results_'+content_type+'_'+fieldname, urlid: urlid, content_id: content_id, contenttype: content_type, fieldname: fieldname, tablename: tablename });
+	rich_overlay();
+}
+
+function update_content(data) {
+	var results_data=_.template($('#'+data.template).html(), data);
+	$('#'+data.element).html(results_data);
+}
 
 $(function() {
 	
@@ -138,6 +152,59 @@ $(function() {
 		window.open($(this).attr('href'), '_blank');
 	});
 	
+	$(document).on("click", '.btn_rich_select', function() {
+		var content_type = $(this).attr('contenttype');
+		var fieldname = $(this).attr('fieldname');
+		var tablename = $(this).attr('tablename');
+		$.getJSON("/list/jsonlist/"+content_type, {}, function(data) {
+			data.fieldname=fieldname;
+			data.tablename=tablename;
+			var popup_data=_.template($('#field-rich-list').html(), data);
+			$('#contentselect_'+content_type+'_'+fieldname).html(popup_data).dialog('open');
+		});
+		return false;
+	});
+	
+	$(document).on("click", '.item-select', function() {
+		update_rich(this);
+	});
+	
+	$(document).on('keyup', '.popup_search', function(e) {
+		if (e.which == 13) { 
+			var content_type = $(this).attr('contenttype');
+			var fieldname = $(this).attr('fieldname');
+			var tablename = $(this).attr('tablename');
+			$.getJSON("/list/jsonlist/"+content_type, { searchstring: $(this).val() }, function(data) {
+				data.fieldname=fieldname;
+				data.tablename=tablename;
+				var popup_data=_.template($('#field-rich-list').html(), data);
+				$('#contentselect_'+content_type+'_'+fieldname).html(popup_data).dialog('open');
+			});
+		}
+	});
+	
+	$(document).on('click', '.btn_new', function() {
+		var content_type = $(this).attr('contenttype');
+		var fieldname = $(this).attr('fieldname');
+		var tablename = $(this).attr('tablename');
+		$(document.body).data('popup_data', {content_type: content_type, fieldname: fieldname, tablename: tablename });
+		$.getJSON("/create/jsoncreate/"+content_type+"?jsoncallback=?", function(data) {
+			var create_html=_.template($("#create-template").html(), { data:data, content_type: content_type, popup: true });
+			$('#new_dialog_'+tablename+'_'+fieldname).html(create_html);
+			init_form();
+			$('#new_dialog_'+tablename+'_'+fieldname).dialog('open');
+		});
+		
+		return false;
+	});
+	
+	$(document).on('click', '.dosubmit_popup', function() {
+		var content_type = $(this).attr('contenttype');
+		var fieldname = $(this).attr('fieldname');
+		var form = $('#form_create_'+content_type);
+		popup_insert(form, content_type);
+		return false;
+	});
 });
 
 function checkreqs() {
@@ -317,7 +384,149 @@ function init_form() {
 		initCKEditor();
 	}
 	
+	$('.link_results').each(function() {
+		var content_type=$(this).attr('content_type');
+		var urlid=$(this).attr('urlid');
+		$(this).load("/list/"+content_type+"/item/"+urlid);
+	});
+	
+	rich_overlay();
+	
+	$(".popup").dialog({
+		autoOpen: false,
+		height: 600,
+		width: 700,
+		modal: true,
+	});
+
+	
 	var content_type=$(document.body).data('content_type');
 	var urlid=$(document.body).data('urlid');
 	$("#workflows").load("/workflow/change/status/"+content_type+"/"+urlid);
 }
+
+function rich_overlay() {
+	$( ".rich_overlay_remove" ).button({
+        icons: {
+            primary: "ui-icon-trash"
+        },
+        text: false
+	}).click(function() {
+	    $(this).parent().parent().next().val("");
+	    $(this).parent().parent().empty();
+	});
+	$( ".rich_overlay_edit" ).button({
+        icons: {
+            primary: "ui-icon-pencil"
+        },
+        text: false
+	});
+}
+
+function insert(form, content_type) {
+	_insert(form, content_type, uploadComplete);
+}
+
+function popup_insert(form, content_type) {
+	_insert(form, content_type, popupUploadComplete)
+}
+
+function _insert(form, content_type, success) {
+	for ( instance in CKEDITOR.instances )
+		CKEDITOR.instances[instance].updateElement();
+	if (!$(document.body).data('saving')) {
+		$(document.body).data('saving', true);
+		var formData = new FormData(form[0]);
+		$.ajax({
+			url: "/workers/api/insert/"+content_type+"/"+$(document.body).data('api_key'),  //server script to process data
+			type: 'POST',
+			xhr: function() {  // custom xhr
+				myXhr = $.ajaxSettings.xhr();
+				if(myXhr.upload){ // check if upload property exists
+					myXhr.upload.addEventListener('progress',uploadProgress, false); // for handling the progress of the upload
+				}
+				return myXhr;
+			},
+			//Ajax events
+			beforeSend: uploadBefore,
+			success: success,
+			error: uploadFailed,
+			// Form data
+			data: formData,
+			//Options to tell JQuery not to process data or worry about content-type
+			cache: false,
+			contentType: false,
+			processData: false
+		});
+	}
+}
+
+function uploadProgress(e) {}
+
+function uploadBefore(e) {}
+
+function uploadComplete(data) {
+    $(document.body).data("saving",false);
+    if (data.error) {
+        $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+        $("#msgdialog").dialog({
+        	modal: true,
+        	buttons: {
+        		Ok: function() {
+        			$(this).dialog("close");
+        		}
+        	}
+        });
+    } else {
+        $("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+        if ($(document.body).data('done_submit')) {
+        	content_type=$(document.body).data('content_type');
+        	urlid=$(document.body).data('urlid');
+        	$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
+        	location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+        } else {
+        	$("#msgdialog").dialog({
+    	        modal: true,
+	            buttons: {
+        	    	Ok: function() {
+        	    		$(this).dialog("close");
+        	    	}
+    	        }
+	        });
+        }
+    }
+}
+
+function popupUploadComplete(data) {
+	$(document.body).data("saving",false);
+	var popup_data=$(document.body).data('popup_data');
+    if (data.error) {
+        $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+        $("#msgdialog").dialog({
+        	modal: true,
+        	buttons: {
+        		Ok: function() {
+        			$(this).dialog("close");
+        		}
+        	}
+        });
+    } else {
+    	$('#new_dialog_'+popup_data.tablename+'_'+popup_data.fieldname).dialog('close');
+        console.log("Finished saving");
+        console.log(popup_data);
+    }
+}
+
+function uploadFailed(e) {
+    $(document.body).data("saving",false);
+    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
+    $("#msgdialog").dialog({
+    	modal: true,
+    	buttons: {
+    		Ok: function() {
+    			$(this).dialog("close");
+    		}
+    	}
+    });
+}
+
