@@ -129,6 +129,21 @@
 			}
 		}
 		
+		public function export_item_mongodb($dbname, $urlid) {
+			$connection = new Mongo("mongodb://localhost");
+			$db = $connection->selectDB($dbname);
+			$obj=$this->_get_item($urlid);
+			$obj->_id=$obj->id;
+			unset($obj->id);
+			try {
+				$db->content->update(array("_id"=>$obj->_id), $obj);
+				//$db->content->insert($obj); //Who needs safety?
+				print_r($obj);
+			} catch(Exception $e) {
+				print_r($e);
+			}
+		}
+		
 		/**
 		 * export_contenttype_couchdb function.
 		 * 
@@ -244,6 +259,32 @@
 			}
 			fclose($f);
 			print "Updated $sectioncount sections and $articlecount articles";
+		}
+		
+		public function fix_relationships_mongodb($dbname) {
+			$connection = new Mongo("mongodb://localhost");
+			$db = $connection->selectDB($dbname);
+			$this->db->save_queries = false;
+			$content_types=array('tag_type'=>9, 'source'=>22, 'section'=>11, 'specialreport'=>17); //tag_type, source, section, specialreport
+			$tot=0;
+			foreach($content_types as $content_type=>$content_type_id) {
+				$x=0;
+				$content=$this->db->get_where('content', array('content_type_id'=>$content_type_id))->result();
+				foreach($content as $item) {
+					$query=$this->db->select('content.urlid')->from('content_content')->join('content', 'content.id=content_content.content_link_id')->where('content_content.content_id', $item->id)->get();
+					$links=$query->result();
+					foreach($links as $item2) {
+						$db->content->update(array("_id"=>$item2->urlid), array('$set'=>array($content_type=>$item->urlid)));
+						$x++;
+						//print 'id = '.$item2->urlid.", $content_type = {$item->urlid}";
+						//die();
+					}
+				}
+				print "Completed fixing relationships for $content_type, fixed $x items\n";
+				flush();
+				$tot=$tot+$x;
+			}
+			print "All done! $tot items fixed.\n";
 		}
 		
 		public function total_export_mongodb($dbname, $start=0) {
