@@ -334,6 +334,9 @@
 			$db->content->ensureIndex(array("mg_original"=>1, "section"=>1));
 			$db->content->ensureIndex("tag");
 			$db->content->ensureIndex("author");
+			$db->content->ensureIndex("last_modified");
+			$db->content->ensureIndex("title");
+			$db->content->ensureIndex(array("content_type"=>1, "title"=>1));
 			$time_end=microtime(true);
 			$time=$time_end-$time_start;
 			print "Indexes created. Took $time seconds.\n\n";
