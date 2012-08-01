@@ -89,7 +89,6 @@
 			$('#dyncontent').html("Loading...");
 			$.ajax({
 				url: "<?= base_url() ?>list/jsonlist/"+content_type,
-				//dataType: 'json',
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
@@ -135,12 +134,6 @@
 					console.log(errorThrown);
 				}
 			});
-			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
-				//update_pagination( data.count, offset, data.perpage );
-				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
-				update_autos();
-				$("#list-search").data('searchstring', searchstring);
-			});*/
 		}
 		
 		function search_list() {
@@ -171,12 +164,6 @@
 					console.log(errorThrown);
 				}
 			});
-			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
-				update_pagination( content_type, data.count, offset, data.perpage );
-				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
-				update_autos();
-				$("#list-search").data('searchstring', searchstring);
-			});*/
 		}
 		
 		var ajaxqueue=new Array();
@@ -259,9 +246,19 @@
 			});
 			$('#menuitem_'+content_type).addClass('selected');
 			$('#dyncontent').html("Loading...");
-			$.getJSON("<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid+"?jsoncallback=?", function(data) {
-				$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
-				init_form();
+			$.ajax({
+				url: "<?= base_url() ?>list/jsonlist/"+content_type,
+				data: {searchstring: searchstring},
+				type: "POST",
+				success: function(data) {
+					$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
+					init_form();
+				},
+				error: function(obj, textStatus, errorThrown) {
+					console.log("error");
+					console.log(textStatus);
+					console.log(errorThrown);
+				}
 			});
 		}
 		
