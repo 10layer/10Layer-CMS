@@ -40,7 +40,6 @@
 			});
 			
 			this.get('/edit/:content_type', function(req) {
-				console.log("Caught edit");
 				$(document.body).data('content_type', req.params['content_type']);
 				$(document.body).data('page', 'list');
 				$(document.body).trigger('router.init_list');
@@ -90,9 +89,12 @@
 			$('#dyncontent').html("Loading...");
 			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
 				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
+				console.log("update_pagination");
 				update_pagination(content_type, data.count, 0, data.perpage );
+				console.log("update_autos");
 				update_autos();
 				$("#list-search").data('searchstring', searchstring);
+				console.log("done");
 			});
 		}
 		
