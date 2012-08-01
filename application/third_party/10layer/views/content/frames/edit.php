@@ -295,6 +295,61 @@
 			}
 		}
 		
+		function uploadBefore(e) {}
+		
+		function uploadProgress(e) {}
+		
+		function uploadComplete(data) {
+			$(document.body).data("saving",false);
+			if (data.error) {
+			    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+			    $("#msgdialog").dialog({
+			    	modal: true,
+			    	buttons: {
+			    		Ok: function() {
+			    			$(this).dialog("close");
+			    		}
+			    	}
+			    });
+			} else {
+			    $("#msgdialog").html("<div class='ui-state-highlight' style='padding: 5px'><p><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><strong>Saved</strong></p></div>");
+			    if ($(document.body).data('done_submit')) {
+			    	content_type=$(document.body).data('content_type');
+			    	urlid=$(document.body).data('urlid');
+			    	$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/"+content_type+"/"+urlid, async:false});
+			    	location.href="/workers/content/unlock/"+content_type+"/"+urlid;
+			    } else {
+			    	$("#msgdialog").dialog({
+			    		modal: true,
+			    		buttons: {
+			    			Ok: function() {
+			    				$(this).dialog("close");
+			    			}
+			    		}
+			    	});
+			    }
+			}
+		}
+		
+		function uploadFailed(e) {
+			$(document.body).data("saving",false);
+			$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>Error</strong><br /> Problem communicating with the server: "+e.statusText+"</p></div>");
+			$("#msgdialog").dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+		
+		function uploadCanceled(e) {
+			$(document.body).data("saving",false);
+			console.log("uploadCanceled");
+			console.log(e);
+		}
+		
 		$(document).on('change', 'input[type=file]', function() {
 			content_type=$(document.body).data('content_type');
 			var files=this.files; //FileList object
