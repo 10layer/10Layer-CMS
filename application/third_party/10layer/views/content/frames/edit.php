@@ -89,6 +89,7 @@
 			$('#dyncontent').html("Loading...");
 			console.log("init_list"+"<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?");
 			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
+				console.log("Got data");
 				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 				console.log("update_pagination");
 				update_pagination(content_type, data.count, 0, data.perpage );
