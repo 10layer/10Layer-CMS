@@ -248,7 +248,6 @@
 			$('#dyncontent').html("Loading...");
 			$.ajax({
 				url: "<?= base_url() ?>list/jsonlist/"+content_type,
-				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
 					$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
@@ -260,6 +259,10 @@
 					console.log(errorThrown);
 				}
 			});
+			/*$.getJSON("<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid+"?jsoncallback=?", function(data) {
+				$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
+				init_form();
+			});*/
 		}
 		
 		$(document).on('click', '#dosubmit_right', function() {
