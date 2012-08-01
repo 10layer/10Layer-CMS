@@ -40,6 +40,7 @@
 			});
 			
 			this.get('/edit/:content_type', function(req) {
+				console.log("Caught edit");
 				$(document.body).data('content_type', req.params['content_type']);
 				$(document.body).data('page', 'list');
 				$(document.body).trigger('router.init_list');
