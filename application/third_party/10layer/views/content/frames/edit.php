@@ -87,8 +87,22 @@
 			});
 			$('#menuitem_'+content_type).addClass('selected');
 			$('#dyncontent').html("Loading...");
-			console.log("init_list"+"<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?");
-			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
+			console.log("init_list "+"<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?");
+			$.ajax({
+				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
+				dataType: 'json',
+				data: {searchstring: searchstring},
+				type: "POST",
+				success: function(data) {
+					console.log("success");
+					console.log(data);
+				},
+				error: function(data) {
+					console.log("error");
+					console.log(data);
+				}
+			});
+			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
 				console.log("Got data");
 				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 				console.log("update_pagination");
@@ -97,7 +111,7 @@
 				update_autos();
 				$("#list-search").data('searchstring', searchstring);
 				console.log("done");
-			});
+			});*/
 		}
 		
 		function update_list(content_type, offset) {
