@@ -94,14 +94,10 @@
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
-					console.log("Got data");
 					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
-					console.log("update_pagination");
 					update_pagination(content_type, data.count, 0, data.perpage );
-					console.log("update_autos");
 					update_autos();
 					$("#list-search").data('searchstring', searchstring);
-					console.log("done");
 				},
 				error: function(obj, textStatus, errorThrown) {
 					console.log("error");
@@ -109,16 +105,6 @@
 					console.log(errorThrown);
 				}
 			});
-			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
-				console.log("Got data");
-				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
-				console.log("update_pagination");
-				update_pagination(content_type, data.count, 0, data.perpage );
-				console.log("update_autos");
-				update_autos();
-				$("#list-search").data('searchstring', searchstring);
-				console.log("done");
-			});*/
 		}
 		
 		function update_list(content_type, offset) {
@@ -132,6 +118,22 @@
 			$('#content-table').html("Loading...");
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
+			$.ajax({
+				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
+				//dataType: 'json',
+				data: {searchstring: searchstring},
+				type: "POST",
+				success: function(data) {
+					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
+					update_autos();
+					$("#list-search").data('searchstring', searchstring);
+				},
+				error: function(obj, textStatus, errorThrown) {
+					console.log("error");
+					console.log(textStatus);
+					console.log(errorThrown);
+				}
+			});
 			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
 				//update_pagination( data.count, offset, data.perpage );
 				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
