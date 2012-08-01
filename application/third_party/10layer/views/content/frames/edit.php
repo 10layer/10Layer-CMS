@@ -94,6 +94,7 @@
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
+					console.log("init_list result");
 					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 					update_pagination(content_type, data.count, 0, data.perpage );
 					update_autos();
@@ -119,6 +120,7 @@
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
 			$.ajax({
+				console.log("update_list result");
 				url: "<?= base_url() ?>list/jsonlist/"+content_type,
 				//dataType: 'json',
 				data: {searchstring: searchstring},
@@ -143,6 +145,7 @@
 		}
 		
 		function search_list() {
+			console.log("search_list result");
 			content_type=$(document.body).data('content_type');
 			var searchstring=$("#list-search").val();
 			if (searchstring=='Search') {
