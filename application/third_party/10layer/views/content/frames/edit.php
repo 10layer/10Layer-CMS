@@ -92,16 +92,13 @@
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
-					console.log("init_list result");
 					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 					update_pagination(content_type, data.count, 0, data.perpage );
 					update_autos();
 					$("#list-search").data('searchstring', searchstring);
 				},
 				error: function(obj, textStatus, errorThrown) {
-					console.log("error");
-					console.log(textStatus);
-					console.log(errorThrown);
+					console.log("error "+textStatus);
 				}
 			});
 		}
@@ -123,15 +120,12 @@
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
-					console.log("update_list result");
 					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 					update_autos();
 					$("#list-search").data('searchstring', searchstring);
 				},
 				error: function(obj, textStatus, errorThrown) {
-					console.log("error");
-					console.log(textStatus);
-					console.log(errorThrown);
+					console.log("error "+textStatus);
 				}
 			});
 		}
@@ -153,15 +147,12 @@
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
-					console.log("search_list result");
 					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 					update_autos();
 					$("#list-search").data('searchstring', searchstring);
 				},
 				error: function(obj, textStatus, errorThrown) {
-					console.log("error");
-					console.log(textStatus);
-					console.log(errorThrown);
+					console.log("error "+textStatus);
 				}
 			});
 		}
@@ -250,20 +241,13 @@
 				url: "<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid,
 				type: "POST",
 				success: function(data) {
-					console.log(data);
 					$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
 					init_form();
 				},
 				error: function(obj, textStatus, errorThrown) {
-					console.log("error");
-					console.log(textStatus);
-					console.log(errorThrown);
+					console.log("error "+textStatus);
 				}
 			});
-			/*$.getJSON("<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid+"?jsoncallback=?", function(data) {
-				$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
-				init_form();
-			});*/
 		}
 		
 		$(document).on('click', '#dosubmit_right', function() {
