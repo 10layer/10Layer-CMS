@@ -90,7 +90,7 @@
 			console.log("init_list "+"<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?");
 			$.ajax({
 				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
-				dataType: 'json',
+				//dataType: 'json',
 				data: {searchstring: searchstring},
 				type: "POST",
 				success: function(data) {
