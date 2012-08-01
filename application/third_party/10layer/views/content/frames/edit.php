@@ -89,7 +89,7 @@
 			$('#dyncontent').html("Loading...");
 			console.log("init_list "+"<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?");
 			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
+				url: "<?= base_url() ?>list/jsonlist/"+content_type,
 				//dataType: 'json',
 				data: {searchstring: searchstring},
 				type: "POST",
@@ -119,7 +119,7 @@
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
 			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
+				url: "<?= base_url() ?>list/jsonlist/"+content_type,
 				//dataType: 'json',
 				data: {searchstring: searchstring},
 				type: "POST",
@@ -154,7 +154,7 @@
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
 			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
+				url: "<?= base_url() ?>list/jsonlist/"+content_type,
 				//dataType: 'json',
 				data: {searchstring: searchstring},
 				type: "POST",
