@@ -16,43 +16,41 @@
 	
 		
 	$(function() {
-		
-		$(document.body).data('api_key', '<?= $this->config->item('api_key') ?>');
-		
+	
 		//Router
-		var app = Davis(function() {
-			this.configure(function () {
-				this.generateRequestOnPageLoad = true;
-				this.raiseErrors = true;
-				this.formSelector = "noforms";
-			});
-			
-			this.before('/edit/:content_type', function(req) {
-				if ($(document.body).data('content_type') == req.params['content_type'] && $(document.body).data('page')=='list') {
-					return false;
-				}
-			});
-			
-			this.before('/edit/:content_type/:urlid', function(req) {
-				if ($(document.body).data('urlid') == req.params['urlid'] && $(document.body).data('page')=='edit') {
-					return false;
-				}
-			});
-			
-			this.get('/edit/:content_type', function(req) {
-				$(document.body).data('content_type', req.params['content_type']);
-				$(document.body).data('page', 'list');
-				$(document.body).trigger('router.init_list');
-			});
-			
-			this.get('/edit/:content_type/:urlid', function(req) {
-				$(document.body).data('content_type', req.params['content_type']);
-				$(document.body).data('urlid', req.params['urlid']);
-				$(document.body).data('page', 'edit');
-				$(document.body).trigger('router.init_edit');
-			});
-			this.get('#', function(req) {});
+	var app = Davis(function() {
+		this.configure(function () {
+			this.generateRequestOnPageLoad = true;
+			this.raiseErrors = true;
+			this.formSelector = "noforms";
 		});
+		
+		this.before('/edit/:content_type', function(req) {
+			if ($(document.body).data('content_type') == req.params['content_type'] && $(document.body).data('page')=='list') {
+				return false;
+			}
+		});
+		
+		this.before('/edit/:content_type/:urlid', function(req) {
+			if ($(document.body).data('urlid') == req.params['urlid'] && $(document.body).data('page')=='edit') {
+				return false;
+			}
+		});
+		
+		this.get('/edit/:content_type', function(req) {
+			$(document.body).data('content_type', req.params['content_type']);
+			$(document.body).data('page', 'list');
+			$(document.body).trigger('router.init_list');
+		});
+		
+		this.get('/edit/:content_type/:urlid', function(req) {
+			$(document.body).data('content_type', req.params['content_type']);
+			$(document.body).data('urlid', req.params['urlid']);
+			$(document.body).data('page', 'edit');
+			$(document.body).trigger('router.init_edit');
+		});
+		this.get('#', function(req) {});
+	});
 	
 		function prepRouter() {
 			clear_ajaxqueue();
@@ -87,19 +85,11 @@
 			});
 			$('#menuitem_'+content_type).addClass('selected');
 			$('#dyncontent').html("Loading...");
-			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type,
-				data: {searchstring: searchstring},
-				type: "POST",
-				success: function(data) {
-					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
-					update_pagination(content_type, data.count, 0, data.perpage );
-					update_autos();
-					$("#list-search").data('searchstring', searchstring);
-				},
-				error: function(obj, textStatus, errorThrown) {
-					console.log("error "+textStatus);
-				}
+			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
+				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
+				update_pagination(content_type, data.count, 0, data.perpage );
+				update_autos();
+				$("#list-search").data('searchstring', searchstring);
 			});
 		}
 		
@@ -114,19 +104,11 @@
 			$('#content-table').html("Loading...");
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
-			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type,
-				//dataType: 'json',
-				data: {searchstring: searchstring},
-				type: "POST",
-				success: function(data) {
-					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
-					update_autos();
-					$("#list-search").data('searchstring', searchstring);
-				},
-				error: function(obj, textStatus, errorThrown) {
-					console.log("error "+textStatus);
-				}
+			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+				//update_pagination( data.count, offset, data.perpage );
+				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
+				update_autos();
+				$("#list-search").data('searchstring', searchstring);
 			});
 		}
 		
@@ -141,19 +123,11 @@
 			$('#pagination').html('');
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
-			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type,
-				//dataType: 'json',
-				data: {searchstring: searchstring},
-				type: "POST",
-				success: function(data) {
-					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
-					update_autos();
-					$("#list-search").data('searchstring', searchstring);
-				},
-				error: function(obj, textStatus, errorThrown) {
-					console.log("error "+textStatus);
-				}
+			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+				update_pagination( content_type, data.count, offset, data.perpage );
+				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
+				update_autos();
+				$("#list-search").data('searchstring', searchstring);
 			});
 		}
 		
@@ -237,16 +211,9 @@
 			});
 			$('#menuitem_'+content_type).addClass('selected');
 			$('#dyncontent').html("Loading...");
-			$.ajax({
-				url: "<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid,
-				type: "POST",
-				success: function(data) {
-					$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
-					init_form();
-				},
-				error: function(obj, textStatus, errorThrown) {
-					console.log("error "+textStatus);
-				}
+			$.getJSON("<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid+"?jsoncallback=?", function(data) {
+				$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
+				init_form();
 			});
 		}
 		
@@ -294,6 +261,20 @@
 				});
 			}
 		}
+		
+		$(document).on('change', 'input[type=file]', function() {
+			content_type=$(document.body).data('content_type');
+			var files=this.files; //FileList object
+			var file=files[0]; //Only handle single upload at a time
+			var el=$(this);
+			var container=el.parent();
+			var viewer = new FileReader();
+			viewer.onload = (function(f) {
+				container.find('.preview-image img').attr('src', f.target.result).css("height", 300);
+			});
+			viewer.readAsDataURL(file);
+			
+		});
 		
 		function uploadBefore(e) {}
 		
@@ -343,34 +324,6 @@
 				}
 			});
 		}
-		
-		function uploadCanceled(e) {
-			$(document.body).data("saving",false);
-			console.log("uploadCanceled");
-			console.log(e);
-		}
-		
-		$(document).on('change', 'input[type=file]', function() {
-			content_type=$(document.body).data('content_type');
-			var files=this.files; //FileList object
-			var file=files[0]; //Only handle single upload at a time
-			var el=$(this);
-			var container=el.parent();
-			var viewer = new FileReader();
-			viewer.onload = (function(f) {
-				container.find('.preview-image img').attr('src', f.target.result).css("height", 300);
-			});
-			viewer.readAsDataURL(file);
-			
-		});
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		function uploadCanceled(e) {
 			$(document.body).data("saving",false);
@@ -432,15 +385,17 @@
 						var newoption="<option value='"+id+"'>"+title+"</option>";
 						$("."+fieldname).prepend(newoption);
 						$("."+fieldname).val(id);
+						//$("#dyncontent").find()
 						$("#createdialog").dialog("close");
-						$("#msgdialog").dialog({
-						    modal: true,
-						    buttons: {
-						    	Ok: function() {
-						    		$(this).dialog("close");
-						    	}
-						    }
-						});
+						
+							$("#msgdialog").dialog({
+								modal: true,
+								buttons: {
+									Ok: function() {
+										$(this).dialog("close");
+									}
+								}
+							});
 						
 					}
 					
@@ -524,24 +479,24 @@
 		</form>
 	</div>
 	<div id="sidebar" class="pin">
-		<div id="sidebar_accordian">
-			<h3><a href="#">Actions</a></h3>
-			<div>
-				<button id="dodone_right" content_type="<%= content_type %>" urlid="<%= urlid %>">Done</button><br />
-				<br />
-				<button id="dosubmit_right">Save</button><br />
-				<br />
-			</div>
-			<!--<h3><a href="#">Versions</a></h3>
-			<div>
-				<button id="dofork_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowthickstop-1-n"></span>Fork</button><br />
-				<br />
-				<button id="dolink_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-link"></span>Link</button><br />
-				<br />
-			</div>-->
-			<h3><a href="#">Workflow</a></h3>
-			<div id="workflows"></div>
+	<div id="sidebar_accordian">
+		<h3><a href="#">Actions</a></h3>
+		<div>
+			<button id="dodone_right" content_type="<%= content_type %>" urlid="<%= urlid %>">Done</button><br />
+			<br />
+			<button id="dosubmit_right">Save</button><br />
+			<br />
 		</div>
+		<!--<h3><a href="#">Versions</a></h3>
+		<div>
+			<button id="dofork_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-arrowthickstop-1-n"></span>Fork</button><br />
+			<br />
+			<button id="dolink_right" class="ui-button-text-icons ui-button ui-widget ui-state-default ui-corner-all " role="button" aria-disabled="false"><span class="ui-button-text"><span class="ui-button-icon-primary ui-icon ui-icon-link"></span>Link</button><br />
+			<br />
+		</div>-->
+		<h3><a href="#">Workflow</a></h3>
+		<div id="workflows"></div>
+	</div>
 	</div>
 </script>
 
@@ -558,6 +513,7 @@
 		<button id='create-popup-submit'>Submit</button>
 		</form>
 	</div>
+	
 </script>
 
 <script id="template-upload" type="text/x-tmpl">
