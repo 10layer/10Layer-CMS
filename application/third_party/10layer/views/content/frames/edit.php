@@ -97,9 +97,10 @@
 					console.log("success");
 					console.log(data);
 				},
-				error: function(data) {
+				error: function(obj, textStatus, errorThrown) {
 					console.log("error");
-					console.log(data);
+					console.log(textStatus);
+					console.log(errorThrown);
 				}
 			});
 			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", {searchstring: searchstring}, function(data) {
