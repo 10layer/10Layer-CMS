@@ -247,9 +247,10 @@
 			$('#menuitem_'+content_type).addClass('selected');
 			$('#dyncontent').html("Loading...");
 			$.ajax({
-				url: "<?= base_url() ?>list/jsonlist/"+content_type,
+				url: "<?= base_url() ?>edit/jsonedit/"+content_type+"/"+urlid,
 				type: "POST",
 				success: function(data) {
+					console.log(data);
 					$('#dyncontent').html(_.template($("#edit-template").html(), {data:data, content_type: content_type, urlid: urlid }));
 					init_form();
 				},
