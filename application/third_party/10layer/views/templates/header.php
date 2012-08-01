@@ -26,7 +26,7 @@
 			}
 		}
 	?>
-	<script type="text/javascript" src="/tlresources/file/jquery/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/tlresources/file/jquery/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery.tools.min.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery-ui-1.8.18.custom/development-bundle/ui/jquery-ui-1.8.18.custom.js"></script>
 	<script type="text/javascript" src="/tlresources/file/jquery/jquery-ui-timepicker-addon.js"></script>
