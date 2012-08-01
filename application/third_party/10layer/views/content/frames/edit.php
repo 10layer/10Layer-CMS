@@ -134,12 +134,12 @@
 					console.log(errorThrown);
 				}
 			});
-			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
 				//update_pagination( data.count, offset, data.perpage );
 				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
 				update_autos();
 				$("#list-search").data('searchstring', searchstring);
-			});
+			});*/
 		}
 		
 		function search_list() {
@@ -153,12 +153,28 @@
 			$('#pagination').html('');
 			//Cancel any existing Ajax calls
 			clear_ajaxqueue();
-			$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
+			$.ajax({
+				url: "<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?",
+				//dataType: 'json',
+				data: {searchstring: searchstring},
+				type: "POST",
+				success: function(data) {
+					$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
+					update_autos();
+					$("#list-search").data('searchstring', searchstring);
+				},
+				error: function(obj, textStatus, errorThrown) {
+					console.log("error");
+					console.log(textStatus);
+					console.log(errorThrown);
+				}
+			});
+			/*$.getJSON("<?= base_url() ?>list/jsonlist/"+content_type+"?jsoncallback=?", { searchstring: searchstring, offset: offset }, function(data) {
 				update_pagination( content_type, data.count, offset, data.perpage );
 				$('#content-table').html(_.template($("#listing-template-content").html(), { content_type: content_type, content:data.content }));
 				update_autos();
 				$("#list-search").data('searchstring', searchstring);
-			});
+			});*/
 		}
 		
 		var ajaxqueue=new Array();
