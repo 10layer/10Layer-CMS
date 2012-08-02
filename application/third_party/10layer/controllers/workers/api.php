@@ -53,7 +53,12 @@
 			}
 			$this->load->model($contenttype->model, "content");
 			$obj=$this->content->getByIdORM($urlid, $contenttype_urlid);
-			$this->data["data"]=$obj->getFull();
+			if ($obj->fields["live"]->value) {
+				$this->data["data"]=$obj->getFull();
+			} else {
+				$this->msg="Content is not live";
+			}
+			
 			$this->data["data"]->content_type=$contenttype_urlid;
 			$this->returndata();
 		}
