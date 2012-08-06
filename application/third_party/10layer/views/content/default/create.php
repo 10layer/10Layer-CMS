@@ -2,9 +2,9 @@
 	var contenttype="<?= $contenttype ?>";
 </script>
 <?php
-	link_js("/tlresources/file/js/forms.js");
-	link_js("/tlresources/file/jquery/jquery.form.js");
-	link_js("/tlresources/file/js/forms/default.js");
+	//link_js("/tlresources/file/js/forms.js");
+	//link_js("/tlresources/file/jquery/jquery.form.js");
+	//link_js("/tlresources/file/js/forms/default.js");
 ?>
 <div id="create-content" class="boxed wide">
 <h2><?php echo $heading; ?></h2>
