@@ -169,7 +169,9 @@
 			});
 			$.getJSON("/workers/content/jsonGetFilelist/"+content_type, {urlids: urlids}, function(data) {
 				_.each(data, function(val, key) {
-					$("#ajax_autoload_filelist-"+key).html('<input type="text" value="'+val+'" readonly="readonly" class="select_on_click" />');
+					if (val!="") {
+						$("#ajax_autoload_filelist-"+key).html('<input type="text" value="'+val+'" readonly="readonly" class="select_on_click" />');
+					}
 				});
 			});
 		}
