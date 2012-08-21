@@ -100,6 +100,27 @@
 			$this->load->view("json", array("data"=>$results));
 		}
 		
+		public function jsonGetFilelist($content_type) {
+			$urlids=$this->input->get_post("urlids");
+			$results=array();
+			$contenttype=$this->db->get_where("content_types",array("urlid"=>$content_type))->row();
+			$this->load->model($contenttype->model, "content");
+			foreach($urlids as $urlid) {
+				$contentobj=$this->content->getByIdORM($urlid,$content_type);
+				$fields=$contentobj->getFields($content_type);
+				$result=array("value"=>"");
+				foreach($fields as $field) {
+					if ($field->type=="image" || $field->type=="file") {
+						if (isset($field->linkformat) && !empty($field->linkformat)) {
+							$result["value"]=str_replace('{filename}', $field->value, $field->linkformat);
+						}
+					}
+				}
+				$results[$urlid]=$result["value"];
+			}
+			$this->load->view("json", array("data"=>$results));
+		}
+		
 	}
 
 /* End of file content.php */

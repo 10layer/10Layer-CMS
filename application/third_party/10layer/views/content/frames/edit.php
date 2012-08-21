@@ -167,14 +167,9 @@
 					$("#ajax_autoload_editor-"+key).html(val);
 				});
 			});
-			
-			$('.ajax_auto_link_check').each(function() {
-				var url=$(this).attr("url");
-				var el=$(this);
-				ajaxqueue[ajaxqueue.length]=$.getJSON(url+"?jsoncallback=?", function(data) {
-					if (data.value) {
-						el.html('<input type="text" value="'+data.value+'" readonly="readonly" class="select_on_click" />');
-					}
+			$.getJSON("/workers/content/jsonGetFilelist/"+content_type, {urlids: urlids}, function(data) {
+				_.each(data, function(val, key) {
+					$("#ajax_autoload_filelist-"+key).html('<input type="text" value="'+val+'" readonly="readonly" class="select_on_click" />');
 				});
 			});
 		}
@@ -462,7 +457,7 @@
 				<td><%= item.start_date %></td>
 				<td class="<%= (item.live==1) ? 'green' : 'red' %>"><%= (item.live==1) ? 'Live' : 'Not live' %></td>
 				<td class='content-workflow-<%= item.major_version %>'><%= version_map[item.major_version] %></td>
-				<td class='ajax_auto_link_check_filelist' url='/list/jsonfilelist/<%= content_type %>/<%= item.urlid %>' ></td>
+				<td class='ajax_auto_link_check_filelist' id='ajax_autoload_filelist-<%= item.urlid %>' url='/list/jsonfilelist/<%= content_type %>/<%= item.urlid %>' ></td>
 			</tr>
 	<% x++; }); %>
 		</table>
