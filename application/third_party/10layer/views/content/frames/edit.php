@@ -157,13 +157,17 @@
 		
 		
 		function update_autos() {
-			$(".ajax_autoload").each(function() {
-				var url=$(this).attr("url");
-				var el=$(this);
-				ajaxqueue[ajaxqueue.length]=$.getJSON(url+"?jsoncallback=?", function(data) {
-					el.html(data.value);
+			content_type=$(document.body).data('content_type');
+			urlids=[];
+			$(".content-item").each(function() {
+				urlids.push($(this).attr('urlid'));
+			});
+			$.getJSON("/workers/content/jsonGetLastEditors/"+content_type, {urlids: urlids}, function(data) {
+				_.each(data, function(val, key) {
+					$("#ajax_autoload_editor-"+key).html(val);
 				});
 			});
+			
 			$('.ajax_auto_link_check').each(function() {
 				var url=$(this).attr("url");
 				var el=$(this);
@@ -451,14 +455,14 @@
 				<th></th>
 			</tr>
 	<% var x=0; _.each(content, function(item) { %>
-			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>">
+			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>" urlid="<%= item.urlid %>">
 				<td class='content-workflow-<%= item.major_version %>'><a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a></td>
 				<td><%= item.last_modified %></td>
-				<td class='ajax_autoload' url='/workers/content/jsongetlasteditor/<%= content_type %>/<%= item.urlid %>' ></td>
+				<td class='ajax_autoload_editor' id='ajax_autoload_editor-<%= item.urlid %>'></td>
 				<td><%= item.start_date %></td>
 				<td class="<%= (item.live==1) ? 'green' : 'red' %>"><%= (item.live==1) ? 'Live' : 'Not live' %></td>
 				<td class='content-workflow-<%= item.major_version %>'><%= version_map[item.major_version] %></td>
-				<td class='ajax_auto_link_check' url='/list/jsonfilelist/<%= content_type %>/<%= item.urlid %>' ></td>
+				<td class='ajax_auto_link_check_filelist' url='/list/jsonfilelist/<%= content_type %>/<%= item.urlid %>' ></td>
 			</tr>
 	<% x++; }); %>
 		</table>

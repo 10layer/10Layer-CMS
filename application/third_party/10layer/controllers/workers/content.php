@@ -86,6 +86,20 @@
 			$this->load->view("json", array("data"=>$admin));
 		}
 		
+		public function jsonGetLastEditors($content_type) {
+			$urlids=$this->input->get_post("urlids");
+			$results=array();
+			foreach($urlids as $urlid) {
+				$result = $this->mongo_db->where(array("urlid"=>$urlid))->order_by(array("last_modified"=>"DESC"))->limit(1)->get("tl_content_versions");
+				$admin=array("value"=>"");
+				if (isset($result[0]->user_id) AND $result[0]->user_id != "") {
+					$admin["value"]=$this->db->select('name')->where("id",$result[0]->user_id)->get("tl_users")->row()->name;
+				}
+				$results[$urlid]=$admin["value"];
+			}
+			$this->load->view("json", array("data"=>$results));
+		}
+		
 	}
 
 /* End of file content.php */
