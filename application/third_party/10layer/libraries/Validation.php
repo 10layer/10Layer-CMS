@@ -205,6 +205,37 @@
 		}
 		
 		/**
+		 * not_in function.
+		 * 
+		 * @access public
+		 * @param array $value
+		 * @param int $var
+		 * @return boolean
+		 */
+		public function not_in($value,$var) {
+
+			$result = true;
+			$subject = $value[0];
+			$check_container = isset($_POST[$var]) ? $_POST[$var] : "" ;
+			if(is_array($check_container)){
+				foreach($subject as $item){
+					foreach($check_container as $test){
+						if($test == $item){
+							$result = false;
+						}
+					}
+				}
+			}
+
+			
+
+			return $result;
+		}
+
+
+
+
+		/**
 		 * valid_email function.
 		 * 
 		 * @access public
@@ -478,6 +509,8 @@
 				case "database_nodupe": $s="$name already exists";
 					break;
 				case "match": $s="$name does not match";
+					break;
+				case "not_in": $s="Item cant be in both $name and ".str_replace("_", " ", $var)." field";
 					break;
 				default: $s="There is an unknown problem with $name";
 				
