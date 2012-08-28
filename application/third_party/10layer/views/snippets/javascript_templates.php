@@ -269,7 +269,7 @@
 		<div class="selected_item">
 		
 			<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= field.value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
-			<div class="nesteditems_item_label1"><%= (field.data) ? field.data.fields.title.value : '' %></div>
+			<div class="nesteditems_item_label1"><%= (field.data.fields.title) ? field.data.fields.title.value : '' %></div>
 		</div>
 		
 		<div class="nested_items"></div>
