@@ -414,7 +414,14 @@
 </script>
 
 <script type='text/template' id='edit-field-rich'>
-	<%= _.template($("#old-fields-template").html(), { field: field, urlid: urlid, content_type: content_type }) %>
+	<% 
+		console.log(urlid);
+		// var url='/create/field/'+field.name+'/'+content_type;
+		// $.get(url, function(data) {
+		// 	$('#'+field.name+'-hook').html(data);
+		// }); 
+	%>
+	<%= // _.template($("#old-fields-template").html(), { field: field, urlid: urlid, content_type: content_type }) %>
 </script>
 
 <script type='text/template' id='create-field-rich'>
@@ -495,6 +502,7 @@
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<% 
 		var url='/edit/field/'+field.name+'/'+content_type+'/'+urlid;
+		console.log(urlid);
 		$.get(url, function(data) {
 			$('#'+field.name+'-hook').html(data);
 		}); 
