@@ -29,19 +29,24 @@
 			$content=$this->input->post("content");
 			$zone_id=$this->input->post("zone_id");
 			$zone_name=$this->input->post("zone_name");
-			
 			$dbdata=array();
 			$x=1;
+			$changed = false;
 			if (is_array($content)) {
 				foreach($content as $content_id) {
 					$dbdata[]=array("content_id"=>$content_id,"rank"=>$x,"zone_urlid"=>$zone_id);
 					$x++;
+					$changed=true;
 				}
 			}
+			if (!$changed) {
+				$the_result["error"] = true;
+				$the_result["msg"] = "$zone_id not changed as we didn't recieve any data";
+				print $the_result["msg"];
+				return true;
+			}
 			$this->model_section->setContent($zone_id,$dbdata);
-			//$this->checkCallback("onAfterUpdate", $zone_id);
 			$this->messaging->post_action("publish",$zone_id);
-			//$subsection=$this->model_section->getSubSection($subsection_id);
 			$the_result["error"] = false;
 			$the_result["msg"] = "$zone_id Successfuly ranked...";
 			print $the_result["msg"];
@@ -52,16 +57,11 @@
 			$content=$this->model_content->getByIdORM($content_id);		
 			$content->transformFields();
 			$validation=$content->validateFields();
-				
-				
-				if (!$validation["passed"]) {
-					echo implode("<br />\n",$validation["failed_messages"]);
-				} else {
-					
-					echo "passed";
-					
-				}
-		
+			if (!$validation["passed"]) {
+				echo implode("<br />\n",$validation["failed_messages"]);
+			} else {
+				echo "passed";
+			}
 		}
 		
 		public function stage_rank_section() {
@@ -79,9 +79,6 @@
 			}
 			
 			$this->model_section->stage_changes($zone_id,$dbdata);
-			//$this->checkCallback("onAfterUpdate", $zone_id);
-			//$this->messaging->post_action("publish",$zone_id);
-			//$subsection=$this->model_section->getSubSection($subsection_id);
 			print "Staged changes to ".$zone_name;
 		}
 		
@@ -97,9 +94,6 @@
 			$articles=$this->model_section->getContentInQueue(array("queued_for_publishing", "published"),$zone_urlid,$startdate,$enddate, $searchstr);
 			$data["content"]=$articles["unpublished"];
 			$data["published_articles"]=$articles["published"];
-			
-			//print_r($articles["unpublished"]); die();
-			
 			$data["staged"]=$articles["staged"];
 			$data["all"] = $this->input->get('all', TRUE);
 			$data["section_id"]=$section->content_id;
@@ -108,8 +102,6 @@
 		
 		
 		public function revert(){
-			//print_r($this->input->post());
-			
 			$zone_id=$this->input->post("zone_id");
 			$zone_name=$this->input->post("zone_name");
 			$zone = $this->zones->getByIdORM($zone_id)->getData();
@@ -131,7 +123,6 @@
 				$this->generate_zone_content($section_id,$zone->id);
 			}
 			echo "Successfully automated this section";
-		
 		}
 		
 		public function generate_zone_content($section_id,$zone_id){
