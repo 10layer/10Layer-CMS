@@ -174,7 +174,7 @@ $(function() {
 			var content_id = $(this).parent().parent().attr("id").split('=')[1];
 			
 			$.get("/publish/worker/validate/"+content_type+"/"+content_id,function(data){
-				if(data == "passed"){
+				if($.trim(data) == "passed"){
 					pointer.attr("title", "Move out of Section List");
 					pointer.children(":first").removeClass("ui-icon-circle-arrow-e").next().html("Move out of Section List");
 					pointer.children(":first").addClass("ui-icon-circle-arrow-w");
