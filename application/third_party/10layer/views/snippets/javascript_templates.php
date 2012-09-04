@@ -441,8 +441,14 @@
 		}
 	});
 	%>
-	<% _.each(field.options, function(option, key) { %>
-		<option value='<%= ( Number(key) + Number(keyadjust)) %>' <%= (field.value==( Number(key) + Number(keyadjust)) ) ? 'selected="selected"' : '' %> ><%= option %></option>
+	<% 
+		_.each(field.options, function(option, key) { 
+			var the_key = (parseInt(key)) ? ( Number(key) + Number(keyadjust)) : key;
+			if(the_key == 0 ){
+				the_key = the_key + 1;
+			} 
+	%>
+		<option value='<%= the_key %>' <%= (field.value==the_key) ? 'selected="selected"' : '' %> ><%= option %></option>
 	<% }); %>
 	</select>
 	<br clear='both' />
@@ -460,8 +466,14 @@
 		}
 	});
 	%>
-	<% _.each(field.options, function(option, key) { %>
-		<option value='<%= ( Number(key) + Number(keyadjust)) %>' <%= (field.value==( Number(key) + Number(keyadjust)) ) ? 'selected="selected"' : '' %> ><%= option %></option>
+	<% 
+		_.each(field.options, function(option, key) { 
+			var the_key = (parseInt(key)) ? ( Number(key) + Number(keyadjust)) : key;
+			if(the_key == 0 ){
+				the_key = the_key + 1;
+			}
+	%>
+		<option value='<%= the_key %>' <%= (field.value==the_key) ? 'selected="selected"' : '' %> ><%= option %></option>
 	<% }); %>
 	</select>
 	<br clear='both' />
