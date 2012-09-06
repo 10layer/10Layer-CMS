@@ -161,6 +161,22 @@
 			}
 			return true;
 		}
+
+		function zeroable_zone($zone_id){
+			$this->db->where("content_id",$zone_id);
+			$settings = $this->db->get('section_zones')->row();
+			if($settings->min_count > 0){
+				return false;
+			}else{
+				return true;
+			}	
+		}
+
+		function get_zone_id($zone_urlid){
+			$this->db->select('id');
+			$this->db->where('urlid',$zone_urlid);
+			return $this->db->get("content")->row()->id;
+		}
 		
 		
 		public function staged_zone($zone_id){
