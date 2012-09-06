@@ -16,7 +16,14 @@
 	
 		
 	$(function() {
-	
+
+	$('.autocomplete').live('keypress', function(evt){
+		var charCode = evt.charCode || evt.keyCode;
+			if (charCode  == 13) { //Enter key's keycode
+			return false;
+			}
+	});
+
 		//Router
 	var app = Davis(function() {
 		this.configure(function () {
@@ -277,6 +284,7 @@
 			
 		});
 		
+
 		function uploadBefore(e) {}
 		
 		function uploadProgress(e) {}
@@ -349,6 +357,7 @@
 		
 		$(document).on('click', '#create-popup-submit', function() {
 			$(this).parent().submit();
+			$('#create-popup-submit').hide();
 		});
 		
 		var allow_done=true;
@@ -367,6 +376,7 @@
 				},
 				success: function(data) {
 					if (data.error) {
+						$('#create-popup-submit').show();
 						allow_done=false;
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
 						$("#msgdialog").dialog({

@@ -13,7 +13,14 @@
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script language="javascript">
 	$(function() {
-	
+		
+		$('.autocomplete').live('keypress', function(evt){
+			var charCode = evt.charCode || evt.keyCode;
+				if (charCode  == 13) { //Enter key's keycode
+				return false;
+			}
+		});
+
 		//Router
 		var app = Davis(function() {
 			this.configure(function () {
