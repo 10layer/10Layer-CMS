@@ -506,7 +506,7 @@
 					break;
 				case "valid_url": $s="$name is not a valid url";
 					break;
-				case "database_nodupe": $s="$name already exists";
+				case "database_nodupe": $s="$name already exists, try $name (something) - e.g. Jacob Zuma ( Wedding ) ";
 					break;
 				case "match": $s="$name does not match";
 					break;
