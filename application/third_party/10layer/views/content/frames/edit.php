@@ -344,21 +344,22 @@
 			$(this).select();
 		});
 		
-		$(document).on('click', '.add-relation',function() {
-		//Creates the popup box for adding a new item
+		 $(document).on('click', '.add-relation',function() {
+
+			//Creates the popup box for adding a new item
 			var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
 			var content_type=$(this).attr("contenttype");
 			$.getJSON("<?= base_url() ?>create/jsoncreate/"+content_type+"?jsoncallback=?", function(data) {
 				$('#createdialog').dialog({ minWidth: 700, modal: true, }).html(_.template($("#create-popup-template").html(), { data:data, content_type: content_type }));
 				init_form();
 			});
-			return false;
-		});
+			// 	return false;
+		 });
 		
-		$(document).on('click', '#create-popup-submit', function() {
-			$(this).parent().submit();
-			$('#create-popup-submit').hide();
-		});
+		// $(document).on('click', '#create-popup-submit', function() {
+		// 	$(this).parent().submit();
+		// 	$('#create-popup-submit').hide();
+		// });
 		
 		var allow_done=true;
 		

@@ -1143,3 +1143,19 @@ ul.nested_tree li, ul.small_section li{
 #pagination .current {
 	font-weight: bold;
 }
+
+.add-relation{
+	border:1px solid #ccc;
+	padding:5px 10px;
+	margin-top: -5px;
+	cursor: pointer;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: whiteSmoke;
+
+}
+
+.add-relation:hover{
+	background: #5BB75B;
+	color: #fff;
+};

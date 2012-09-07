@@ -54,7 +54,7 @@
 
 	<% if (field.external==1) { %>
 	<br clear="both"><br clear="both">
-	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation">New</button>
+	<a style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation">New</a>
 	<br clear="both">
 	<%
 		}
@@ -72,7 +72,7 @@
 
 	<% if (field.external==1) { %>
 	<br clear="both"><br clear="both">
-	<button style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation"><span class="ui-button-text">New</button>
+	<a style="margin-left: 110px" id="add_relation_<%= field.tablename %>_<%= field.name %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" tablename="<%= field.tablename %>" class="add-relation"><span class="ui-button-text">New</a>
 	<br clear="both">
 	<%
 		}
