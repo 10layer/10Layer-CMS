@@ -229,18 +229,29 @@
 		
 		$("#dyncontent").delegate(".add-relation","click",function() {
 		//Creates the popup box for adding a new item
+			// var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
+			// $("#createdialog").dialog({ minWidth: 700, modal: true, }).load(
+			// 	"/create/fullview/"+$(this).attr("contenttype")+"/embed"
+			// );
+			// $("#createdialog").data("fieldname",fieldname);
+
 			var fieldname=$(this).attr("contenttype")+"_"+$(this).attr("fieldname");
-			$("#createdialog").dialog({ minWidth: 700, modal: true, }).load(
-				"/create/fullview/"+$(this).attr("contenttype")+"/embed"
-			);
-			$("#createdialog").data("fieldname",fieldname);
+			var content_type=$(this).attr("contenttype");
+			$.getJSON("<?= base_url() ?>create/jsoncreate/"+content_type+"?jsoncallback=?", function(data) {
+				$('#createdialog').dialog({ minWidth: 700, modal: true, }).html(_.template($("#create-popup-template").html(), { data:data, content_type: content_type }));
+				init_form();
+			});
 			return false;
 		});
 		
-		
-		$("#createdialog").delegate("#contentform","submit",function() {
-		//Handles the submit for a new item
-			$("#createdialog #contentform").ajaxSubmit({
+		$("#createdialog").delegate("#createform-popup","submit",function() {
+
+		//$("#createdialog").delegate("#contentform","submit",function() {
+			//Handles the submit for a new item
+			//hide the submit button to stop multiple clicks
+			$('#create-popup-submit').hide();
+
+			$("#createdialog #createform-popup").ajaxSubmit({
 				dataType: "json",
 				iframe: true,
 				
@@ -249,6 +260,7 @@
 				},
 				success: function(data) {
 					if (data.error) {
+						$('#create-popup-submit').show();
 						$("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
 						$("#msgdialog").dialog({
 							modal: true,
@@ -289,6 +301,23 @@
 <?php
 	$this->load->view("snippets/javascript_templates");
 ?>
+
+<script type='text/template' id='create-popup-template'>
+	<div id="create-content" class="boxed wide">
+		<h2>Create - <%= content_type %></h2>
+		<form id='createform-popup' method='post' enctype='multipart/form-data' action='<?= base_url() ?>create/ajaxsubmit/<%= content_type %>'>
+		<input type='hidden' name='action' value='submit' />
+		<% _.each(data.fields, function(field) { %>
+			<% if (!field.hidden) { %>
+				<%= _.template($('#create-field-'+field.type).html(), { field: field, urlid: false, content_type: content_type  }) %>
+			<% } %>
+		<% }); %>
+		<button id='create-popup-submit'>Submit</button>
+		</form>
+	</div>
+	
+</script>
+
 
 <script type='text/template' id='create-template'>
 	<div id="create-content" class="boxed wide">

@@ -367,7 +367,10 @@
 		$(document.body).data("saving",false);
 		
 		$("#createdialog").delegate("#createform-popup","submit",function() {
-		//Handles the submit for a new item
+			//Handles the submit for a new item
+			//hide the submit button to stop multiple clicks
+			$('#create-popup-submit').hide();
+			
 			$("#createdialog #createform-popup").ajaxSubmit({
 				dataType: "json",
 				iframe: true,
