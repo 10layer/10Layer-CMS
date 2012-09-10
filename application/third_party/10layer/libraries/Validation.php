@@ -263,9 +263,14 @@
 		 * @return bool
 		 */
 		public function database_nodupe($value,$var) {
-			$dbdata=explode(" in ",strtolower($var));
-			$result=$this->ci->db->get_where($dbdata[1],array($dbdata[0]=>$value));
-			return ($result->num_rows()==0);
+			$data = $_POST;
+			if($data['content_id'] != ''){
+				return 1;
+			}else{
+				$dbdata=explode(" in ",strtolower($var));
+				$result=$this->ci->db->get_where($dbdata[1],array($dbdata[0]=>$value));
+				return ($result->num_rows()==0);
+			}
 		}
 		
 		/**
