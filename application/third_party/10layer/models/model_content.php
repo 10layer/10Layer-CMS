@@ -576,7 +576,7 @@
 		 * @param int $start. (default: 0)
 		 * @return object
 		 */
-		public function search($content_type, $searchstr,$limit,$start=0) {
+		public function search($content_type, $searchstr,$limit,$start=0, $live=0) {
 			$tables=array("content");
 			$this->setContentType($content_type);
 			$this->setPlatform($this->platforms->id());
@@ -587,6 +587,7 @@
 			$likes=array();
 			$fields=$contentobj->getFields();
 			$this->db->select("content.*, title AS value");
+			
 			foreach($fields as $field) {
 				if (isset($field->libraries["search"])) {
 					if ($field->libraries["search"]=="fulltext") {
@@ -619,7 +620,20 @@
 				}
 			}
 			
-			return $this->getAll($limit,$start);
+			//We will need a more decent way / sql statement to do this
+			
+			if($live != 0){
+				$container = array();
+				foreach($this->getAll($limit,$start) as $item){
+					if($item->live == 1){
+						array_push($container, $item);
+					}
+				}
+				return $container;
+			}else{
+				return $this->getAll($limit,$start);
+			}
+
 		}
 		
 		/**
@@ -786,7 +800,7 @@
 		 * @param mixed $limit
 		 * @return result
 		 */
-		function smart_search($content_type, $s, $limit, $offset=0){
+		function smart_search($content_type, $s, $limit, $offset=0, $live=0){
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
 			$query = "";
@@ -804,9 +818,9 @@
 				return $query->result();
 			} else {
 				if(strlen($s) > 2) {
-					$result=$this->search($content_type, $s, $limit, $offset);
+					$result=$this->search($content_type, $s, $limit, $offset,$live);
 				} else {
-					$result=$this->suggest($content_type, $s, $limit, $offset);
+					$result=$this->suggest($content_type, $s, $limit, $offset,$live);
 				}
 				//echo $this->db->last_query(); die();
 				return $result;

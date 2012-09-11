@@ -65,7 +65,7 @@
 		function smart_search($type,$searchstr,$limit)
 		{
 			$ci=&get_instance();
-			return $ci->model_content->smart_search($type,$searchstr,$limit);
+			return $ci->model_content->smart_search($type,$searchstr,$limit,0,1);
 		}
 	}
 ?>
