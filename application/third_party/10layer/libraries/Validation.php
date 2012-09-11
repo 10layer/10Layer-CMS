@@ -217,7 +217,7 @@
 			$result = true;
 			$subject = $value[0];
 			$check_container = isset($_POST[$var]) ? $_POST[$var] : "" ;
-			if(is_array($check_container)){
+			if(is_array($subject) AND is_array($check_container)){
 				foreach($subject as $item){
 					foreach($check_container as $test){
 						if($test == $item){
