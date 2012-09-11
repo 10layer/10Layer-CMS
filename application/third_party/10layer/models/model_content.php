@@ -576,7 +576,7 @@
 		 * @param int $start. (default: 0)
 		 * @return object
 		 */
-		public function search($content_type, $searchstr,$limit,$start=0, $live=0) {
+		public function search($content_type, $searchstr,$limit,$start=0, $live=0, $published=0) {
 			$tables=array("content");
 			$this->setContentType($content_type);
 			$this->setPlatform($this->platforms->id());
@@ -621,18 +621,28 @@
 			}
 			
 			//We will need a more decent way / sql statement to do this
-			
+			$original = $this->getAll($limit,$start);
+			$container = array();
 			if($live != 0){
-				$container = array();
-				foreach($this->getAll($limit,$start) as $item){
+				foreach($original as $item){
 					if($item->live == 1){
 						array_push($container, $item);
 					}
 				}
-				return $container;
-			}else{
-				return $this->getAll($limit,$start);
+				$original = $container;
 			}
+
+			if($published == 1){
+				$published_ones = array();
+				foreach ($original as $item) {
+					if($item->major_version == 4){
+						array_push($published_ones, $item);
+					}
+				}
+				$original = $published_ones;
+			}
+
+			return $original;
 
 		}
 		
@@ -800,7 +810,7 @@
 		 * @param mixed $limit
 		 * @return result
 		 */
-		function smart_search($content_type, $s, $limit, $offset=0, $live=0){
+		function smart_search($content_type, $s, $limit, $offset=0, $live=0, $published=0){
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
 			$query = "";
@@ -818,9 +828,9 @@
 				return $query->result();
 			} else {
 				if(strlen($s) > 2) {
-					$result=$this->search($content_type, $s, $limit, $offset,$live);
+					$result=$this->search($content_type, $s, $limit, $offset,$live,$published);
 				} else {
-					$result=$this->suggest($content_type, $s, $limit, $offset,$live);
+					$result=$this->suggest($content_type, $s, $limit, $offset,$live,$published);
 				}
 				//echo $this->db->last_query(); die();
 				return $result;
