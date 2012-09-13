@@ -204,7 +204,7 @@
 	<input type="file" name="<%= field.tablename %>_<%= field.name %>" class="file_upload <%= field.class %>" value="<%= field.value %>" />
 	<input type="hidden" name="<%= field.tablename %>_<%= field.name %>" value="<%= field.value %>" />
 	<div style='float: left; clear: right; margin-left: 110px; border: 1px #ccc solid; width: 500px; padding: 5px;'>
-		<% display_value = (field.value != '' || field.value != null) ? field.value.substring(field.value.lastIndexOf('/')+1) : ''; %>
+		<% display_value = (field.value) ? field.value.substring(field.value.lastIndexOf('/')+1) : ''; %>
 		<%= display_value %>	
 	</div>
 	<br clear='both'/>
