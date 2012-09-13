@@ -273,9 +273,11 @@
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<div class='nested_container' contenttype="<%= field.contenttype %>"> 
 		<div class="selected_item">
-		
-			<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= field.value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
-			<div class="nesteditems_item_label1"><%= (field.data.fields.title) ? field.data.fields.title.value : '' %></div>
+			<%
+				var the_value = (field.value) ? field.value : '';
+			%>
+			<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= the_value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
+			<div class="nesteditems_item_label1"><%= (field.data.fields.title) ? field.data.fields.title.value : 'Strangeness... Section not found, please select again' %></div>
 		</div>
 		
 		<div class="nested_items"></div>
@@ -324,8 +326,10 @@
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<div class='nested_container' contenttype="<%= field.contenttype %>"> 
 		<div class="selected_item">
-		
-			<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= field.value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
+			<%
+				var the_value = (field.value) ? field.value : '';
+			%>
+			<input id="nestedselect_view_<%= field.tablename %>_<%= field.name %>" name="<%= field.tablename %>_<%= field.name %>" type="hidden" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="nestedselect <%= field.class %>" value="<%= the_value %>" <%= (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
 			<div class="nesteditems_item_label1"><%= (field.data) ? field.data.fields.title.value : 'None selected' %></div>
 		</div>
 		
