@@ -49,6 +49,28 @@ class Datatransformations {
 	public function copy(&$sender, $value, $field) {
 		return $sender->getField($field)->value;
 	}
+
+
+	/**
+	 * string_order function.
+	 * 
+	 * Copies Array data from one field to create a string version of it
+	 *
+	 * @access public
+	 * @param mixed &$sender
+	 * @param array $value
+	 * @param string $field
+	 * @return string
+	 */
+	public function string_order(&$sender, $value, $field) {
+
+		$items = $sender->getField($field)->value;
+		$the_string = "";
+		if(is_array($items[0])){
+			$the_string = implode('|', $items[0]);
+		}
+		return $the_string;
+	}
 	
 	/**
 	 * copymultiple function.

@@ -176,6 +176,7 @@ class TLContent {
 		$ci->db->where("content_id",$this->content_id);
 		$ci->db->where("(".implode(" OR ",$typearr).")");
 		$ci->db->limit(100);
+		$ci->db->order_by('id', 'asc');
 		$query=$ci->db->get("content_content");
 		if ($level>=1) {
 			return true;
