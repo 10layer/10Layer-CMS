@@ -67,7 +67,7 @@ class Datatransformations {
 		$items = $sender->getField($field)->value;
 		$the_string = "";
 		if(is_array($items[0])){
-			$the_string = implode('|', $items[0]);
+			$the_string = implode(',', $items[0]);
 		}
 		return $the_string;
 	}
