@@ -230,6 +230,12 @@
 			save();
 			return false;
 		});
+
+		$(document).on('click', '#dopreview_right', function() {
+			$(document.body).data('done_submit', false);
+			preview();
+			return false;
+		});
 		
 		$(document).on('click', '#dodone_right', function() {
 			$(document.body).data('done_submit', true);
@@ -269,6 +275,40 @@
 				});
 			}
 		}
+
+
+		function preview() {
+			for ( instance in CKEDITOR.instances )
+				CKEDITOR.instances[instance].updateElement();
+			content_type=$(document.body).data('content_type');
+			urlid=$(document.body).data('urlid');
+			if (!$(document.body).data('saving')) {
+				$(document.body).data('saving', true);
+				var formData = new FormData($('#contentform')[0]);
+				$.ajax({
+					url: "<?= base_url() ?>/workers/api/preview/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>",  //server script to process data
+					type: 'POST',
+					xhr: function() {  // custom xhr
+					    myXhr = $.ajaxSettings.xhr();
+					    if(myXhr.upload){ // check if upload property exists
+					        myXhr.upload.addEventListener('progress',uploadProgress, false); // for handling the progress of the upload
+				    	}
+					    return myXhr;
+					},
+					//Ajax events
+					beforeSend: uploadBefore,
+					success: previewComplete,
+					error: uploadFailed,
+					// Form data
+					data: formData,
+					//Options to tell JQuery not to process data or worry about content-type
+					cache: false,
+					contentType: false,
+					processData: false
+				});
+			}
+		}
+
 		
 		$(document).on('change', 'input[type=file]', function() {
 			content_type=$(document.body).data('content_type');
@@ -320,6 +360,32 @@
 			    }
 			}
 		}
+
+
+		function previewComplete(data) {
+			$(document.body).data("saving",false);
+			if (data.error) {
+			    $("#msgdialog").html("<div class='ui-state-error' style='padding: 5px'><p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span><strong>"+data.msg+"</strong><br /> "+data.info+"</p></div>");
+			    $("#msgdialog").dialog({
+			    	modal: true,
+			    	buttons: {
+			    		Ok: function() {
+			    			$(this).dialog("close");
+			    		}
+			    	}
+			    });
+			} else {
+			  
+			    var content_type=$(document.body).data('content_type');
+			    var urlid=$(document.body).data('urlid');
+			    var the_preview = 'preview.mg.co.za/'+content_type+"/"+urlid;
+			    window.open(the_preview, '_blank');
+  				window.focus();
+
+
+			}
+		}
+
 		
 		function uploadFailed(e) {
 			$(document.body).data("saving",false);
@@ -499,6 +565,10 @@
 		<div>
 			<button id="dodone_right" content_type="<%= content_type %>" urlid="<%= urlid %>">Done</button><br />
 			<br />
+
+			<button id="dopreview_right">Preview</button><br />
+			<br />
+
 			<button id="dosubmit_right">Save</button><br />
 			<br />
 		</div>

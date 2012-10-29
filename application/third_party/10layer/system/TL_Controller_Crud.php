@@ -354,6 +354,14 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		}
 		return array("error"=>true,"msg"=>"No data submitted");
 	}
+
+
+	public function preview($type, $urlid){
+		$returndata["error"]=true;
+		$returndata["msg"]="Preview failed";
+		$returndata["info"]="Preview functionality not implemented for this site";
+		return $returndata;
+	}
 	
 	/**
 	 * ajaxsubmit function.

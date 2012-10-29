@@ -262,6 +262,39 @@
 			$this->returndata();
 			return true;
 		}
+
+
+		/**
+		 * Preview function.
+		 * 
+		 * Updates a content item for previewing purposes. You can only call this through the CMS or by using the API key
+		 *
+		 * @access public
+		 * @param string $content_type
+		 * @param string $urlid
+		 * @param string $api_key
+		 * @return void
+		 */
+		public function preview($content_type, $urlid, $api_key) {
+			$api_key=trim($api_key);
+			$comp_api_key=$this->config->item('api_key');
+			if (!empty($api_key) && ($comp_api_key != $api_key)) {
+				header('HTTP/1.1 401 Access Denied');
+				die();
+			}
+			if (file_exists(APPPATH.'controllers/edit/tldefault.php')) {
+				require_once(APPPATH.'controllers/edit/tldefault.php');
+				$tlcontroller=new TLDefault();
+			} else {
+				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
+				$tlcontroller=new TL_Controller_Edit();
+			}
+			$result=$tlcontroller->preview($content_type, $urlid);
+			$this->data=$result;
+			$this->returndata();
+			return true;
+		}
+
 		
 		/**
 		 * insert function.
