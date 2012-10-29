@@ -378,7 +378,7 @@
 			  
 			    var content_type=$(document.body).data('content_type');
 			    var urlid=$(document.body).data('urlid');
-			    var the_preview = 'preview.mg.co.za/'+content_type+"/"+urlid;
+			    var the_preview = 'http://preview.mg.co.za/'+content_type+"/"+urlid;
 			    window.open(the_preview, '_blank');
   				window.focus();
 
