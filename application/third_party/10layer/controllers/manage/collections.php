@@ -65,8 +65,6 @@
 
 
 		public function manage_item($urlid){
-
-			print_r($this->session->userdata);
 		
 			$data["menu1_active"]="manage";
 			$data["menu2_active"]="manage/collections";
@@ -88,7 +86,6 @@
 			$this->load->view("manage/collections/collection_config");
 			$this->load->view("templates/footer");
 
-			//print_r($zones);
 		}
 
 		function configure_zone($urlid=""){
