@@ -32,12 +32,19 @@
 				
 				$this->session->set_userdata(array("id"=>$result->id,"name"=>$result->name,"urlid"=>$result->urlid,"status_id"=>$result->status_id));
 				$roles=$this->get_user_roles($result->id);
+				$permissions=$this->getUserPermissions($result->id);
 				
 				$tmp=array();
 				foreach($roles as $role) {
 					$tmp[]=$role->id;
 				}
+
+				$tmp2=array();
+				foreach($permissions as $permission) {
+					$tmp2[]=$permission->permission_id;
+				}
 				$this->session->set_userdata(array("roles"=>$tmp));
+				$this->session->set_userdata(array("permissions"=>$tmp2));
 				return true;
 			}
 			return false;
