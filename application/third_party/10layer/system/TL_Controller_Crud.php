@@ -877,6 +877,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function search() {
+
 		$this->load->library("search");
 		$this->_pg_offset=$this->uri->segment(6);
 		$config['uri_segment'] = 6;
@@ -887,7 +888,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 			$config['uri_segment'] = 5;
 		}
 
-		$result=$this->search->dosearch($this->_contenttypeurlid,$s, $this->_pg_perpage, $this->_pg_offset);
+		$result=$this->search->dosearch($this->_contenttypeurlid,rawurldecode($s), $this->_pg_perpage, $this->_pg_offset);
 		$this->load->library('pagination');
 		$config['num_links'] = $this->_pg_numlinks;
 		$config['base_url'] = "/list/".$this->uri->segment(2)."/".$this->uri->segment(3)."/".$s."/pg";
