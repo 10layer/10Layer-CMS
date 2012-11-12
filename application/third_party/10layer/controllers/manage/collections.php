@@ -126,6 +126,7 @@
 				$zone['content_types'] = $content_types;
 				$this->model_collections->save_zone($zone);
 
+				$results['method'] = 'create';
 				$results['title'] = $content['title'];
 				$results['urlid'] = $content['urlid'];
 				$results['message'] = "Zone saved...";
@@ -138,6 +139,7 @@
 				$content_types = implode(',', $this->input->post('content_types'));
 				$data['content_types'] = $content_types;
 				$this->model_collections->save_zone($data,$zone_id);
+				$results['method'] = 'edit';
 				$results['message'] = "Zone saved...";
 				echo json_encode($results);
 			}

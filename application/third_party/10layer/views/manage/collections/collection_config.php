@@ -33,7 +33,7 @@
 			var url = '/manage/collections/save_zone/'+$('#section_id').val();
 			$.post(url, data, function(response){
 				var results = $.parseJSON(response);
-				if(results.title != ''){
+				if(results.method == 'create'){
 					var option = "<option value='"+results.urlid+"'>"+results.title+"</option>";
 					$('#zone_selector').append(option);
 				}
