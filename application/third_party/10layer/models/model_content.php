@@ -817,12 +817,12 @@
 			foreach($this->order_by as $ob) {
 				$this->db->order_by($ob);
 			}
-			if($this->input->get("selected", TRUE) != null) { //WTF is this?
+			if($this->input->get("selected", TRUE) != null) { //WTF is this? - I know - on smart search, check if we have a ny selected items (related items)
 				$selecteds = $this->input->get("selected");
 				$this->db->where_not_in("id",$this->db->escape($selecteds) );
-				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
+				$query=$this->db->select("content.*, title AS value")->like("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
 			} else {
-				$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
+				$query=$this->db->select("content.*, title AS value")->like("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
 			}
 			if($query->num_rows > 0) {
 				return $query->result();

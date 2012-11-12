@@ -675,6 +675,7 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$config['full_tag_close']="</div>";
 		$config['num_links'] = $this->_pg_numlinks;
 		$config['base_url'] = "/edit/".$this->uri->segment(2)."/".$this->uri->segment(3)."/".$this->uri->segment(4)."/".$s."/pg";
+
 		$config['total_rows'] = $result["count"];
 		$config['per_page'] = $this->_pg_perpage;
 		$this->pagination->initialize($config);
@@ -799,6 +800,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		//$this->content->setContentType($this->_contenttypeurlid);
 		//$this->content->setPlatform($this->platforms->id());
 		
+
 		if($this->uri->segment(3)=="item") {
 			$this->item();
 			return true;
