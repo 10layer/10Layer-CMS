@@ -891,6 +891,7 @@ class TL_Controller_List extends TL_Controller_CRUD {
 		}
 
 		$result=$this->search->dosearch($this->_contenttypeurlid,rawurldecode($s), $this->_pg_perpage, $this->_pg_offset);
+
 		$this->load->library('pagination');
 		$config['num_links'] = $this->_pg_numlinks;
 		$config['base_url'] = "/list/".$this->uri->segment(2)."/".$this->uri->segment(3)."/".$s."/pg";
