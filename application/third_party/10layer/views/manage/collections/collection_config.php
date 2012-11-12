@@ -49,7 +49,7 @@
 	});
 </script>
 <h2>
-	Configuaring :  <?php echo $item->title; ?>
+	Configuring :  <?php echo $item->title; ?>
 </h2>
 <input id='section_id' value='<?php echo $item->id; ?>' type='hidden'> 
 <div id='zone_container'>
