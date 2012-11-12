@@ -98,3 +98,18 @@ input.title {
 #first_zone .zone_remove {
 	display: none;
 }
+
+#collection_manager{
+	padding: 10px;
+	background: #fff;
+	font-size: 15px;
+}
+
+#collection_manager ul li{
+	list-style: none !important;
+	margin-top: 10px;
+}
+
+.small_button{
+	margin-right: 5px;
+}
