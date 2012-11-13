@@ -88,7 +88,7 @@ if(isset($zones[0])){
 		<?php
 			foreach ($subsections as $subsection) {
 		?>
-			<option value='<?php echo $subsection->content_id; ?>'> <?php echo $subsection->title; ?> </option>
+			<option value='<?php echo $subsection->content_link_id; ?>'> <?php echo $subsection->title; ?> </option>
 		<?php
 			}
 		?>
