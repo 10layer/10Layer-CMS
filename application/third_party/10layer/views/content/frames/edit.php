@@ -566,8 +566,9 @@
 	<% var x=0; _.each(content, function(item) { %>
 			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>" urlid="<%= item.urlid %>">
 				<td >
+					<% if (item.hasOwnProperty('opened')){ %>
 					<span id='<%= item.id %>' class="<%= (item.opened == 0) ? 'unlocked_button' : 'locked_button ui-icon ui-icon-locked' %>"></span>
-				
+					<% } %>
 				</td>
 				<td class='content-workflow-<%= item.major_version %>'>
 					<% 
