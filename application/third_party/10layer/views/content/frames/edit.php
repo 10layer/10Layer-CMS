@@ -96,6 +96,37 @@
 				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 				update_pagination(content_type, data.count, 0, data.perpage );
 				update_autos();
+
+				// $('.locked_button').button({
+				// 	icons: {
+	   //              	primary: "ui-icon-locked"
+				// 	},
+    //         		text: false
+	   //          });
+
+	            
+	            $('.locked_item').live('click', function(){
+	            		$(this).next().dialog({
+				            resizable: false,
+				            height:200,
+				            width:450,
+				            modal: true,
+				            buttons: {
+				                "Force Unlock": function() {
+				                	urlid = $(this).attr('id');
+				                	content_type = $(this).attr('content_type');
+				                	url = "/edit/"+content_type+"/"+urlid;
+				                	$( this ).dialog( "close" );
+				                	window.location = url;
+				                    
+				                },
+				                Cancel: function() {
+				                    $( this ).dialog( "close" );
+				                }
+				            }
+				        });
+	            });
+
 				$("#list-search").data('searchstring', searchstring);
 			});
 		}
@@ -523,6 +554,7 @@
 <script type='text/template' id='listing-template-content'>
 		<table>
 			<tr> 
+				<th></th> 
 				<th>Title</th> 
 				<th>Last Edit</th>
 				<th>Edited by</th> 
@@ -533,7 +565,30 @@
 			</tr>
 	<% var x=0; _.each(content, function(item) { %>
 			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>" urlid="<%= item.urlid %>">
-				<td class='content-workflow-<%= item.major_version %>'><a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a></td>
+				<td >
+					<span id='<%= item.id %>' class="<%= (item.opened == 0) ? 'unlocked_button' : 'locked_button ui-icon ui-icon-locked' %>"></span>
+				
+				</td>
+				<td class='content-workflow-<%= item.major_version %>'>
+					<% 
+						if (item.hasOwnProperty('opened')){
+							if(item.opened == 1){ %>
+								<span class='locked_item' title='this item is locked, click the locked button to unlock'>
+									<%= item.title %>
+								</span>
+
+								<div id="<%= item.urlid %>" content_type="<%= content_type %>" style='display:none;' title="Unlock Item?">
+		    						<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>This item is open by another user, this action will overide their changes. Are you sure?</p>
+								</div>
+
+							<% }else{ %>
+								<a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a>
+							<% } 
+						}else{
+						%>
+							<a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a>
+						<% } %>
+					</td>
 				<td><%= item.last_modified %></td>
 				<td class='ajax_autoload_editor' id='ajax_autoload_editor-<%= item.urlid %>'></td>
 				<td><%= item.start_date %></td>

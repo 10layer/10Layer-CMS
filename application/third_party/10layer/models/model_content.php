@@ -1042,6 +1042,36 @@
 			return $query->result();
 		}
 
+
+
+		/**
+		 * lock_content function.
+		 * on the event that the system supports locking items, use this to lock items for editing
+		 *
+		 * @access public
+		 * @param mixed $content_urlid
+		 * @return void
+		 */
+
+		public function lock_content($urlid){
+			$sql = 'update content set opened = 1 where urlid = "'.$urlid.'"';
+			$this->db->query($sql);
+		}
+
+		/**
+		 * unlock_content function.
+		 * on the event that the system supports locking items, use this to unlock items for editing
+		 *
+		 * @access public
+		 * @param mixed $content_urlid
+		 * @return void
+		 */
+
+		public function unlock_content($urlid){
+			$sql = 'update content set opened = 0 where urlid = "'.$urlid.'"';
+			$this->db->query($sql);
+		}
+
 	}
 
 
