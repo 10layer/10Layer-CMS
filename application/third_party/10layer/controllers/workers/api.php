@@ -243,7 +243,7 @@
 		 * @param string $api_key
 		 * @return void
 		 */
-		public function update($content_type, $urlid, $api_key) {
+		public function update($content_type, $urlid, $api_key, $close='') {
 			$api_key=trim($api_key);
 			$comp_api_key=$this->config->item('api_key');
 			if (!empty($api_key) && ($comp_api_key != $api_key)) {
@@ -257,7 +257,7 @@
 				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
 				$tlcontroller=new TL_Controller_Edit();
 			}
-			$result=$tlcontroller->submit($content_type, $urlid);
+			$result=$tlcontroller->submit($content_type, $urlid, $close);
 			$this->data=$result;
 			$this->returndata();
 			return true;

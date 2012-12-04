@@ -351,8 +351,10 @@
 			if (!$(document.body).data('saving')) {
 				$(document.body).data('saving', true);
 				var formData = new FormData($('#contentform')[0]);
+
+				var close = $(document.body).data('done_submit');
 				$.ajax({
-					url: "<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>",  //server script to process data
+					url: "<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>/"+close,  //server script to process data
 					type: 'POST',
 					xhr: function() {  // custom xhr
 					    myXhr = $.ajaxSettings.xhr();
