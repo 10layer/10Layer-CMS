@@ -439,6 +439,10 @@
 			    	buttons: {
 			    		Ok: function() {
 			    			$(this).dialog("close");
+			    			if($(document.body).data('done_submit')){
+			    				window.location = "<?= base_url() ?>/edit/"+content_type;
+			    			}
+			    			
 			    		}
 			    	}
 			    });
