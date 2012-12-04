@@ -1072,6 +1072,20 @@
 			$this->db->query($sql);
 		}
 
+		/**
+		 * check_locked function.
+		 * on the event that the system supports locking items, use this to check if items are still locked
+		 *
+		 * @access public
+		 * @return array of locked items
+		 */
+
+		public function check_locked($items){
+			$sql = "select * from content where urlid in(".$items.")";
+			$theitems = $this->db->query($sql)->result();
+			return $theitems;
+		}
+
 	}
 
 

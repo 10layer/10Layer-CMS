@@ -362,6 +362,13 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$returndata["info"]="Preview functionality not implemented for this site";
 		return $returndata;
 	}
+
+	public function track_locked($content_type){
+		$returndata["error"]=true;
+		$returndata["msg"]="Preview failed";
+		$returndata["info"]="Item locking functionality not implemented for this site";
+		return $returndata;
+	}
 	
 	/**
 	 * ajaxsubmit function.
