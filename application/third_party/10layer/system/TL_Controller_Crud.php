@@ -275,7 +275,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 */
 	public function __construct($contenttype=false) {
 		parent::__construct($contenttype);
-		$this->load->library("memcacher");
 	}
 	
 	/**
@@ -604,7 +603,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function index() {
-		$this->load->library("memcacher");
 		$this->load->library("tlpicture");
 		$this->paginate();
 		$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
@@ -1189,35 +1187,7 @@ class TL_Controller_CRUD extends CI_Controller {
 		$this->messaging->post_message("all",json_encode($stompinfo));
 	}
 	
-	/**
-	 * cachereset function.
-	 * 
-	 * @access public
-	 * @param mixed $contenttype_urlid
-	 * @param mixed $urlid
-	 * @return void
-	 */
-	public function cachereset($contenttype_urlid, $urlid) {
-		$this->load->library("tlpicture");
-		$this->load->library("memcacher");
-		$this->memcacher->clearById($contenttype_urlid, $urlid);
-		$this->memcacher->clearPic($contenttype_urlid, $urlid);
-		$this->tlpicture->clearCache($urlid, $contenttype_urlid);
-	}
-	
-	/**
-	 * cachesave function.
-	 * 
-	 * @access public
-	 * @param mixed $contenttype_urlid
-	 * @param mixed $urlid
-	 * @return void
-	 */
-	public function cachesave($contenttype_urlid, $urlid) {
-		$this->load->library("memcacher");
-		$this->memcacher->addById($contenttype_urlid, $urlid);
-		return true;
-	}
+
 	
 	/**
 	 * fileupload function.

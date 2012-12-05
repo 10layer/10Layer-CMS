@@ -62,21 +62,7 @@
 			$this->returndata();
 		}
 		
-		/**
-		 * content_cached function.
-		 * 
-		 * Same as content, but uses memcache for the item
-		 *
-		 * @access public
-		 * @param string $contenttype_urlid
-		 * @param string $urlid
-		 * @return void
-		 */
-		public function content_cached($contenttype_urlid, $urlid) {
-			$this->load->library("memcacher");
-			$this->data["data"]=$this->memcacher->getById($contenttype_urlid, $urlid);
-			$this->returndata();
-		}
+
 		
 		/**
 		 * section function.
