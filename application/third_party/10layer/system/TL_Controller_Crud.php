@@ -339,10 +339,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				
 			}
 			
-			if (!$returndata["error"]) { //Memcached submission
-				$this->cachereset($this->_contenttypeurlid,$urlid);
-				//$this->cachesave($this->_contenttypeurlid,$urlid);
-			}
 			
 			//Tell the world
 			$this->messaging->post_action("update_content",array($this->_contenttypeurlid,$urlid));
@@ -749,11 +745,7 @@ class TL_Controller_Delete extends TL_Controller_CRUD {
 		$this->checkCallback("onBeforeDelete",$contentobj);
 		$contentobj->delete();
 		$this->checkCallback("onAfterDelete",$contentobj);
-		//if (!$returndata["error"]) { //Memcached submission
-			$this->messaging->post_action("delete",array($this->_contenttypeurlid,$urlid));
-			//$this->cachereset($this->_contenttypeurlid,$contentobj->urlid);
-		//}
-		
+		$this->messaging->post_action("delete",array($this->_contenttypeurlid,$urlid));
 		redirect("edit/".$this->_contenttypeurlid);
 	}
 	
