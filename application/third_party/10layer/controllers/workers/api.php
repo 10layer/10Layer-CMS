@@ -62,21 +62,7 @@
 			$this->returndata();
 		}
 		
-		/**
-		 * content_cached function.
-		 * 
-		 * Same as content, but uses memcache for the item
-		 *
-		 * @access public
-		 * @param string $contenttype_urlid
-		 * @param string $urlid
-		 * @return void
-		 */
-		public function content_cached($contenttype_urlid, $urlid) {
-			$this->load->library("memcacher");
-			$this->data["data"]=$this->memcacher->getById($contenttype_urlid, $urlid);
-			$this->returndata();
-		}
+
 		
 		/**
 		 * section function.
@@ -243,7 +229,7 @@
 		 * @param string $api_key
 		 * @return void
 		 */
-		public function update($content_type, $urlid, $api_key) {
+		public function update($content_type, $urlid, $api_key, $close='') {
 			$api_key=trim($api_key);
 			$comp_api_key=$this->config->item('api_key');
 			if (!empty($api_key) && ($comp_api_key != $api_key)) {
@@ -257,7 +243,7 @@
 				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
 				$tlcontroller=new TL_Controller_Edit();
 			}
-			$result=$tlcontroller->submit($content_type, $urlid);
+			$result=$tlcontroller->submit($content_type, $urlid, $close);
 			$this->data=$result;
 			$this->returndata();
 			return true;
@@ -292,6 +278,39 @@
 			$result=$tlcontroller->preview($content_type, $urlid);
 			$this->data=$result;
 			$this->returndata();
+			return true;
+		}
+
+
+		/**
+		 * track_locked function.
+		 * 
+		 * Updates a content item for previewing purposes. You can only call this through the CMS or by using the API key
+		 *
+		 * @access public
+		 * @param string $content_type
+		 * @param string $urlid
+		 * @param string $api_key
+		 * @return void
+		 */
+		public function track_locked($content_type, $api_key) {
+			$api_key=trim($api_key);
+			$comp_api_key=$this->config->item('api_key');
+			if (!empty($api_key) && ($comp_api_key != $api_key)) {
+				header('HTTP/1.1 401 Access Denied');
+				die();
+			}
+			if (file_exists(APPPATH.'controllers/edit/tldefault.php')) {
+				require_once(APPPATH.'controllers/edit/tldefault.php');
+				$tlcontroller=new TLDefault();
+			} else {
+				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
+				$tlcontroller=new TL_Controller_Edit();
+			}
+			$result=$tlcontroller->track_locked($content_type);
+			//$this->data=$result;
+			//$this->returndata();
+			//print_r($result);
 			return true;
 		}
 

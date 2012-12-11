@@ -57,9 +57,10 @@ function update_panel(all){
 		
 	if($("#active_zone").val() != ""){
 		var searchstr = ($("#publishSearch").val() == "Search...") ? "" : $("#publishSearch").val() ;
+		var subsection_filter = ($("#publish_section_filter").val() == "") ? "" : $("#publish_section_filter").val() ;
 		var selecteds = get_selected();
 		var url = $("#active_zone").val()+"/"+d1+"/"+d2+"/"+searchstr;
-		var params = {'selecteds[]': selecteds, "all":all}
+		var params = {'subsection': subsection_filter, 'selecteds[]': selecteds, "all":all}
 		
 		$("#loading_icon").show();
 		$.get(url,params, function(data) {
@@ -156,6 +157,10 @@ $(function() {
 			search();
 		}
 		//var wait = setTimeout(search, 1000);
+	});
+
+	$("#publish_section_filter").live('change', function(e){
+		search();
 	});
 	
 	$("#publishSearch").live("focus", function(){

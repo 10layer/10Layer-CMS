@@ -80,7 +80,8 @@ $zones=array();
 */
 			
 			//$data["layouts"]=$this->model_section->getLayouts($urlid);
-			//$data["subsections"]=$this->model_section->getSubSections($urlid);
+			$this->load->model('Model_collections');
+			$data["subsections"]=$this->Model_collections->get_children($section->content_id);
 			$data["content"]=array();
 			$data["section_id"]=$section->content_id;
 			$data["section_urlid"]=$section->urlid;

@@ -275,7 +275,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 */
 	public function __construct($contenttype=false) {
 		parent::__construct($contenttype);
-		$this->load->library("memcacher");
 	}
 	
 	/**
@@ -340,10 +339,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 				
 			}
 			
-			if (!$returndata["error"]) { //Memcached submission
-				$this->cachereset($this->_contenttypeurlid,$urlid);
-				//$this->cachesave($this->_contenttypeurlid,$urlid);
-			}
 			
 			//Tell the world
 			$this->messaging->post_action("update_content",array($this->_contenttypeurlid,$urlid));
@@ -360,6 +355,13 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$returndata["error"]=true;
 		$returndata["msg"]="Preview failed";
 		$returndata["info"]="Preview functionality not implemented for this site";
+		return $returndata;
+	}
+
+	public function track_locked($content_type){
+		$returndata["error"]=true;
+		$returndata["msg"]="Preview failed";
+		$returndata["info"]="Item locking functionality not implemented for this site";
 		return $returndata;
 	}
 	
@@ -597,7 +599,6 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 	 * @return void
 	 */
 	public function index() {
-		$this->load->library("memcacher");
 		$this->load->library("tlpicture");
 		$this->paginate();
 		$data["content"]=$this->content->getAll($this->_pg_perpage, $this->_pg_offset);
@@ -744,11 +745,7 @@ class TL_Controller_Delete extends TL_Controller_CRUD {
 		$this->checkCallback("onBeforeDelete",$contentobj);
 		$contentobj->delete();
 		$this->checkCallback("onAfterDelete",$contentobj);
-		//if (!$returndata["error"]) { //Memcached submission
-			$this->messaging->post_action("delete",array($this->_contenttypeurlid,$urlid));
-			//$this->cachereset($this->_contenttypeurlid,$contentobj->urlid);
-		//}
-		
+		$this->messaging->post_action("delete",array($this->_contenttypeurlid,$urlid));
 		redirect("edit/".$this->_contenttypeurlid);
 	}
 	
@@ -1182,35 +1179,7 @@ class TL_Controller_CRUD extends CI_Controller {
 		$this->messaging->post_message("all",json_encode($stompinfo));
 	}
 	
-	/**
-	 * cachereset function.
-	 * 
-	 * @access public
-	 * @param mixed $contenttype_urlid
-	 * @param mixed $urlid
-	 * @return void
-	 */
-	public function cachereset($contenttype_urlid, $urlid) {
-		$this->load->library("tlpicture");
-		$this->load->library("memcacher");
-		$this->memcacher->clearById($contenttype_urlid, $urlid);
-		$this->memcacher->clearPic($contenttype_urlid, $urlid);
-		$this->tlpicture->clearCache($urlid, $contenttype_urlid);
-	}
-	
-	/**
-	 * cachesave function.
-	 * 
-	 * @access public
-	 * @param mixed $contenttype_urlid
-	 * @param mixed $urlid
-	 * @return void
-	 */
-	public function cachesave($contenttype_urlid, $urlid) {
-		$this->load->library("memcacher");
-		$this->memcacher->addById($contenttype_urlid, $urlid);
-		return true;
-	}
+
 	
 	/**
 	 * fileupload function.

@@ -91,7 +91,9 @@
 			$section=$this->sections->getByIdORM($section_urlid);
 			
 			$data["zone"]=$this->zones->getByIdORM($zone_urlid)->getData();
-			$articles=$this->model_section->getContentInQueue(array("queued_for_publishing", "published"),$zone_urlid,$startdate,$enddate, $searchstr);
+
+			$subsection_filter = ($this->input->get('subsection')) ? $this->input->get('subsection') : "";
+			$articles=$this->model_section->getContentInQueue(array("queued_for_publishing", "published"),$zone_urlid,$startdate,$enddate, $searchstr,$subsection_filter);
 			$data["content"]=$articles["unpublished"];
 			$data["published_articles"]=$articles["published"];
 			$data["staged"]=$articles["staged"];

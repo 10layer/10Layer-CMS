@@ -208,7 +208,7 @@
 
 		
 		
-		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $limit=100, $start=0) {
+		public function getContentInQueue($urlid, $zone_id=false, $startdate=false, $enddate=false, $search=false, $subsection_filter='', $limit=100, $start=0) {
 			//check if our zone are staged
 			$staged = ($this->staged_zone($zone_id)) ? "staged" : "";
 			$table = ($staged == "staged") ? "ranking_stage" : "ranking";
@@ -317,8 +317,17 @@
 			if (!empty($published_ids)) {
 				$this->db->where_not_in("content.id",$published_ids);
 			}
+
+			if ($subsection_filter != '') {
+				$this->db->join("content_content","content_content.content_id=content.id");
+				$this->db->where("content_content.content_link_id ",$subsection_filter);
+				
+			}
+
 			$this->db->order_by("content.start_date","DESC");
 			$query=$this->db->get();
+
+			//echo $this->db->last_query();
 			
 			$result=array();
 			

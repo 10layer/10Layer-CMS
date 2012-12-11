@@ -1158,5 +1158,13 @@ ul.nested_tree li, ul.small_section li{
 .add-relation:hover{
 	background: #5BB75B;
 	color: #fff;
-};
+}
+
+.locked_button{
+	height:20px;
+}
+
+.locked_item{
+	cursor: pointer;
+}
 

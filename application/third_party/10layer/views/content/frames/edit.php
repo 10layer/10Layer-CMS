@@ -14,7 +14,6 @@
 <script>
 	var currentpage=false;
 	
-		
 	$(function() {
 
 	$('.autocomplete').live('keypress', function(evt){
@@ -96,8 +95,108 @@
 				$('#dyncontent').html(_.template($("#listing-template").html(), {content_type: content_type, data:data}));
 				update_pagination(content_type, data.count, 0, data.perpage );
 				update_autos();
+
+				// $('.locked_button').button({
+				// 	icons: {
+	   //              	primary: "ui-icon-locked"
+				// 	},
+    //         		text: false
+	   //          });
+
+	            
+	            $('.locked_item').live('click', function(){
+	            		$(this).next().dialog({
+				            resizable: false,
+				            height:200,
+				            width:450,
+				            modal: true,
+				            buttons: {
+				                "Force Unlock": function() {
+				                	urlid = $(this).attr('id');
+				                	content_type = $(this).attr('content_type');
+				                	url = "/edit/"+content_type+"/"+urlid;
+				                	$( this ).dialog( "close" );
+				                	window.location = url;
+				                    
+				                },
+				                Cancel: function() {
+				                    $( this ).dialog( "close" );
+				                }
+				            }
+				        });
+	            });
+
 				$("#list-search").data('searchstring', searchstring);
+
+				setInterval(track_locked_items, 2000);
+				//();
+
 			});
+		}
+
+		function track_locked_items(){
+			if($('.locked_button').length > 0){
+				watched_items = [];
+
+				$('.locked_button').each(function(idx, elm) {
+  					watched_items.push(elm.id);
+				});
+
+				var tracked = {'tracked':watched_items};
+				var content_type=$(document.body).data('content_type');
+				$.getJSON('<?= base_url() ?>workers/api/track_locked/'+content_type+'/<?= $this->config->item('api_key') ?>',tracked,function(data){
+					locked_ids = [];
+					unlocked_ids = [];
+
+					//console.log(data);
+
+					$.each(data,function(i,item){
+						//locked_button
+						//console.log(item.opened);
+						if(item.opened == 1){
+							locked_ids.push(item);	
+						}else{
+							unlocked_ids.push(item);
+						}
+					});
+
+					unlock_items(unlocked_ids	);
+					lock_items(locked_ids);
+					
+				});
+
+				
+			}
+		}
+
+		function unlock_items(locked_items){
+			//console.log(locked_items);
+			$.each(locked_items, function(i,item){
+				value = item.urlid;
+				title = $('#'+value).parent().next().children(':first').text().trim();
+				parameters = {'title':title,'urlid':value, 'id':''};
+				
+				//unlock_item_template - 
+				$('#'+value).removeClass('ui-icon ui-icon-locked');
+				
+				workflow = 'content-workflow-'+item.major_version;
+				$('#'+value).parent().next().removeAttr('class').attr('class', workflow);
+				$('#'+value).parent().next().html(_.template($('#unlock_item_template').html(), parameters ));
+			});
+		}
+
+		function lock_items(unlocked_items){
+			$.each(unlocked_items, function(i,item){
+				value = item.urlid;
+				title = $('#'+value).parent().next().children(':first').text().trim();
+				parameters = {'title':title,'urlid':value, 'id':''};
+				
+				workflow = 'content-workflow-'+item.major_version;
+				$('#'+value).parent().next().removeAttr('class').attr('class', workflow);
+				$('#'+value).addClass('ui-icon ui-icon-locked');
+				$('#'+value).parent().next().html(_.template($('#lock_item_template').html(), parameters ));
+			});
+			
 		}
 		
 		function update_list(content_type, offset) {
@@ -252,8 +351,10 @@
 			if (!$(document.body).data('saving')) {
 				$(document.body).data('saving', true);
 				var formData = new FormData($('#contentform')[0]);
+
+				var close = $(document.body).data('done_submit');
 				$.ajax({
-					url: "<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>",  //server script to process data
+					url: "<?= base_url() ?>/workers/api/update/"+content_type+"/"+urlid+"/<?= $this->config->item('api_key') ?>/"+close,  //server script to process data
 					type: 'POST',
 					xhr: function() {  // custom xhr
 					    myXhr = $.ajaxSettings.xhr();
@@ -338,6 +439,10 @@
 			    	buttons: {
 			    		Ok: function() {
 			    			$(this).dialog("close");
+			    			if($(document.body).data('done_submit')){
+			    				window.location = "<?= base_url() ?>edit/"+content_type;
+			    			}
+			    			
 			    		}
 			    	}
 			    });
@@ -520,9 +625,24 @@
 	</span>
 </script>
 
+<script type='text/template' id='unlock_item_template'>
+	<a href='/edit/<%= content_type %>/<%= urlid %>' content_id='<%= id %>' content_urlid='<%= urlid %>' class='content-title-link'><%= title %></a>
+</script>
+
+<script type='text/template' id='lock_item_template'>
+	<span class='locked_item' title='this item is locked, click the locked button to unlock'>
+		<%= title %>
+	</span>
+
+	<div id="<%= urlid %>" content_type="<%= content_type %>" style='display:none;' title="Unlock Item?">
+		<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>This item is open by another user, this action will overide their changes. Are you sure?</p>
+	</div>
+</script>
+
 <script type='text/template' id='listing-template-content'>
 		<table>
 			<tr> 
+				<th></th> 
 				<th>Title</th> 
 				<th>Last Edit</th>
 				<th>Edited by</th> 
@@ -533,7 +653,31 @@
 			</tr>
 	<% var x=0; _.each(content, function(item) { %>
 			<tr class="<%= ((x % 2) == 0) ? 'odd' : '' %> content-item" id="row_<%= item.id %>" urlid="<%= item.urlid %>">
-				<td class='content-workflow-<%= item.major_version %>'><a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a></td>
+				<td >
+					<% if (item.hasOwnProperty('opened')){ %>
+					<span id='<%= item.urlid %>' class="<%= (item.opened == 0) ? 'locked_button' : 'locked_button ui-icon ui-icon-locked' %>"></span>
+					<% } %>
+				</td>
+				<td class='content-workflow-<%= item.major_version %>'>
+					<% 
+						if (item.hasOwnProperty('opened')){
+							if(item.opened == 1){ %>
+								<span class='locked_item' title='this item is locked, click the locked button to unlock'>
+									<%= item.title %>
+								</span>
+
+								<div id="<%= item.urlid %>" content_type="<%= content_type %>" style='display:none;' title="Unlock Item?">
+		    						<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>This item is open by another user, this action will overide their changes. Are you sure?</p>
+								</div>
+
+							<% }else{ %>
+								<a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a>
+							<% } 
+						}else{
+						%>
+							<a href='/edit/<%= content_type %>/<%= item.urlid %>' content_id='<%= item.id %>' content_urlid='<%= item.urlid %>' class='content-title-link'><%= item.title %></a>
+						<% } %>
+					</td>
 				<td><%= item.last_modified %></td>
 				<td class='ajax_autoload_editor' id='ajax_autoload_editor-<%= item.urlid %>'></td>
 				<td><%= item.start_date %></td>

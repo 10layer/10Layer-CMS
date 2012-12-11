@@ -38,10 +38,7 @@
 					"title"=>"Content Types",
 					"result"=>$this->_contenttypes()
 				),
-				/*array(
-					"title"=>"Memcache",
-					"result"=>$this->_memcache()
-				),*/
+				
 			);
 			
 			$data["checks"]=$checks;
@@ -181,17 +178,7 @@
 			return $error_services;
 		}
 		
-		protected function _memcache() {
-			$this->load->library("memcacher");
-			$error_memcache=array();
-			$online_servers=$this->memcacher->isOnline();
-			foreach($online_servers as $server=>$online) {
-				if (!$online) {
-					$error_message[$server][]="Not online";
-				}
-			}
-			return $error_memcache;
-		}
+
 		
 		//Checks for orphaned relationships
 		public function relationships() {
