@@ -128,7 +128,7 @@
 
 				$("#list-search").data('searchstring', searchstring);
 
-				setInterval(track_locked_items, 2000);
+				setInterval(track_locked_items, 30000);
 				//();
 
 			});
