@@ -28,14 +28,14 @@ class Memcacher {
 		}
 		$this->reset=$this->ci->config->item("memcache_reset");
 		$this->write=$this->ci->config->item("memcache_write");
-		$this->memcached = new Memcached;
+		//$this->memcached = new Memcached;
 		$servers=$this->ci->config->item("memcache_servers");
 		if (!is_array($servers)) {
 			$server=array("server"=>"localhost","port"=>11211);
 			$this->memcached->addServer($server["server"],$server["port"]);
 		} else {
 			foreach($servers as $server) {
-				$this->memcached->addServer($server["server"],$server["port"]);
+				//$this->memcached->addServer($server["server"],$server["port"]);
 			}
 		}
 	}

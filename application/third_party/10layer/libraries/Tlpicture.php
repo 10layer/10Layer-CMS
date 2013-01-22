@@ -20,7 +20,7 @@ class TlPicture {
 	
 	public function __construct() {
 		$this->ci=&get_instance();
-		$this->ci->load->library("memcacher");
+		//$this->ci->load->library("memcacher");
 	}
 	
 	public function findPicture($urlid, $contenttype_urlid) {
@@ -83,24 +83,25 @@ class TlPicture {
 	}
 	
 	public function hasPic($urlid, $contenttype_urlid) {
-		$picture=$this->ci->memcacher->picFilename($contenttype_urlid,$urlid);
-		if (!empty($picture) && file_exists(".".$picture)) {
-			return true;
-		}
+		// $picture=$this->ci->memcacher->picFilename($contenttype_urlid,$urlid);
+		// if (!empty($picture) && file_exists(".".$picture)) {
+		// 	return true;
+		// }
 		return false;
 	}
 	
 	public function filename($urlid, $contenttype_urlid) {
-		$picture=$this->ci->memcacher->picFilename($contenttype_urlid,$urlid);
-		if (empty($picture) || !file_exists(".".$picture)) {
-			return false;
-		}
-		return $picture;
+		// $picture=$this->ci->memcacher->picFilename($contenttype_urlid,$urlid);
+		// if (empty($picture) || !file_exists(".".$picture)) {
+		// 	return false;
+		// }
+		// return $picture;
+		return false;
 	}
 	
 	public function clearCache($urlid, $contenttype_urlid) {
-		exec("rm ".$this->_cachedir.$urlid."*");
-		$this->ci->memcacher->clearPic($contenttype_urlid, $urlid);
+		// exec("rm ".$this->_cachedir.$urlid."*");
+		// $this->ci->memcacher->clearPic($contenttype_urlid, $urlid);
 	}
 	
 	/*protected function _cachefilename() {
