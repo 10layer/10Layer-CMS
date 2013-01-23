@@ -66,8 +66,8 @@
 	
 	function ckeditor() {
 	?>
-		<script type='text/javascript' src='/tlresources/file/ckeditor2/ckeditor.js'></script>
-		<script type='text/javascript' src='/tlresources/file/ckeditor2/adapters/jquery.js'></script>
+		<script type='text/javascript' src='/tlresources/file/ckeditor/ckeditor.js'></script>
+		<script type='text/javascript' src='/tlresources/file/ckeditor/adapters/jquery.js'></script>
 		<script type="text/javascript"> 
 			$(function() {
 				//initCKEditor();
@@ -87,7 +87,7 @@
 					toolbar: [
 						['Source','-','Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','Image','-','Maximize']
 					],
-					skin: 'kama',
+					skin: 'moono',
 					
 					filebrowserImageBrowseUrl : '/workers/picturechooser/browse',
 					

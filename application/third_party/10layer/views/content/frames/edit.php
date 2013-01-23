@@ -1,3 +1,4 @@
+
 <?php 
 	$data["menu1_active"]="edit";
 	$data["menu2_active"]="edit/".$type;
@@ -12,6 +13,8 @@
 <script src="/tlresources/file/js/jquery.pagination.js"></script>
 <script src="/tlresources/file/js/davis.min.js"></script>
 <script>
+
+
 	var currentpage=false;
 	
 	$(function() {

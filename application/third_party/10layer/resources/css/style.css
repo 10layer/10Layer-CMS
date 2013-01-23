@@ -1168,3 +1168,10 @@ ul.nested_tree li, ul.small_section li{
 	cursor: pointer;
 }
 
+
+.cke {
+	float:left;
+	margin-top:20px !important;
+	width:640px !important;
+}
+
