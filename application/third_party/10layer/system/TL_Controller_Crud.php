@@ -364,6 +364,13 @@ class TL_Controller_Edit extends TL_Controller_CRUD {
 		$returndata["info"]="Item locking functionality not implemented for this site";
 		return $returndata;
 	}
+
+	public function unlock_all_items(){
+		$returndata["error"]=true;
+		$returndata["msg"]="Preview failed";
+		$returndata["info"]="Item locking functionality not implemented for this site";
+		return $returndata;
+	}
 	
 	/**
 	 * ajaxsubmit function.

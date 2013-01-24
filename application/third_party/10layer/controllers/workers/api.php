@@ -314,6 +314,27 @@
 			return true;
 		}
 
+		public function unlock_all_items($content_type,$api_key) {
+			$api_key=trim($api_key);
+			$comp_api_key=$this->config->item('api_key');
+			if (!empty($api_key) && ($comp_api_key != $api_key)) {
+				header('HTTP/1.1 401 Access Denied');
+				die();
+			}
+			if (file_exists(APPPATH.'controllers/edit/tldefault.php')) {
+				require_once(APPPATH.'controllers/edit/tldefault.php');
+				$tlcontroller=new TLDefault();
+			} else {
+				require_once(APPPATH.'third_party/10layer/system/TL_Controller_Crud.php');
+				$tlcontroller=new TL_Controller_Edit();
+			}
+			$result=$tlcontroller->unlock_all_items();
+			//$this->data=$result;
+			//$this->returndata();
+			//print_r($result);
+			return true;
+		}
+
 		
 		/**
 		 * insert function.

@@ -1086,6 +1086,20 @@
 			return $theitems;
 		}
 
+		/**
+		 * unlock_all_items function.
+		 * on the event that the system supports locking items, use this to check if items are still locked
+		 *
+		 * @access public
+		 * @return array of locked items
+		 */
+
+		public function unlock_all_items(){
+			$sql = "update content set opened = 0;";
+			$this->db->query($sql);
+			
+		}
+
 	}
 
 
