@@ -71,8 +71,10 @@
 		}
 		
 		function populateCreate(type) {
+			var url = window.location.href;
+			var url_parts = url.split('/');
 			$("#contentselect_<?= $field->tablename."_".$field->name ?>").find("#contentcreate").load(
-				"/create/fullview/"+type+"/embed"
+				"/create/fullview/"+type+"/embed/", {method:url_parts[3]}
 			);
 		}
 		

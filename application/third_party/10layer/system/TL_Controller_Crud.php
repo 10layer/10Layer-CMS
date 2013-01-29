@@ -141,6 +141,9 @@ class TL_Controller_Create extends TL_Controller_CRUD {
 		$data["menu2_active"]="create/".$this->_contenttypeurlid;
 		$data["contenttype"]=$this->_contenttypeurlid;
 		$data["heading"]= $this->format_heading($data["menu2_active"]);
+		if($this->input->post('method') && $this->input->post('method') == 'create'){
+			$data['method'] = $this->input->post('method');
+		}
 		$this->load->view($this->_view,$data);
 		
 		$this->checkCallback("onAfterView",$contentobj);
