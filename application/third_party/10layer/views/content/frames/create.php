@@ -304,9 +304,10 @@
 
 <script type='text/template' id='create-popup-template'>
 	<div id="create-content" class="boxed wide">
-		<h2>Create - <%= content_type %></h2>
+		<h2>Create - <%= content_type %>...</h2>
 		<form id='createform-popup' method='post' enctype='multipart/form-data' action='<?= base_url() ?>create/ajaxsubmit/<%= content_type %>'>
 		<input type='hidden' name='action' value='submit' />
+		<input type='hidden' name='c_u' value='create' />
 		<% _.each(data.fields, function(field) { %>
 			<% if (!field.hidden) { %>
 				<%= _.template($('#create-field-'+field.type).html(), { field: field, urlid: false, content_type: content_type  }) %>
