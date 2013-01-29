@@ -66,8 +66,8 @@
 	
 	function ckeditor() {
 	?>
-		<script type='text/javascript' src='/tlresources/file/ckeditor/ckeditor.js'></script>
-		<script type='text/javascript' src='/tlresources/file/ckeditor/adapters/jquery.js'></script>
+		<script type='text/javascript' src='/tlresources/file/ckeditor2/ckeditor.js'></script>
+		<script type='text/javascript' src='/tlresources/file/ckeditor2/adapters/jquery.js'></script>
 		<script type="text/javascript"> 
 			$(function() {
 				//initCKEditor();
@@ -85,22 +85,29 @@
 				clearCKEditor();
 				var config = { 
 					toolbar: [
-						['Source','-','Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','Image','-','Maximize']
+						['Format','-','Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','Image','-','Maximize','-','Source']
 					],
-					skin: 'moono',
-					
+					height: 500,
 					filebrowserImageBrowseUrl : '/workers/picturechooser/browse',
 					
 					filebrowserWindowWidth  : 1000,
 					filebrowserWindowHeight : 600,
 					on : { 'paste' : function(ev) {
-						ev.data.html=parsePaste(ev.data.html);
+						ev.data.dataValue=parsePaste(ev.data.dataValue);
 					} }
 					
 				};
 				$('.richedit').ckeditor(config);
 				editors[editors.length] = $('.richedit').ckeditorGet();	
 			}
+
+
+
+
+
+
+
+
 			
 			function parsePaste(data) {
 				data=data.replace(/<meta(?:.|\s)*?>/g,"");
