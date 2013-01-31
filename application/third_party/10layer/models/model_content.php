@@ -820,7 +820,9 @@
 			if($this->input->get("selected", TRUE) != null) { //WTF is this? - I know - on smart search, check if we have a ny selected items (related items)
 				$selecteds = $this->input->get("selected");
 				$this->db->where_not_in("id",$this->db->escape($selecteds) );
+				$this->db->where('major_version',5);
 				$query=$this->db->select("content.*, title AS value")->like("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
+				//echo $this->db->last_query();
 			} else {
 				$query=$this->db->select("content.*, title AS value")->like("title", $s)->where("content_type_id",$this->content_type->id)->limit($limit, $offset)->get("content");
 			}
