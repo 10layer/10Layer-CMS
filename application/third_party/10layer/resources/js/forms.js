@@ -105,7 +105,7 @@ $(function() {
 	
 	$(".deepsearch_item").live("click", function(){
 		var selected_set = $(this).parent().next();
-		var used_element = $(this).parent().prev().prev();
+		var used_element = $(this).parent().prev().prev().prev().prev();
 		var label = $(this).html();
 		var id = this.id;
 		var newdisp="<div class='deepsearch_selected_item'>"+"<input type='hidden' value='"+id+"' name='"+used_element.attr("tablename")+"_"+used_element.attr("fieldname")+"[]' value='' /><span class='label'>"+
