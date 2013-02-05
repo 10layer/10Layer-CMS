@@ -141,6 +141,12 @@
 	<label class='<%= field.label_class %>'><%= field.label %></label>
 	<input id="deepsearch_view_<%= field.tablename %>_<%= field.name %>" type="text" tablename="<%= field.tablename %>" contenttype="<%= field.contenttype %>" fieldname="<%= field.name %>" class="deepsearch_input <%= (field.multiple==1) ? 'multiple' : '' %> <%= field.class %>" value="" <% (field.contenttype=='mixed') ? "mixed='mixed' contenttypes='"+field.contenttypes.join(",")+"'" : '' %> />
 	<br clear="both" />
+	<div class='custom_search_config'>
+		<span class='small_config'><input type='checkbox' name='exact_match' id='exact_match_conf'> Exact Match </span>
+		<span class='small_config'><input type='checkbox' name='older_content' id='older_content_conf'> Include Older Content ( This will take a bit longer...)</span>
+	</div>
+	
+	<br clear="both" />
 	<div class="deepsearch_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:left;"></div>
 	<div class="selected_results" style=" padding: 5px; background-color: #FFF; border: 1px #CCC solid; width:290px; height:300px; overflow:auto; float:right;">
 	<%

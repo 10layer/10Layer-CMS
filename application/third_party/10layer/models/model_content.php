@@ -813,6 +813,17 @@
 		function smart_search($content_type, $s, $limit, $offset=0, $live=0, $published=0){
 			$this->setContentType($content_type);
 			//check if title matches the search term, if not use the fullbody text
+
+			$exact_match =  $this->input->get("exact_match");
+			$older_content =  $this->input->get("older_content");
+			if($exact_match == 'true'){
+				return $this->exact_match($s);
+			}
+
+			if($older_content == 'true'){
+				$limit = 200;
+			}
+
 			$query = "";
 			foreach($this->order_by as $ob) {
 				$this->db->order_by($ob);
@@ -834,12 +845,28 @@
 				} else {
 					$result=$this->suggest($content_type, $s, $limit, $offset,$live,$published);
 				}
-				//echo $this->db->last_query(); die();
+				
 				return $result;
 			}
 			//return $this->count();
 		}
 		
+
+
+		/**
+		 * exact_match function.
+		 *
+		 * Sometimes the editors knows what they are looking for, get it for them by title
+		 * 
+		 * @access public
+		 * @param mixed $s
+		 * @return result
+		 */
+		function exact_match($s){
+			$query=$this->db->select("content.*, title AS value")->where("title", $s)->where("content_type_id",$this->content_type->id)->get("content");
+			return $query->result();
+		}
+
 		
 		
 		

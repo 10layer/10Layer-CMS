@@ -1175,3 +1175,21 @@ ul.nested_tree li, ul.small_section li{
 	width:640px !important;
 }
 
+.custom_search_config{
+	border:1px solid #ccc;
+	padding:5px;
+	width:500px;
+	float: right;
+	margin-right: 18px;
+	margin-bottom: 10px;
+}
+
+.custom_search_config input[type='checkbox']{
+	margin-top:2px;
+}
+
+.small_config{
+	
+	float: left;
+	margin-right: 20px;
+

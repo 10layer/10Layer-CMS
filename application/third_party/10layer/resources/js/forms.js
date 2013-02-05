@@ -80,7 +80,7 @@ $(function() {
   	
   	$(".deepsearch_input").live("keypress",function(e) {
   		if (e.which == 13) { 
-			var resultdiv=$(this).next().next();
+			var resultdiv=$(this).next().next().next().next();
 			var selected_container = resultdiv.next();
 			var selected_items = selected_container.children('div');
 			var items = new Array();
@@ -88,9 +88,13 @@ $(function() {
 			selected_items.each(function(index) {
 				items[index] = $(this).children(":first").val();
 			});
+
+			var exact_match_setting = $('#exact_match_conf').is(":checked");
+			var older_content_setting = $('#older_content_conf').is(':checked');
+			
 		
 			var val = $(this).val();
-      		$.getJSON("/list/"+content_type+"/deepsearch?term="+escape(val), {"selected[]":items}, function(result) {
+      		$.getJSON("/list/"+content_type+"/deepsearch?term="+escape(val), {"selected[]":items, exact_match:exact_match_setting, older_content:older_content_setting }, function(result) {
 				resultdiv.html("");
 				for(x=0; x<result.length; x++) {
 					resultdiv.append("<div class='deepsearch_item' id='"+result[x].id+"'>"+result[x].value+" ("+result[x].start_date+")</div>");
