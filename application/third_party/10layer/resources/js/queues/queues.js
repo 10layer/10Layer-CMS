@@ -602,8 +602,7 @@ $(function() {
 
 		
 		$('.lock_this_item').live('click', function(){
-			url = $(this).attr('href')
-			console.log('for the love of common people ' + url);
+			url = $(this).attr('href');
 			$(this).next().dialog({
 	            resizable: false,
 	            height:200,
