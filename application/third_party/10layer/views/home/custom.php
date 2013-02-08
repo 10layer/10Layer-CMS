@@ -8,13 +8,26 @@
 	<div class="content">
 		<div class="content-tools">
 			<div class="btn-send" id="<%= id %>">Send to</div>
-			<a href="/edit/<%= content_type %>/<%= urlid %>" target="_blank"><div class="btn-edit">Edit</div></a>
+
+			<% if (typeof(opened) != "undefined" && opened !== null){ %>
+
+			<a class="<%= (opened == 0) ? 'edit_this_item' : 'lock_this_item' %> " href="/edit/<%= content_type %>/<%= urlid %>" target="_blank">
+				<div class="<%= (opened == 0) ? 'btn-edit' : 'btn-locked' %>"><%= (opened == 0) ? 'Edit' : 'Item Locked' %></div></a>
+
+				<div content_type="<%= content_type %>" style='display:none;' title="Unlock Item?">
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>This item is open by another user, this action will overide their changes. Are you sure?</p>
+				</div>
+			<%  }else{ %>
+					<a class="edit_this_item" href="/edit/<%= content_type %>/<%= urlid %>" target="_blank">
+					<div class="btn-edit'">Edit</div></a>
+			<%  }%>
+
 			<div class="btn-workflowprev">Revert Workflow</div>
 			<div class="btn-workflownext">Advance Workflow</div>
 			<div class="btn-live"><%= live ? 'Make unlive' : 'Make live' %></div>
 		</div>
 		<div class="directory_container shadow"></div>
-		<div class="content-title content-workflow-<%= major_version %>"><%= title %></div>
+		<div class="content-title content-workflow-<%= major_version %>"> <%= opened %> <%= title %></div>
 	</div>
 </script>
 

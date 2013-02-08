@@ -332,6 +332,13 @@ $(function() {
 					},
 					text: false,
 				});
+
+				this.$(".btn-locked").button({
+					icons: {
+						primary: "ui-icon-locked",
+					},
+					text: false,
+				});
 				
 				this.$(".btn-workflownext").button({
 					icons: {
@@ -592,6 +599,31 @@ $(function() {
 	});
 	
 	$(function() {
+
+		
+		$('.lock_this_item').live('click', function(){
+			url = $(this).attr('href')
+			console.log('for the love of common people ' + url);
+			$(this).next().dialog({
+	            resizable: false,
+	            height:200,
+	            width:450,
+	            modal: true,
+	            buttons: {
+	                "Force Unlock": function() {
+	                	$( this ).dialog( "close" );
+	                	window.location = url;
+	                    
+	                },
+	                Cancel: function() {
+	                    $( this ).dialog( "close" );
+	                }
+	            }
+	        });
+			return false;
+		});
+
+
 		$(".addqueue").button({
 			icons: {
 				primary: "ui-icon-circle-plus",
