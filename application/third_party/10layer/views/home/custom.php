@@ -27,7 +27,7 @@
 			<div class="btn-live"><%= live ? 'Make unlive' : 'Make live' %></div>
 		</div>
 		<div class="directory_container shadow"></div>
-		<div class="content-title content-workflow-<%= major_version %>"> <%= opened %> <%= title %></div>
+		<div class="content-title content-workflow-<%= major_version %>"> <%= title %></div>
 	</div>
 </script>
 
@@ -81,8 +81,9 @@
 	</div>
 	</div>
 	<div id="topbuttons">
-		<div class="addqueue">Add a queue</div> <div id="tiles">Tile queues</div>
+		<div class="addqueue">Add a queue</div> <div id="tiles">Tile queues</div> <div id="refresh_list">Refresh Queues</div>
 	</div>
+	<br clear='both'>
 	<div id="queues"></div>
 </div>
 

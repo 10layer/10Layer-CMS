@@ -420,7 +420,8 @@ $(function() {
 			
 			events: {
 				".addqueue click": "newQueue",
-				"#tiles click":"retile"
+				"#tiles click":"retile",
+				"#refresh_list click":"refresh"
 			},
 			
 			init: function(queues) {
@@ -439,6 +440,10 @@ $(function() {
 				
 				this.retile_button=$("#tiles");
 				this.retile_button.bind('click', _.bind(this.retile, this));
+
+				this.refresh_button=$("#refresh_list");
+				this.refresh_button.bind('click', _.bind(this.refresh, this));
+
 				this.addBehaviour();
 
 				$('#queues').append("<br clear='both'>");
@@ -590,6 +595,25 @@ $(function() {
       				this.resize();
       				//window.location.reload();
       				//Backbone.history.navigate("/home", true);
+			},
+
+			refresh:function(){
+				//$("#queues").html("");
+				var items = $("#queues").children("div");
+      				// var number;
+      				// items.each(function(index){
+      				// 	number = index+1;
+      				// 	the_id = $(this).children(":first").attr("id");
+      				// 	the_model = queues.get(the_id);
+      				// 	updates = {order:number,height:160, width:220};
+      				// 	the_model.set(updates);
+      				// });
+      				
+      				 				
+      				this.init(queues);
+      				//this.resize();
+      				//window.location.reload();
+      				//Backbone.history.navigate("/home", true);
 			}
 			
 		});
@@ -631,6 +655,12 @@ $(function() {
 		$("#tiles").button({
 			icons: {
 				primary: "ui-icon-circle-plus",
+			}
+		});
+
+		$("#refresh_list").button({
+			icons: {
+				primary: "ui-icon-arrowrefresh-1-s",
 			}
 		});
 
