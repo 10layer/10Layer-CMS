@@ -112,11 +112,27 @@
 			$this->db->where("zone_urlid",$zone_id);
 			$this->db->delete("ranking");
 			foreach($data as $row) {
-				$this->db->insert("ranking",$row);
+				if(!$this->row_exists($row)){
+					$this->db->insert("ranking",$row);
+				}
 			}
 			$this->db->where("zone_urlid",$zone_id);
 			$this->db->delete("ranking_stage");
 			return true;
+		}
+
+		//this is  meant to mamke sure that under no circumstances we have duplicates in the ranking table
+		protected function row_exists($row){
+			$this->db->where("content_id",$row['content_id']);
+			$this->db->where("zone_urlid",$row['zone_urlid']);
+			$this->db->where("rank",$row['rank']);
+			
+			$record = $this->db->get('ranking')->row();
+			if($record != null){
+				return true;
+			}else{
+				return false;
+			}
 		}
 		
 		public function revertContent($zone_id) {
