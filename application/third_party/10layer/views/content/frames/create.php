@@ -64,6 +64,22 @@
 			$.getJSON("<?= base_url() ?>create/jsoncreate/"+content_type+"?jsoncallback=?", function(data) {
 				$('#dyncontent').html(_.template($("#create-template").html(), { data:data, content_type: content_type }));
 				init_form();
+				<?php
+				if (!empty($_POST)) {
+					foreach($_POST as $key=>$val) {
+						if ($key == "headline") {
+				?>
+							$('textarea:[name$="title"]').val("<?= str_replace("\n", "", ucwords(strtolower($val))) ?>");
+				<?php
+						} else {
+				?>
+					$("input:[name$=<?= $key ?>]").val("<?= str_replace("\n", "", str_replace('"', '\"', $val)) ?>");
+					$("textarea:[name$=<?= $key ?>]").val("<p><?= str_replace("\n", "</p><p>", (htmlentities($val, ENT_QUOTES))) ?></p>");
+				<?php
+						}
+					}
+				}
+				?>
 			});
 		}
 		
