@@ -32,7 +32,7 @@
 				$pubid=$this->publications->id();
 			}
 			$this->db->select("platforms.*");
-			$this->db->select("tl_platform_types.name, tl_platform_types.publish_plugin");
+			$this->db->select("tl_platform_types.publish_plugin");
 			$this->db->join("tl_platform_types","tl_platform_types.id=platforms.type_id");
 			$this->db->where("publication_id",$pubid);
 			$query=$this->db->get("platforms");

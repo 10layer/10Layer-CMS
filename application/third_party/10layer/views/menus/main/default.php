@@ -6,6 +6,6 @@
 <div class="menuitem"><?= anchor("manage","Manage") ?></div>
 <div class="menuitem"><?= anchor("user/logout","Logout") ?></div>
 <?php
-	$this->publications->draw_dropdown();
+	//$this->publications->draw_dropdown();
 	$this->platforms->draw_dropdown();
 ?>
