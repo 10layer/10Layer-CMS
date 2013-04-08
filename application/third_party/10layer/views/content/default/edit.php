@@ -26,7 +26,7 @@
 			});
 			$("#dodone_right").click(function() {
 				$("#contentform").submit();
-				$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/<?= $contenttype ?>/<?= $urlid ?>", async:false});
+				//$.ajax({ type: "GET", url: "<?= base_url() ?>/workflow/change/advance/<?= $contenttype ?>/<?= $urlid ?>", async:false});
 				location.href="/workers/content/unlock/<?= $contenttype ?>/<?= $urlid ?>";
 			});
 			$("#dodelete_right").click(function() {
